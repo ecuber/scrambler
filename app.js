@@ -3,6 +3,7 @@ const bot = new Discord.Client();
 const Scrambo = require("scrambo");
 const cube = new Scrambo();
 const fs = require("fs");
+const talkedRecently = new Set();
 bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
 bot.settings = require("./settings.json");
@@ -30,10 +31,10 @@ bot.on("error", console.error);
 
 bot.on("ready", async () => {
 	console.log(`All commands loaded! Scrambler is ready to go!`);
-	await bot.user.setActivity(`Scrambling cubes for ${bot.guilds.size} servers! | !help`);
+	await bot.user.setActivity(`Scrambling cubes for ${bot.guilds.size} servers! | s!help`);
 
 	const snekfetch = require("snekfetch");
-	const key = bot.settings.DBLkey
+	const key = bot.settings.DBLkey;
 
 	snekfetch.post(`https://discordbots.org/api/bots/${bot.user.id}/stats`)
 		.set("Authorization", key)
@@ -43,7 +44,7 @@ bot.on("ready", async () => {
 });
 
 bot.on("guildCreate", async guild => {
-	await bot.user.setActivity(`Scrambling cubes for ${bot.guilds.size} servers! | !help`);
+	await bot.user.setActivity(`Scrambling cubes for ${bot.guilds.size} servers! | s!help`);
 	let guildLog = bot.channels.find("id", "455088142475591691");
 	let joinEmbed = new Discord.RichEmbed()
 		.setColor("#11fc30")
@@ -58,7 +59,7 @@ bot.on("guildCreate", async guild => {
 });
 
 bot.on("guildDelete", async guild => {
-	await bot.user.setActivity(`Scrambling cubes for ${bot.guilds.size} servers! | !help`);
+	await bot.user.setActivity(`Scrambling cubes for ${bot.guilds.size} servers! | s!help`);
 	let guildLog = bot.channels.find("id", "455088142475591691");
 	let leaveEmbed = new Discord.RichEmbed()
 		.setColor("#fc102c")
@@ -77,32 +78,55 @@ bot.on("reconnecting", () => console.log("Reconnected!"));
 
 bot.on("message", async message => {
 	if(message.author.bot) return;
-	if(message.channel.type !== "text") return message.channel.send("I don't like DM channels, please use a text channel on a server!").then(msg => msg.delete(2400));
-
-	let prefix;
-	if(bot.prefixes[message.guild.id]) {
-		prefix = bot.prefixes[message.guild.id].prefix;
-	} else {
-		prefix = bot.settings.prefix;
-	}
-
+	if(message.channel.type !== "text") return;
 	let messageArr = message.content.split(/\s+/g);
-	let command = messageArr[0].toLowerCase();
-	let args = messageArr.slice(1);
 
+	let prefix1;
+	if(bot.prefixes[message.guild.id]) {
+		prefix1 = bot.prefixes[message.guild.id].prefix;
+	}
+	let prefix2 = bot.settings.prefix;
+	let prefix3 = message.guild.me.nickname ? `<@!${bot.user.id}>` : `<@${bot.user.id}>`;
+
+	messageArr[0] = messageArr[0].toLowerCase();
+	if(prefix1 === messageArr[0] || prefix2 === messageArr[0] || prefix3 === messageArr[0]) {
+		messageArr[0] += messageArr[1];
+		messageArr.splice(1, 1);
+	}
+	let command = messageArr[0];
+	let args = messageArr.slice(1);
+	let prefix;
+	if(command.startsWith(prefix1)) {
+		prefix = prefix1;
+	} else if(command.startsWith(prefix2)) {
+		prefix = prefix2;
+	} else if(command.startsWith(prefix3)) {
+		prefix = prefix3;
+	} else {
+		return;
+	}
 	if(!command.startsWith(prefix)) return;
+
 	let cmd;
-	if(bot.commands.get(command.slice(prefix.length))) {
+	if(prefix && bot.commands.get(command.slice(prefix.length))) {
 		cmd = bot.commands.get(command.slice(prefix.length));
 	} else {
 		cmd = bot.aliases.get(command.slice(prefix.length));
 	}
 	if(cmd) {
-		try {
-			await cmd.run(bot, message, args, cube);
-		} catch(error) {
-			console.log(error.stack);
-			return message.channel.send(`:x: Error:\n\`\`\`\n${error.stack}\n\`\`\`\nPlease report this to ecuber#0566, Bacon#1153 or in the official Scrambler Discord server (!info for invite).`);
+		if(talkedRecently.has(message.author.id)) return;
+		talkedRecently.add(message.author.id);
+		setTimeout(() => {
+			talkedRecently.delete(message.author.id);
+		}, 2000);
+
+		if(cmd) {
+			try {
+				await cmd.run(bot, message, args, cube);
+			} catch(error) {
+				console.log(error.stack);
+				return message.channel.send(`:x: Error:\n\`\`\`\n${error.stack}\n\`\`\`\nPlease report this to Bacon#1153 or in the official Scrambler Discord server. Do \`s!info\` for a link.`);
+			}
 		}
 	}
 });

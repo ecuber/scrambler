@@ -2,7 +2,7 @@ const Discord = module.require("discord.js");
 module.exports.run = async (bot, message, args, cube) => {
 	let embed = new Discord.RichEmbed()
 		.setAuthor(bot.user.username, bot.user.displayAvatarURL)
-		.setColor("7289DA")
+		.setColor("RANDOM")
 		.addField("Language", "Node.js", true)
 		.addField("Library", "Discord.js", true)
 		.addField("Ping", `${Math.floor(bot.ping)}ms`, true)
