@@ -23,4 +23,4 @@ module.exports.run = async (bot, message, args) => {
 	return message.channel.send(scramble.join(" "));
 };
 
-module.exports.config = { name: "6x6", aliases: ["6x6x6"] };
+module.exports.config = { name: "7x7", aliases: ["7x7x7"] };
