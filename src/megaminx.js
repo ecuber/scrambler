@@ -9,7 +9,7 @@ module.exports.run = async (bot, message, args, cube) => {
 			scramble.push(`D${Math.random() < 0.5 ? "++" : "--"}`);
 		}
 	}
-	return message.channel.send(scramble.join(" "));
+	return message.channel.send(`\`\`\`\n${scramble.join(" ").replace(/U\n R/g, "U\nR").replace(/U'\n R/g, "U\'\nR")}\n\`\`\``);
 };
 
 module.exports.config = { name: "megaminx", aliases: ["mega", "minx", "mm"] };
