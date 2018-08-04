@@ -34,10 +34,9 @@ bot.on("ready", async () => {
 	await bot.user.setActivity(`Scrambling cubes for ${bot.guilds.size} servers! | s!help`);
 
 	const snekfetch = require("snekfetch");
-	const key = bot.settings.DBLkey;
 
 	snekfetch.post(`https://discordbots.org/api/bots/${bot.user.id}/stats`)
-		.set("Authorization", key)
+		.set("Authorization", bot.settings.DBLKey)
 		.send({ server_count: bot.guilds.size })
 		.then(() => console.log(`Stats posted to DBL.`))
 		.catch((error) => console.error(error));
