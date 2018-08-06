@@ -6,18 +6,11 @@ module.exports.run = async (bot, message, args, cube) => {
 	for(let x = 0; x < scrambles; x++) {
 		let wides = ["Rw", "Uw", "Lw", "Dw", "Fw", "Bw"];
 		let nonWides = ["R", "U", "L", "D", "F", "B"];
-		let opposites = {
-			Uw: "Dw",
-			Rw: "Lw",
-			Dw: "Uw",
-			Lw: "Rw",
-			Bw: "Fw"
-		};
 		let scramble = [];
 		let i = 0;
 		while(scramble.length < 60) {
 			let move = Math.random() > 0.3 ? nonWides[Math.floor(Math.random() * nonWides.length)] : wides[Math.floor(Math.random() * wides.length)];
-			if(i > 0 && (scramble[i - 1] === move || (Object.keys(opposites).includes(move) && opposites[move] === scramble[i - 1]))) {
+			if(i > 0 && (scramble[i - 1] === move)) {
 				continue;
 			} else {
 				scramble.push(move);
