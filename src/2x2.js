@@ -6,4 +6,4 @@ module.exports.run = async (bot, message, args, cube) => {
 };
 
 
-module.exports.config = { name: "2x2", aliases: ["2x2x2"] };
+module.exports.config = { name: "2x2", aliases: ["2x2x2", "4cube", "minicube"] };

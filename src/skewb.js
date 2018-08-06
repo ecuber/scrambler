@@ -5,4 +5,4 @@ module.exports.run = async (bot, message, args, cube) => {
 	return message.channel.send(scramble.join("\n\n"));
 };
 
-module.exports.config = { name: "skewb", aliases: [] };
+module.exports.config = { name: "skewb", aliases: ["skoob"] };

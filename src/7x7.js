@@ -29,4 +29,4 @@ module.exports.run = async (bot, message, args) => {
 	return message.channel.send(msgArr.join("\n\n"));
 };
 
-module.exports.config = { name: "7x7", aliases: ["7x7x7"] };
+module.exports.config = { name: "7x7", aliases: ["7x7x7", "superrubikscube"] };
