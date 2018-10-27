@@ -1,6 +1,7 @@
 cmd.bat
 prefixes.json
 settings.json
+restrict.json
 
 # Logs
 logs
