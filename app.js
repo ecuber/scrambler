@@ -8,6 +8,7 @@ bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
 bot.settings = require("./settings.json");
 bot.prefixes = require("./prefixes.json");
+bot.restricted = require("./restricted.json");
 
 fs.readdir("./src/", (err, files) => {
 	if(err) console.error(err);
@@ -66,6 +67,7 @@ bot.on("guildDelete", async guild => {
 		.setTitle("Left Guild:")
 		.addField("Name", `**${guild.name}** [ID: ${guild.id}]`)
 		.addField("Owner", `**${guild.owner.user.username}#${guild.owner.user.discriminator}** [ID: ${guild.owner.id}]`)
+		.addField("Member Count", `${guild.members.size}`)
 		.setTimestamp();
 	console.log(`Left guild: ${guild.name}, ID: ${guild.id}`);
 	guildLog.send(leaveEmbed);
@@ -113,6 +115,19 @@ bot.on("message", async message => {
 		cmd = bot.aliases.get(command.slice(prefix.length));
 	}
 	if(cmd) {
+		if(!bot.restricted[message.guild.id]) {
+			bot.restricted[message.guild.id] = { ignoredChannels: [] };
+		}
+		if(cmd === bot.commands.get("restrict")) {
+			try {
+				await cmd.run(bot, message, args, cube);
+			} catch(error) {
+				console.log(error.stack);
+				return message.channel.send(`:x: Error:\n\`\`\`\n${error.stack}\n\`\`\`\nPlease report this to Bacon#1153, ecuber#0566, or in the official Scrambler Discord server. Do \`s!info\` for a link.`);
+			}
+			return;
+		}
+		if(bot.restricted[message.guild.id].ignoredChannels.includes(message.channel.id)) return;
 		if(talkedRecently.has(message.author.id)) return;
 		talkedRecently.add(message.author.id);
 		setTimeout(() => {
@@ -124,7 +139,7 @@ bot.on("message", async message => {
 				await cmd.run(bot, message, args, cube);
 			} catch(error) {
 				console.log(error.stack);
-				return message.channel.send(`:x: Error:\n\`\`\`\n${error.stack}\n\`\`\`\nPlease report this to Bacon#1153 or in the official Scrambler Discord server. Do \`s!info\` for a link.`);
+				return message.channel.send(`:x: Error:\n\`\`\`\n${error.stack}\n\`\`\`\nPlease report this to Bacon#1153, ecuber#0566, or in the official Scrambler Discord server. Do \`s!info\` for a link.`);
 			}
 		}
 	}
