@@ -17,5 +17,4 @@ module.exports.run = async (bot, message, args, cube) => {
 	}
 	return message.channel.send(msgArr.join("\n\n"));
 };
-
 module.exports.config = { name: "megaminx", aliases: ["mega", "minx", "mm"] };

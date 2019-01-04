@@ -1,4 +1,3 @@
-const Scrambo = require("scrambo");
 module.exports.run = async (bot, message, args, cube) => {
 	let msgArr = [];
 	let scrambles = parseInt(args[0]);
