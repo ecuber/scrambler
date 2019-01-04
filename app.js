@@ -7,8 +7,7 @@ const talkedRecently = new Set();
 bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
 bot.settings = require("./settings.json");
-bot.prefixes = require("./prefixes.json");
-bot.restricted = require("./restricted.json");
+bot.guildSettings = require("./guildSettings.json");
 
 fs.readdir("./src/", (err, files) => {
 	if(err) console.error(err);
@@ -83,8 +82,14 @@ bot.on("message", async message => {
 	let messageArr = message.content.split(/\s+/g);
 
 	let prefix1;
-	if(bot.prefixes[message.guild.id]) {
-		prefix1 = bot.prefixes[message.guild.id].prefix;
+	if(!bot.guildSettings[message.guild.id]) {
+		bot.guildSettings[message.guild.id] = { ignoredChannels: [] };
+	}
+	await fs.writeFile("./guildSettings.json", JSON.stringify(bot.guildSettings, null, 4, err => {
+		if(err) throw err;
+	}));
+	if(bot.guildSettings[message.guild.id].prefix) {
+		prefix1 = bot.guildSettings[message.guild.id].prefix;
 	}
 	let prefix2 = bot.settings.prefix;
 	let prefix3 = message.guild.me.nickname ? `<@!${bot.user.id}>` : `<@${bot.user.id}>`;
@@ -115,10 +120,11 @@ bot.on("message", async message => {
 		cmd = bot.aliases.get(command.slice(prefix.length));
 	}
 	if(cmd) {
-		if(!bot.restricted[message.guild.id]) {
-			bot.restricted[message.guild.id] = { ignoredChannels: [] };
+		if(!bot.guildSettings[message.guild.id]) {
+			bot.guildSettings[message.guild.id] = { ignoredChannels: [] };
 		}
 		if(cmd === bot.commands.get("restrict")) {
+			if(!message.member.hasPermission("MANAGE_GUILD")) return message.reply("You do not have permission to use this command.");
 			try {
 				await cmd.run(bot, message, args, cube);
 			} catch(error) {
@@ -127,12 +133,12 @@ bot.on("message", async message => {
 			}
 			return;
 		}
-		if(bot.restricted[message.guild.id].ignoredChannels.includes(message.channel.id)) return;
+		if(bot.guildSettings[message.guild.id].ignoredChannels.includes(message.channel.id)) return;
 		if(talkedRecently.has(message.author.id)) return;
 		talkedRecently.add(message.author.id);
 		setTimeout(() => {
 			talkedRecently.delete(message.author.id);
-		}, 2000);
+		}, 5000);
 
 		if(cmd) {
 			try {
