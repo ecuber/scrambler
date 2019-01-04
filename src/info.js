@@ -13,11 +13,10 @@ module.exports.run = async (bot, message, args, cube) => {
 		.addField("Users", bot.users.size, true)
 		.addField("Creators", "**ecuber#0566** and **Bacon#1153**")
 		.addField("Created", bot.user.createdAt)
-		.addField("Description", "Scrambler is a Discord bot that generates scrambles for common twisty puzzles. Concept originated from ecuber#0566, this version of bot has been coded mostly by Bacon#1153.")
+		.addField("Description", "Scrambler is a Discord bot that generates scrambles for common twisty puzzles. Concept originated from ecuber#0566, this version of bot has been coded mostly by Bacon#1153, revised and with new features from ecuber.")
 		.setTimestamp()
 		.setFooter(`Scrambler`, bot.user.displayAvatarURL);
 
 	return message.channel.send({ embed: embed });
 };
-
 module.exports.config = { name: "info", aliases: ["stats", "invite"] };

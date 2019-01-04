@@ -7,16 +7,16 @@ module.exports.run = async (bot, message, args, cube) => {
 	} else {
 		let guildID = message.guild.id;
 		let channelID = message.mentions.channels.first().id;
-		if(bot.restricted[guildID].ignoredChannels.includes(channelID)) {
-			let indexChannel = bot.restricted[guildID].ignoredChannels.indexOf(channelID);
+		if(bot.guildSettings[guildID].ignoredChannels.includes(channelID)) {
+			let indexChannel = bot.guildSettings[guildID].ignoredChannels.indexOf(channelID);
 			bot.restricted[guildID].ignoredChannels.splice(indexChannel, 1);
-			await fs.writeFile("./restricted.json", JSON.stringify(bot.restricted, null, 4, err => {
+			await fs.writeFile("./guildSettings.json", JSON.stringify(bot.guildSettings, null, 4, err => {
 				if(err) throw err;
 			}));
 			return message.channel.send(`I will no longer ignore commands in \`#${message.mentions.channels.first().name}\`. To undo, simply do \`s!restrict #${message.mentions.channels.first().name}\`.`);
 		} else {
-			bot.restricted[guildID].ignoredChannels.push(channelID);
-			await fs.writeFile("./restricted.json", JSON.stringify(bot.restricted, null, 4), err => {
+			bot.guildSettings[guildID].ignoredChannels.push(channelID);
+			await fs.writeFile("./guildSettings.json", JSON.stringify(bot.guildSettings, null, 4), err => {
 				if(err) throw err;
 			});
 			return message.channel.send(`I will now ignore commands in \`#${message.mentions.channels.first().name}\`. To undo, simply do \`s!restrict #${message.mentions.channels.first().name}\`.`);

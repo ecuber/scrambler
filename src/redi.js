@@ -2,10 +2,11 @@
 /* eslint-disable new-cap */
 /* eslint-disable no-shadow */
 /* eslint-disable indent */
-/* lol eslint was pretty annoying on this one with all the borrowed code */
+// lol eslint was pretty annoying on this one with all the borrowed code
+// Redi cube scramble generator by xyzzy, sourced from https://torchlight.github.io/rediscrambler.js
 
 module.exports.run = async (bot, message, args, cube) => {
-	/* Redi cube scramble generator by xyzzy, sourced from https://torchlight.github.io/rediscrambler.js */
+	// Redi cube scramble generator by xyzzy, sourced from https://torchlight.github.io/rediscrambler.js
 
 	"use strict";
 

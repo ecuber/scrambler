@@ -24,5 +24,4 @@ module.exports.run = async (bot, message, args, cube) => {
 		message.channel.send(`:x: Error: \`\`\`javascript\n${clean(err)}\n\`\`\``);
 	}
 };
-
 module.exports.config = { name: "eval", aliases: ["evaluate"] };
