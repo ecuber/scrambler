@@ -9,7 +9,7 @@ module.exports.run = async (bot, message, args, cube) => {
 		let channelID = message.mentions.channels.first().id;
 		if(bot.guildSettings[guildID].ignoredChannels.includes(channelID)) {
 			let indexChannel = bot.guildSettings[guildID].ignoredChannels.indexOf(channelID);
-			bot.restricted[guildID].ignoredChannels.splice(indexChannel, 1);
+			bot.guildSettings[guildID].ignoredChannels.splice(indexChannel, 1);
 			await fs.writeFile("./guildSettings.json", JSON.stringify(bot.guildSettings, null, 4, err => {
 				if(err) throw err;
 			}));
