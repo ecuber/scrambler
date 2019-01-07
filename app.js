@@ -87,7 +87,9 @@ bot.on("message", async message => {
 	}
 	await fs.writeFile("./guildSettings.json", JSON.stringify(bot.guildSettings, null, 4, err => {
 		if(err) throw err;
-	}));
+	}), err => {
+		if(err) console.log(`Error writing to guildSettings:\n${err.stack}`);
+	});
 	if(bot.guildSettings[message.guild.id].prefix) {
 		prefix1 = bot.guildSettings[message.guild.id].prefix;
 	}
@@ -120,16 +122,13 @@ bot.on("message", async message => {
 		cmd = bot.aliases.get(command.slice(prefix.length));
 	}
 	if(cmd) {
-		if(!bot.guildSettings[message.guild.id]) {
-			bot.guildSettings[message.guild.id] = { ignoredChannels: [] };
-		}
 		if(cmd === bot.commands.get("restrict")) {
 			if(!message.member.hasPermission("MANAGE_GUILD")) return message.reply("You do not have permission to use this command.");
 			try {
 				await cmd.run(bot, message, args, cube);
 			} catch(error) {
 				console.log(error.stack);
-				return message.channel.send(`:x: Error:\n\`\`\`\n${error.stack}\n\`\`\`\nPlease report this to Bacon#1153, ecuber#0566, or in the official Scrambler Discord server. Do \`s!info\` for a link.`);
+				return message.channel.send(`:x: Error:\n\`\`\`\n${error.stack}\n\`\`\`\nPlease report this to ecuber#0566, Bacon#1153, or in the official Scrambler Discord server. Do \`s!info\` for a link.`);
 			}
 			return;
 		}
@@ -138,7 +137,9 @@ bot.on("message", async message => {
 		talkedRecently.add(message.author.id);
 		setTimeout(() => {
 			talkedRecently.delete(message.author.id);
-		}, 3000);
+		}, 3000, err => {
+			if(err) throw err;
+		});
 
 		if(cmd) {
 			try {

@@ -12,12 +12,16 @@ module.exports.run = async (bot, message, args, cube) => {
 			bot.guildSettings[guildID].ignoredChannels.splice(indexChannel, 1);
 			await fs.writeFile("./guildSettings.json", JSON.stringify(bot.guildSettings, null, 4, err => {
 				if(err) throw err;
-			}));
+			}), err => {
+				if(err) console.log(`Error writing to guildSettings:\n${err.stack}`);
+			});
 			return message.channel.send(`I will no longer ignore commands in \`#${message.mentions.channels.first().name}\`. To undo, simply do \`s!restrict #${message.mentions.channels.first().name}\`.`);
 		} else {
 			bot.guildSettings[guildID].ignoredChannels.push(channelID);
 			await fs.writeFile("./guildSettings.json", JSON.stringify(bot.guildSettings, null, 4), err => {
 				if(err) throw err;
+			}, err => {
+				if(err) console.log(`Error writing to guildSettings:\n${err.stack}`);
 			});
 			return message.channel.send(`I will now ignore commands in \`#${message.mentions.channels.first().name}\`. To undo, simply do \`s!restrict #${message.mentions.channels.first().name}\`.`);
 		}
