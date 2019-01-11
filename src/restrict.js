@@ -3,7 +3,7 @@ const fs = require("fs");
 module.exports.run = async (bot, message, args, cube) => {
 	if(!message.member.hasPermission("MANAGE_GUILD")) return message.reply("You do not have permission to use this command.");
 	if(args[0] == "help" || !args[0]) {
-		return message.channel.send("Usage: `s!restrict <#channel | reset>`. (Mention the channel you'd like to ignore, without the <>.) This will toggle the ability to use scrambler commands in the channel. Reset will remove all previously restricted commands.");
+		return message.channel.send("Usage: `s!restrict <#channel | reset | all <#optional #exempted #channels> >`. (Mention the channel you'd like to ignore, without the <>.) This will toggle the ability to use scrambler commands in the channel. Reset will remove all previously restricted commands. \nRunning \`s!restrict all\` will restrict all channels on the server. If you would like to exempt some channels from this command, simply add them to the end.");
 	}
 	if(args[0] == "reset") {
 		bot.guildSettings[message.guild.id].ignoredChannels.length = 0;
