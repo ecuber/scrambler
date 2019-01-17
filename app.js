@@ -4,7 +4,8 @@ const Scrambo = require("scrambo");
 const cube = new Scrambo();
 const fs = require("fs");
 const talkedRecently = new Set();
-const warned = new Set();
+const userWarned = new Set();
+const channelWarn = new Set();
 bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
 bot.settings = require("./settings.json");
@@ -34,13 +35,13 @@ bot.on("ready", async () => {
 	console.log(`All commands loaded! Scrambler is ready to go!`);
 	await bot.user.setActivity(`Scrambling cubes for ${bot.guilds.size} servers! | s!help`);
 
-	const snekfetch = require("snekfetch");
+	// 	const snekfetch = require("snekfetch");
 
-	snekfetch.post(`https://discordbots.org/api/bots/${bot.user.id}/stats`)
-		.set("Authorization", bot.settings.DBLKey)
-		.send({ server_count: bot.guilds.size })
-		.then(() => console.log(`Stats posted to DBL.`))
-		.catch((error) => console.error(error));
+// 	snekfetch.post(`https://discordbots.org/api/bots/${bot.user.id}/stats`)
+// 		.set("Authorization", bot.settings.DBLKey)
+// 		.send({ server_count: bot.guilds.size })
+// 		.then(() => console.log(`Stats posted to DBL.`))
+// 		.catch((error) => console.error(error));
 });
 
 bot.on("guildCreate", async guild => {
@@ -133,16 +134,26 @@ bot.on("message", async message => {
 			}
 			return;
 		}
-		if(bot.guildSettings[message.guild.id].ignoredChannels.includes(message.channel.id)) return;
+		if(bot.guildSettings[message.guild.id].ignoredChannels.includes(message.channel.id)) {
+			if(channelWarn.has(message.channel.id)) return;
+			message.channel.send("This channel is currently restricted for Scrambler commands. Please try a different channel.").then(msg => msg.delete(10000));
+			channelWarn.add(message.channel.id);
+			setTimeout(() => {
+				channelWarn.delete(message.channel.id);
+			}, 30000, err => {
+				if(err) throw err;
+			});
+			return;
+		}
 		if(talkedRecently.has(message.author.id)) {
-			if(warned.has(message.author.id)) return;
-			warned.add(message.author.id);
+			if(userWarned.has(message.author.id)) return;
+			userWarned.add(message.author.id);
 			return message.channel.send("Please cooldown.").then(msg => msg.delete(2200));
 		}
 		talkedRecently.add(message.author.id);
 		setTimeout(() => {
 			talkedRecently.delete(message.author.id);
-			warned.delete(message.author.id);
+			userWarned.delete(message.author.id);
 		}, 3000, err => {
 			if(err) throw err;
 		});
