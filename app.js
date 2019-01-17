@@ -4,6 +4,7 @@ const Scrambo = require("scrambo");
 const cube = new Scrambo();
 const fs = require("fs");
 const talkedRecently = new Set();
+const warned = new Set();
 bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
 bot.settings = require("./settings.json");
@@ -133,10 +134,15 @@ bot.on("message", async message => {
 			return;
 		}
 		if(bot.guildSettings[message.guild.id].ignoredChannels.includes(message.channel.id)) return;
-		if(talkedRecently.has(message.author.id)) return;
+		if(talkedRecently.has(message.author.id)) {
+			if(warned.has(message.author.id)) return;
+			warned.add(message.author.id);
+			return message.channel.send("Please cooldown.").then(msg => msg.delete(2200));
+		}
 		talkedRecently.add(message.author.id);
 		setTimeout(() => {
 			talkedRecently.delete(message.author.id);
+			warned.delete(message.author.id);
 		}, 3000, err => {
 			if(err) throw err;
 		});
@@ -150,6 +156,8 @@ bot.on("message", async message => {
 			}
 		}
 	}
+}, err => {
+	if(err) console.error(err);
 });
 process.on("unhandledRejection", error => {
 	console.error(`Uncaught Promise Error: \n${error.stack}`);
