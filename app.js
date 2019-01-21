@@ -35,18 +35,18 @@ bot.on("ready", async () => {
 	console.log(`All commands loaded! Scrambler is ready to go!`);
 	await bot.user.setActivity(`Scrambling cubes for ${bot.guilds.size} servers! | s!help`);
 
-	// 	const snekfetch = require("snekfetch");
+	const snekfetch = require("snekfetch");
 
-// 	snekfetch.post(`https://discordbots.org/api/bots/${bot.user.id}/stats`)
-// 		.set("Authorization", bot.settings.DBLKey)
-// 		.send({ server_count: bot.guilds.size })
-// 		.then(() => console.log(`Stats posted to DBL.`))
-// 		.catch((error) => console.error(error));
+	snekfetch.post(`https://discordbots.org/api/bots/${bot.user.id}/stats`)
+		.set("Authorization", bot.settings.DBLKey)
+		.send({ server_count: bot.guilds.size })
+		.then(() => console.log(`Stats posted to DBL.`))
+		.catch((error) => console.error(error));
 });
 
 bot.on("guildCreate", async guild => {
 	await bot.user.setActivity(`Scrambling cubes for ${bot.guilds.size} servers! | s!help`);
-	let guildLog = bot.channels.find("id", "455088142475591691");
+	let guildLog = bot.channels.get("455088142475591691");
 	let joinEmbed = new Discord.RichEmbed()
 		.setColor("#11fc30")
 		.setThumbnail(guild.iconURL)
@@ -61,7 +61,7 @@ bot.on("guildCreate", async guild => {
 
 bot.on("guildDelete", async guild => {
 	await bot.user.setActivity(`Scrambling cubes for ${bot.guilds.size} servers! | s!help`);
-	let guildLog = bot.channels.find("id", "455088142475591691");
+	let guildLog = bot.channels.get("455088142475591691");
 	let leaveEmbed = new Discord.RichEmbed()
 		.setColor("#fc102c")
 		.setThumbnail(guild.iconURL)
