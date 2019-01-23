@@ -6,10 +6,10 @@ const fs = require("fs");
 const talkedRecently = new Set();
 const userWarned = new Set();
 const channelWarn = new Set();
+const mongodb = require("mongodb");
 bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
 bot.settings = require("./settings.json");
-bot.guildSettings = require("./guildSettings.json");
 
 fs.readdir("./src/", (err, files) => {
 	if(err) console.error(err);
@@ -32,20 +32,24 @@ bot.on("warn", console.warn);
 bot.on("error", console.error);
 
 bot.on("ready", async () => {
+	const mongoClient = await mongodb.MongoClient.connect("mongodb://localhost:27017", { useNewUrlParser: true });
+	const db = await mongoClient.db("Scrambler");
+	bot.guildData = await db.collection("guildData");
+	console.log("Successfully connected to DB.");
 	console.log(`All commands loaded! Scrambler is ready to go!`);
-	await bot.user.setActivity(`Scrambling cubes for ${bot.guilds.size} servers! | s!help`);
+	await bot.user.setActivity(`Scrambling cubes for ${bot.guilds.size} servers! | ${bot.settings.prefix}help`);
 
-	const snekfetch = require("snekfetch");
+	// const snekfetch = require("snekfetch");
 
-	snekfetch.post(`https://discordbots.org/api/bots/${bot.user.id}/stats`)
-		.set("Authorization", bot.settings.DBLKey)
-		.send({ server_count: bot.guilds.size })
-		.then(() => console.log(`Stats posted to DBL.`))
-		.catch((error) => console.error(error));
+	// snekfetch.post(`https://discordbots.org/api/bots/${bot.user.id}/stats`)
+	// 	.set("Authorization", bot.settings.DBLKey)
+	// 	.send({ server_count: bot.guilds.size })
+	// 	.then(() => console.log(`Stats posted to DBL.`))
+	// 	.catch((error) => console.error(error));
 });
 
 bot.on("guildCreate", async guild => {
-	await bot.user.setActivity(`Scrambling cubes for ${bot.guilds.size} servers! | s!help`);
+	await bot.user.setActivity(`Scrambling cubes for ${bot.guilds.size} servers! | ${bot.settings.prefix}help`);
 	let guildLog = bot.channels.get("455088142475591691");
 	let joinEmbed = new Discord.RichEmbed()
 		.setColor("#11fc30")
@@ -60,7 +64,7 @@ bot.on("guildCreate", async guild => {
 });
 
 bot.on("guildDelete", async guild => {
-	await bot.user.setActivity(`Scrambling cubes for ${bot.guilds.size} servers! | s!help`);
+	await bot.user.setActivity(`Scrambling cubes for ${bot.guilds.size} servers! | ${bot.settings.prefix}help`);
 	let guildLog = bot.channels.get("455088142475591691");
 	let leaveEmbed = new Discord.RichEmbed()
 		.setColor("#fc102c")
@@ -76,7 +80,7 @@ bot.on("guildDelete", async guild => {
 
 bot.on("disconnect", () => console.log("Disconnected! Reconnecting..."));
 
-bot.on("reconnecting", () => console.log("Reconnected!"));
+bot.on("reconnecting", () => console.log("\nReconnected!"));
 
 bot.on("message", async message => {
 	if(message.author.bot) return;
@@ -84,17 +88,8 @@ bot.on("message", async message => {
 	let messageArr = message.content.split(/\s+/g);
 
 	let prefix1;
-	if(!bot.guildSettings[message.guild.id]) {
-		bot.guildSettings[message.guild.id] = { ignoredChannels: [] };
-	}
-	await fs.writeFile("./guildSettings.json", JSON.stringify(bot.guildSettings, null, 4, err => {
-		if(err) throw err;
-	}), err => {
-		if(err) console.log(`Error writing to guildSettings:\n${err.stack}`);
-	});
-	if(bot.guildSettings[message.guild.id].prefix) {
-		prefix1 = bot.guildSettings[message.guild.id].prefix;
-	}
+	let guild = await bot.guildData.findOne({ guildID: message.guild.id }, { _id: 0 });
+	if(guild && guild.prefix) prefix1 = guild.prefix;
 	let prefix2 = bot.settings.prefix;
 	let prefix3 = message.guild.me.nickname ? `<@!${bot.user.id}>` : `<@${bot.user.id}>`;
 
@@ -130,11 +125,11 @@ bot.on("message", async message => {
 				await cmd.run(bot, message, args, cube);
 			} catch(error) {
 				console.log(error.stack);
-				return message.channel.send(`:x: Error:\n\`\`\`\n${error.stack}\n\`\`\`\nPlease report this to ecuber#0566, Bacon#1153, or in the official Scrambler Discord server. Do \`s!info\` for a link.`);
+				return message.channel.send(`:x: Error:\n\`\`\`\n${error.stack}\n\`\`\`\nPlease report this to ecuber#0566, Bacon#1153, or in the official Scrambler Discord server. Do \`${bot.settings.prefix}info\` for a link.`);
 			}
 			return;
 		}
-		if(bot.guildSettings[message.guild.id].ignoredChannels.includes(message.channel.id)) {
+		if(guild.restricted && guild.restricted.includes(message.channel.id)) {
 			if(channelWarn.has(message.channel.id)) return;
 			message.channel.send("This channel is currently restricted for Scrambler commands. Please try a different channel.").then(msg => msg.delete(10000));
 			channelWarn.add(message.channel.id);
@@ -163,7 +158,7 @@ bot.on("message", async message => {
 				await cmd.run(bot, message, args, cube);
 			} catch(error) {
 				console.log(error.stack);
-				return message.channel.send(`:x: Error:\n\`\`\`\n${error.stack}\n\`\`\`\nPlease report this to Bacon#1153, ecuber#0566, or in the official Scrambler Discord server. Do \`s!info\` for a link.`);
+				return message.channel.send(`:x: Error:\n\`\`\`\n${error.stack}\n\`\`\`\nPlease report this to Bacon#1153, ecuber#0566, or in the official Scrambler Discord server. Do \`${bot.settings.prefix}info\` for a link.`);
 			}
 		}
 	}
