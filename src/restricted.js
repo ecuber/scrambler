@@ -2,7 +2,7 @@ const Discord = require("discord.js");
 module.exports.run = async (bot, message, args, cube) => {
 	let settings = bot.guildSettings;
 	let guild = settings[message.guild.id];
-	if(!guild.ignoredChannels) return message.channel.send("You have no restricted channels on this server.");
+	if(!guild.ignoredChannels[0]) return message.channel.send("You have no restricted channels on this server.");
 	let chanArr = guild.ignoredChannels;
 	let nameArr = [];
 	for(let i = 0; i < chanArr.length; i++) {
