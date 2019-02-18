@@ -2,6 +2,11 @@ cmd.bat
 prefixes.json
 settings.json
 restricted.json
+mongoprefix.js
+mongorestrict.js
+mongorestricted.js
+test.js
+test2.js
 
 # Logs
 logs

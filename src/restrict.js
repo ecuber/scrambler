@@ -62,4 +62,4 @@ module.exports.run = async (bot, message, args, cube) => {
 	}
 };
 
-module.exports.config = { name: "restrict", aliases: [] };
+module.exports.config = { name: "restrict", aliases: ["ignore"] };
