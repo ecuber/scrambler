@@ -2,7 +2,7 @@ const fs = require("fs");
 
 module.exports.run = async (bot, message, args, cube) => {
 	let egg;
-	await fs.readdir("./src/eggs/", (err, files) => {
+	await fs.readdir("./src/gifs/eggs/", (err, files) => {
 		if(err) {
 			console.error(err);
 			return message.channel.send("Error sending gif.").then(msg => msg.delete(7000));
@@ -10,7 +10,7 @@ module.exports.run = async (bot, message, args, cube) => {
 		egg = files[Math.floor(Math.random() * files.length)];
 		message.channel.send({
 			files: [{
-				attachment: `./src/eggs/${egg}`,
+				attachment: `./src/gifs/eggs/${egg}`,
 				name: egg
 			}]
 		});

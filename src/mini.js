@@ -15,4 +15,4 @@ module.exports.run = async (bot, message, args, cube) => {
 	message.channel.send(`**Clock:**\n${clock}\n\n**Pyraminx:**\n${pyra}\n\n**Skewb:**\n${skewb}\n\n**Square-One**\n${squan}`);
 	return message.channel.send(`\n\n**Megaminx:**${mega}`);
 };
-module.exports.config = { name: "mini", aliases: ["mg", "mini-guildford", "mini-guilford", "miniguilford", "miniguildford"] };
+module.exports.config = { name: "mini", aliases: ["mg", "mini-guildford", "mini-guilford", "miniguilford", "miniguildford", "guildford"] };
