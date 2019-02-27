@@ -73,13 +73,13 @@ module.exports.run = async (bot, message, args, cube) => {
 			});
 		});
 		// Reporting changes via Message
-		if(ignored.length && unignored.length) return message.channel.send(`Okay, I will ignore Scrambler commands ${ignored.length} channel(s) and will resume working in ${unignored.length} channel(s).`);
+		if(ignored.length && unignored.length) return message.channel.send(`Okay, I will now ignore Scrambler commands in ${ignored.length} channel(s) and will resume working in ${unignored.length} channel(s).`);
 		if(ignored.length && !unignored.length) {
 			if(ignored.length > 1) return message.channel.send(`Okay, I will now ignore commands in ${ignored.length} new channels!`);
 			return message.channel.send(`Okay, I will now ignore all Scrambler commands in ${bot.channels.get(ignored[0])}`);
 		}
 		if(!ignored.length && unignored.length) {
-			if(unignored.length > 1) return message.channel.send(`Okay, I will no longer ignore commands ${unignored.length} channels!`);
+			if(unignored.length > 1) return message.channel.send(`Okay, I will no longer ignore commands in ${unignored.length} channels!`);
 			return message.channel.send(`Okay, I will no longer ignore Scrambler commands in ${bot.channels.get(unignored[0])}`);
 		}
 	}
