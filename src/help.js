@@ -9,6 +9,7 @@ module.exports.run = async (bot, message, args, cube) => {
 		.addField("Multi-Scramble", "To get multiple scrambles, you can do \`s!<scramble> <number of scrambles>\`. For example, doing \`s!3x3 5\` will give you 5, 3x3x3 scrambles.")
 		.addField("Relays", "2-4, 2-5, 2-6, 2-7, 4-7, 5-7, guildford, side\nThese will generate the scrambles for multiple types of puzzles depending on the relay type.", true)
 		.addField("Utility", "prefix, ignore, ignored, updates, stats, info, ping", true)
+		.addField("Comps", "compconfig, config, comp, events")
 		.addField("Gifs", "jay, egg", true)
 		.setTimestamp()
 		.setFooter(`${bot.user.username}`, bot.user.displayAvatarURL);
