@@ -2,7 +2,7 @@ const Discord = require("discord.js");
 const fs = require("fs");
 
 module.exports.run = async (bot, message, args, cube) => {
-	if(!message.member.hasPermission("MANAGE_SERVER")) return message.reply("You do not have permission to use this command. Missing permission: `MANAGE_SERVER`").then(msg => msg.delete(7000));
+	if(!message.member.hasPermission("MANAGE_GUILD")) return message.reply("You do not have permission to use this command.");
 	let defSet = {
 		enabled: true,
 		"twox": { name: "**2x2**", enabled: true, count: 5 },
