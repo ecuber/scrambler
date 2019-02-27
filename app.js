@@ -86,12 +86,12 @@ bot.on("message", async message => {
 	let prefix1;
 	if(!bot.guildSettings[message.guild.id]) {
 		bot.guildSettings[message.guild.id] = { ignoredChannels: [] };
+		await fs.writeFile("./guildSettings.json", JSON.stringify(bot.guildSettings, null, 4, err => {
+			if(err) throw err;
+		}), err => {
+			if(err) console.log(`Error writing to guildSettings:\n${err.stack}`);
+		});
 	}
-	await fs.writeFile("./guildSettings.json", JSON.stringify(bot.guildSettings, null, 4, err => {
-		if(err) throw err;
-	}), err => {
-		if(err) console.log(`Error writing to guildSettings:\n${err.stack}`);
-	});
 	if(bot.guildSettings[message.guild.id].prefix) {
 		prefix1 = bot.guildSettings[message.guild.id].prefix;
 	}

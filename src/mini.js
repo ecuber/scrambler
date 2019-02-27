@@ -13,6 +13,6 @@ module.exports.run = async (bot, message, args, cube) => {
 	// begin the mayhem
 	message.channel.send(`***Mini-Guildford***\n\n**2x2:**\n${two}\n\n**3x3:**\n${three}\n\n**4x4:**\n${four}\n\n**5x5:**\n${five}\n\n**One-Hand:**\n${oh}\n\n`);
 	message.channel.send(`**Clock:**\n${clock}\n\n**Pyraminx:**\n${pyra}\n\n**Skewb:**\n${skewb}\n\n**Square-One**\n${squan}`);
-	return message.channel.send(`\n\n**Megaminx:**${mega}`);
+	return message.channel.send(`\n\n**Megaminx:**\`\`\`${mega}\`\`\``);
 };
 module.exports.config = { name: "mini", aliases: ["mg", "mini-guildford", "mini-guilford", "miniguilford", "miniguildford", "guildford"] };
