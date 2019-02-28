@@ -124,13 +124,13 @@ bot.on("message", async message => {
 		cmd = bot.aliases.get(command.slice(prefix.length));
 	}
 	if(cmd) {
-		if(cmd === bot.commands.get("restrict")) {
+		if(cmd === bot.commands.get("ignore")) {
 			if(!message.member.hasPermission("MANAGE_GUILD")) return message.reply("You do not have permission to use this command.");
 			try {
 				await cmd.run(bot, message, args, cube);
 			} catch(error) {
 				console.log(error.stack);
-				return message.channel.send(`:x: Error:\n\`\`\`\n${error.stack}\n\`\`\`\nPlease report this to ecuber#0566, Bacon#1153, or in the official Scrambler Discord server. Do \`s!info\` for a link.`);
+				return message.channel.send(`:x: Error:\n\`\`\`\n${error.stack}\n\`\`\`\nPlease report this to ecuber#0566 or in the official Scrambler Discord server. Do \`s!info\` for a link.`);
 			}
 			return;
 		}
@@ -163,7 +163,7 @@ bot.on("message", async message => {
 				await cmd.run(bot, message, args, cube);
 			} catch(error) {
 				console.log(error.stack);
-				return message.channel.send(`:x: Error:\n\`\`\`\n${error.stack}\n\`\`\`\nPlease report this to Bacon#1153, ecuber#0566, or in the official Scrambler Discord server. Do \`s!info\` for a link.`);
+				return message.channel.send(`:x: Error:\n\`\`\`\n${error.stack}\n\`\`\`\nPlease report this to ecuber#0566 or in the official Scrambler Discord server. Do \`s!info\` for a link.`);
 			}
 		}
 	}
