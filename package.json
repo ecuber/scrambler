@@ -1,0 +1,24 @@
+{
+  "name": "scrambler",
+  "version": "1.0.0",
+  "description": "Scrambler is the original discord bot created for generating scrambles for twisty puzzles.\r This project uses [Scrambo](https://github.com/nickcolley/scrambo) for some scrambles, and Redi Cube scrambles are provided by xyzzy, sourced [here](https://torchlight.github.io/rediscrambler.js). All other scrambles and commands were written by the scrambler dev team.",
+  "main": "app.js",
+  "scripts": {
+    "test": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ecuber/scrambler.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ecuber/scrambler/issues"
+  },
+  "homepage": "https://github.com/ecuber/scrambler#readme",
+  "dependencies": {
+    "discord.js": "^11.4.2",
+    "mongodb": "^3.1.13",
+    "scrambo": "^0.3.0"
+  }
+}
