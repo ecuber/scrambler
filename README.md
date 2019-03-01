@@ -8,7 +8,8 @@ Simply click [here](https://discordapp.com/oauth2/authorize?client_id=4235301198
 ## How to get started:
 Once you add the bot to your server, simply run `s!help` for a list of all of the currently available commands. For the basic twisty puzzles, you can just run `s!<puzzle name>` (without the brackets). All officially recognized WCA events are featured currently, and other puzzles included can be found in the help command.
 
-Scrambler has multiple useful tools for managing the use of the bot on your server. You can a choose a convenient prefix with `s!prefix`, and restrict the use of the bot in certain channels with `s!ignore`. The ignore command has many helpful arguments which can be viewed by running `s!ignore help`. 
+## Helpful commands
+Scrambler has multiple useful tools for managing the use of the bot on your server. You can a choose a convenient prefix with `s!prefix`, and restrict the use of the bot in certain channels with `s!ignore`. Also, check out server competition tools with `s!compsettings`. For any of these commands, add the argument "help" afterwards with a space to get more information on usage of the command.
 
 ## Want to contribute to the project or report a bug?
   - You can join the scrambler support server [here](https://discord.gg/GeQvStw) and report bugs or make suggestions in the     `#suggestions` channel.
