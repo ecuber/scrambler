@@ -13,26 +13,17 @@ module.exports.run = async (bot, message, args, cube) => {
 			.addField("Ignoring all channels except ones specified", "`s!ignore all #commands #race`: Scrambler commands will not work in any channel except for #commands and #race **RECOMMENDED**")
 			.addField("Resetting Restrictions", "`s!ignore reset`: Scrambler commands will work in all channels."));
 	}
+	let guild = await bot.guildData.findOne({ guildID: message.guild.id }, { _id: 0, upsert: true });
 	if(args[0] == "reset") {
-		bot.guildSettings[message.guild.id].ignoredChannels.length = 0;
-		await fs.writeFile("./guildSettings.json", JSON.stringify(bot.guildSettings, null, 4, err => {
-			if(err) throw err;
-		}), err => {
-			if(err) console.log(`Error writing to guildSettings:\n${err.stack}`);
-		});
+		bot.guildData.updateOne({ guildID: message.guild.id }, { $unset: { restricted: [] } });
 		return message.channel.send("Okay, I have unrestricted all channels on this server.");
 	} else {
 		// All channels
 		if(args[0] == "all") {
-			let chanArr = message.guild.channels.keyArray();
 			// If no arguments are passed (channel mentions) it will send all channels to the ignored array.
 			if(!args[1]) {
-				bot.guildSettings[message.guild.id].ignoredChannels = chanArr;
-				await fs.writeFile("./guildSettings.json", JSON.stringify(bot.guildSettings, null, 4, err => {
-					if(err) throw err;
-				}), err => {
-					if(err) console.log(`Error writing to guildSettings:\n${err.stack}`);
-				});
+				let chanArr = message.guild.channels.keyArray();
+				bot.guildData.updateOne({ guildID: message.guild.id }, { $set: { restricted: chanArr } });
 				return message.channel.send("Okay, I have restricted all channels on this server. To undo, simply type \`s!restrict reset\`");
 			}
 			// If there *is* an argument, but no mentioned channel
@@ -43,35 +34,32 @@ module.exports.run = async (bot, message, args, cube) => {
 			for(let i = 0; i < mentioned.length; i++) {
 				chanArr.splice(chanArr.indexOf(mentioned[i]), 1);
 			}
-			bot.guildSettings[message.guild.id].ignoredChannels = chanArr;
-			await fs.writeFile("./guildSettings.json", JSON.stringify(bot.guildSettings, null, 4, err => {
-				if(err) throw err;
-			}), err => {
-				if(err) console.log(`Error writing to guildSettings:\n${err.stack}`);
-			});
-			return message.channel.send(`Okay, all channels except the ones you have specified have been restricted!`);
+			await bot.guildData.updateOne({ guildID: message.guild.id }, { $set: { restricted: chanArr } });
+			return message.channel.send(`Okay, all channels except the ones you have specified will now be ignored!`);
 		}
 		// All further command variants require a channel mention
 		if(!message.mentions.channels.first()) return message.reply(`Please mention a channel.`);
+		let chanArr;
+		if(guild.restricted) {
+			chanArr = guild.restricted;
+		} else {
+			chanArr = [];
+		}
 		let guildID = message.guild.id;
 		let channelIDs = message.mentions.channels.keyArray();
 		let ignored = [];
 		let unignored = [];
 		channelIDs.forEach(channelID => {
-			if(bot.guildSettings[guildID].ignoredChannels.includes(channelID)) {
-				let indexChannel = bot.guildSettings[guildID].ignoredChannels.indexOf(channelID);
-				bot.guildSettings[guildID].ignoredChannels.splice(indexChannel, 1);
+			if(guild.restricted && guild.restricted.includes(channelID)) {
+				let indexChannel = chanArr.indexOf(channelID);
+				chanArr.splice(indexChannel, 1);
 				unignored.push(channelID);
 			} else {
-				bot.guildSettings[guildID].ignoredChannels.push(channelID);
+				chanArr.push(channelID);
 				ignored.push(channelID);
 			}
-			fs.writeFile("./guildSettings.json", JSON.stringify(bot.guildSettings, null, 4), err => {
-				if(err) throw err;
-			}, err => {
-				if(err) console.log(`Error writing to guildSettings:\n${err.stack}`);
-			});
 		});
+		await bot.guildData.updateOne({ guildID: message.guild.id }, { $set: { restricted: chanArr } });
 		// Reporting changes via Message
 		if(ignored.length && unignored.length) return message.channel.send(`Okay, I will now ignore Scrambler commands in ${ignored.length} channel(s) and will resume working in ${unignored.length} channel(s).`);
 		if(ignored.length && !unignored.length) {

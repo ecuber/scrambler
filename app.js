@@ -6,10 +6,10 @@ const fs = require("fs");
 const talkedRecently = new Set();
 const userWarned = new Set();
 const channelWarn = new Set();
+const mongodb = require("mongodb");
 bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
 bot.settings = require("./settings.json");
-bot.guildSettings = require("./guildSettings.json");
 
 fs.readdir("./src/", (err, files) => {
 	if(err) console.error(err);
@@ -32,8 +32,16 @@ bot.on("warn", console.warn);
 bot.on("error", console.error);
 
 bot.on("ready", async () => {
-	console.log(`All commands loaded! Scrambler is ready to go!`);
+	console.log(`All commands loaded!`);
+
+	const mongoClient = await mongodb.MongoClient.connect("mongodb://localhost:27017", { useNewUrlParser: true });
+	const db = await mongoClient.db("Scrambler");
+	bot.guildData = await db.collection("guildData");
+	bot.compResults = await db.collection("Results");
+
+	console.log("Connected to DB!");
 	await bot.user.setActivity(`Scrambling cubes for ${bot.guilds.size} servers! | s!help`);
+	console.log("Scrambler is ready to go!");
 
 	const snekfetch = require("snekfetch");
 
@@ -84,17 +92,8 @@ bot.on("message", async message => {
 	let messageArr = message.content.split(/\s+/g);
 
 	let prefix1;
-	if(!bot.guildSettings[message.guild.id]) {
-		bot.guildSettings[message.guild.id] = { ignoredChannels: [] };
-		await fs.writeFile("./guildSettings.json", JSON.stringify(bot.guildSettings, null, 4, err => {
-			if(err) throw err;
-		}), err => {
-			if(err) console.log(`Error writing to guildSettings:\n${err.stack}`);
-		});
-	}
-	if(bot.guildSettings[message.guild.id].prefix) {
-		prefix1 = bot.guildSettings[message.guild.id].prefix;
-	}
+	let guild = await bot.guildData.findOne({ guildID: message.guild.id }, { _id: 0 });
+	if(guild && guild.prefix) prefix1 = guild.prefix;
 	let prefix2 = bot.settings.prefix;
 	let prefix3 = message.guild.me.nickname ? `<@!${bot.user.id}>` : `<@${bot.user.id}>`;
 
@@ -134,7 +133,7 @@ bot.on("message", async message => {
 			}
 			return;
 		}
-		if(bot.guildSettings[message.guild.id].ignoredChannels.includes(message.channel.id)) {
+		if(guild && guild.restricted && guild.restricted.includes(message.channel.id)) {
 			if(channelWarn.has(message.channel.id)) return;
 			message.channel.send("This channel is currently restricted for Scrambler commands. Please try a different channel.").then(msg => msg.delete(10000));
 			channelWarn.add(message.channel.id);

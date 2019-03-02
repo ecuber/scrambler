@@ -2,35 +2,32 @@ const scrambles = require("../relay.js");
 const redi = require("../rediremote");
 const Discord = require("discord.js");
 const fs = require("fs");
+const defSet = {
+	enabled: true,
+	"twox": { name: "**2x2**", enabled: true, count: 5 },
+	"threex": { name: "**3x3**", enabled: true, count: 5 },
+	"fourx": { name: "**4x4**", enabled: true, count: 5 },
+	"fivex": { name: "**5x5**", enabled: true, count: 5 },
+	"sixx": { name: "**6x6**", enabled: true, count: 3 },
+	"sevenx": { name: "**7x7**", enabled: true, count: 3 },
+	"oh": { name: "**OH**", enabled: true, count: 5 },
+	"clockx": { name: "**Clock**", enabled: true, count: 5 },
+	"pyrax": { name: "**Pyraminx**", enabled: true, count: 5 },
+	"megax": { name: "**Megaminx**", enabled: true, count: 5 },
+	"skewbx": { name: "**Skewb**", enabled: true, count: 5 },
+	"squanx": { name: "**Square-1**", enabled: true, count: 5 },
+	"redi": { name: "**Redi Cube**", enabled: false, count: 5 },
+	"twox3": { name: "**2x2x3**", enabled: false, count: 5 },
+	"ivy": { name: "**Ivy Cube**", enabled: false, count: 5 }
+};
 
 module.exports.run = async (bot, message, args, cube) => {
 	if(!message.member.hasPermission("MANAGE_MESSAGES") && !message.member.hasPermission("MANAGE_GUILD")) return message.reply("You do no have permission to use this command. Missing permission: `MANAGE_MESSAGES`").then(msg => msg.delete(7000));
-	let defSet = {
-		enabled: true,
-		"twox": { name: "**2x2**", enabled: true, count: 5 },
-		"threex": { name: "**3x3**", enabled: true, count: 5 },
-		"fourx": { name: "**4x4**", enabled: true, count: 5 },
-		"fivex": { name: "**5x5**", enabled: true, count: 5 },
-		"sixx": { name: "**6x6**", enabled: true, count: 3 },
-		"sevenx": { name: "**7x7**", enabled: true, count: 3 },
-		"oh": { name: "**OH**", enabled: true, count: 5 },
-		"clockx": { name: "**Clock**", enabled: true, count: 5 },
-		"pyrax": { name: "**Pyraminx**", enabled: true, count: 5 },
-		"megax": { name: "**Megaminx**", enabled: true, count: 5 },
-		"skewbx": { name: "**Skewb**", enabled: true, count: 5 },
-		"squanx": { name: "**Square-1**", enabled: true, count: 5 },
-		"redi": { name: "**Redi Cube**", enabled: false, count: 5 },
-		"twox3": { name: "**2x2x3**", enabled: false, count: 5 },
-		"ivy": { name: "**Ivy Cube**", enabled: false, count: 5 }
-	};
-	if(!bot.guildSettings[message.guild.id].compConfig) bot.guildSettings[message.guild.id].compConfig = defSet;
-	let config = bot.guildSettings[message.guild.id].compConfig;
+	let guild = await bot.guildData.findOne({ guildID: message.guild.id });
+	if(!guild || !guild.compConfig) await bot.guildData.updateOne({ guildID: message.guild.id }, { $set: { compConfig: defSet } }, { upsert: 1 });
+	guild = await bot.guildData.findOne({ guildID: message.guild.id });
+	let config = guild.compConfig;
 
-	await fs.writeFile("./guildSettings.json", JSON.stringify(bot.guildSettings, null, 4, err => {
-		if(err) throw err;
-	}), err => {
-		if(err) console.log(`Error writing to guildSettings:\n${err.stack}`);
-	});
 	if(!config.enabled) return message.channel.send("This command is not currently enabled. To enable it, please enter \`s!config toggle\`.");
 	if(args[0] == "help") {
 		let enabled;
@@ -72,7 +69,6 @@ module.exports.run = async (bot, message, args, cube) => {
 		} else if(name == "ivy") {
 			name = "skewbx";
 		}
-		// console.log(`${typeof events[i]}:_"${events[i]}"`);
 		if(event.enabled) {
 			let str = [`${event.name}\`\`\``];
 			for(let j = 0; j < event.count; j++) {
