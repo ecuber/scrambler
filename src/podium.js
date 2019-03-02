@@ -7,7 +7,7 @@ module.exports.run = async (bot, message, args, cube) => {
 	let config = guild.compConfig;
 
 	let results = await bot.compResults.findOne({ guildID: message.guild.id });
-	if(!results) return message.channel.send("No results found for the current competition.");
+	if(!results || !results.events) return message.channel.send("No results found in the database for the current competition.");
 	results = results.events;
 
 	function toMinSec(secStr) {
@@ -34,7 +34,7 @@ module.exports.run = async (bot, message, args, cube) => {
 					event = results[ev];
 					entries = [];
 					podium = [];
-					if(config[key[ev]].enabled) {
+					if(config[key[ev]] && config[key[ev]].enabled) {
 						let keys = Object.keys(event);
 						for(let i = 0; i < keys.length; i++) entries.push(event[keys[i]]);
 					}
@@ -66,17 +66,18 @@ module.exports.run = async (bot, message, args, cube) => {
 					if(podium) podiums.push(podium.join("\n"));
 				}
 
-				for(let i = 0; i < podiums.length; i++) {
-					message.channel.send(podiums[i]);
+				if(podiums.length > 0) {
+					for(let i = 0; i < podiums.length; i++) {
+						message.channel.send(podiums[i]);
+					}
+					bot.compResults.updateOne({ guildID: message.guild.id }, { $unset: { events: {} } });
+					return message.channel.send("Okay, all competition podiums have been posted and results have been deleted from the database.").then(msg => msg.delete(7000));
+				} else {
+					return message.channel.send("No results to post.").then(msg => msg.delete(7000));
 				}
-				bot.compResults.updateOne({ guildID: message.guild.id }, { $unset: { events: {} } });
-				return message.channel.send("Okay, all competition podiums have been posted and results have been deleted from the database.").then(msg => msg.delete(7000));
 			} else {
 				return message.channel.send("Action cancelled.");
 			}
-		// eslint-disable-next-line arrow-body-style
-		}).catch(collected => {
-			return message.channel.send("No response detected, action cancelled.");
 		});
 };
 module.exports.config = { name: "podium", aliases: ["getpodium"] };

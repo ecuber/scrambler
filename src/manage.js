@@ -47,7 +47,8 @@ module.exports.run = async (bot, message, args, cube) => {
 		message.channel.awaitMessages(m => m.author.id == message.author.id, { max: 1, time: 10000, errors: ["time"] })
 			.then(async collected => {
 				if(collected.first() && collected.first().content.toLowerCase().startsWith("y")) {
-					bot.compResults.updateOne({ guildID: message.guild.id }, { $unset: { events: {} } });
+					await bot.compResults.updateOne({ guildID: message.guild.id }, { $unset: { events: {} } });
+					await collected.first().delete();
 					return message.channel.send("Okay, all competition results have been deleted.");
 				} else {
 					return message.channel.send("Action cancelled.");
@@ -59,10 +60,11 @@ module.exports.run = async (bot, message, args, cube) => {
 		if(!results[args[0]][user.id]) return message.channel.send(`This user does not have a time entered for \`${args[0]}\``);
 		message.channel.send(`Are you sure you want to delete ${user.username}'s time in ${args[0]}? **Y**/*N*`);
 		message.channel.awaitMessages(m => m.author.id == message.author.id, { max: 1, time: 10000, errors: ["time"] })
-			.then(collected => {
+			.then(async collected => {
 				if(collected.first() && collected.first().content.toLowerCase().startsWith("y")) {
 					delete results[args[0]][user.id];
-					bot.compResults.updateOne({ guildID: message.guild.id }, { $set: { events: results } });
+					await collected.first().delete();
+					await bot.compResults.updateOne({ guildID: message.guild.id }, { $set: { events: results } });
 					return message.channel.send(`Okay, I've deleted ${user.username}'s time from ${args[0]}!`);
 				} else {
 					return message.channel.send("Action cancelled.");
