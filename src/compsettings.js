@@ -46,11 +46,11 @@ module.exports.run = async (bot, message, args, cube) => {
 		if(config.enabled) {
 			config.enabled = false;
 			await bot.guildData.updateOne({ guildID: message.guild.id }, { $set: { compConfig: config } });
-			return message.channel.send("Okay, `s!comps` has been `disabled`. To reenable, simply run this command again.");
+			return message.channel.send("Okay, \`s!comps\` and \`s!submit \` have been `disabled`. To reenable, simply run this command again.");
 		} else {
 			config.enabled = true;
 			await bot.guildData.updateOne({ guildID: message.guild.id }, { $set: { compConfig: config } });
-			return message.channel.send("Okay, `s!comps` have been `enabled`. To disable, simply run this command again.");
+			return message.channel.send("Okay, \`s!comps\` and \`s!submit \` have been `enabled`. To disable, simply run this command again.");
 		}
 	}
 	if(args[0] == "reset") {

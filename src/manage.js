@@ -26,8 +26,13 @@ module.exports.run = async (bot, message, args, cube) => {
 	if(args[0] == "view") {
 		if(!args[1]) return message.channel.send("Please choose an event to view. To see available events, do \`s!events\`");
 		if(!eventList.includes(args[1])) return message.channel.send(`Please check the spelling of \`${args[1]}\`. To see available events, do \`s!events\``);
-		let submissions = Object.keys(results[args[1]]);
-		let count = submissions.length;
+		let submissions = {};
+		if(results && results[args[1]]) {
+			submissions = Object.keys(results[args[1]]);
+		} else {
+			return message.channel.send(`No results were found in the database for ${args[1]}!`);
+		}
+		let count = Object.keys(submissions).length;
 		if(count > 0) {
 			let embed = new Discord.RichEmbed()
 				.setTitle(config[key[args[1]]].name)
@@ -48,12 +53,11 @@ module.exports.run = async (bot, message, args, cube) => {
 			.then(async collected => {
 				if(collected.first() && collected.first().content.toLowerCase().startsWith("y")) {
 					await bot.compResults.updateOne({ guildID: message.guild.id }, { $unset: { events: {} } });
-					await collected.first().delete();
 					return message.channel.send("Okay, all competition results have been deleted.");
 				} else {
 					return message.channel.send("Action cancelled.");
 				}
-			}).catch(collected => message.channel.send("No response detected, action cancelled."));
+			});
 	} else if(eventList.includes(args[0])) {
 		if(!message.mentions.users.first()) return message.channel.send("Please mention a user.");
 		let user = message.mentions.users.first();
@@ -69,7 +73,7 @@ module.exports.run = async (bot, message, args, cube) => {
 				} else {
 					return message.channel.send("Action cancelled.");
 				}
-			}).catch(collected => message.channel.send("No response detected, action cancelled."));
+			});
 	}
 };
 module.exports.config = { name: "manage", aliases: ["manageresults"] };

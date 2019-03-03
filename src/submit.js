@@ -60,7 +60,7 @@ module.exports.run = async (bot, message, args, cube) => {
 		};
 		if(!dnf) {
 			if(timeInSeconds(result)) {
-				obj.time = Math.floor(timeInSeconds(result) * 100) / 100;
+				obj.time = timeInSeconds(result).toFixed(2);
 			} else {
 				return message.channel.send(`Your submitted result \`${result}\` is invalid. Please enter it again in this format: \`M:SS.ss\``);
 			}

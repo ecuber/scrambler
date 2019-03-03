@@ -38,6 +38,8 @@ bot.on("ready", async () => {
 	const db = await mongoClient.db("Scrambler");
 	bot.guildData = await db.collection("guildData");
 	bot.compResults = await db.collection("Results");
+	bot.suggestions = await db.collection("suggestions");
+	bot.bugs = await db.collection("bugs");
 
 	console.log("Connected to DB!");
 	await bot.user.setActivity(`Scrambling cubes for ${bot.guilds.size} servers! | s!help`);

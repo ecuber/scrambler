@@ -11,13 +11,20 @@ module.exports.run = async (bot, message, args, cube) => {
 	results = results.events;
 
 	function toMinSec(secStr) {
-		let flo = parseFloat(secStr);
+		let flo;
+		let min;
+		let sec;
+		flo = Number.parseFloat(secStr).toFixed(2);
 		if(flo > 60) {
-			let min = Math.floor(flo / 60);
-			let sec = Math.ceil(flo % 60 * 100) / 100;
+			min = Math.floor(flo / 60);
+			sec = Number.parseFloat(flo % 60).toFixed(2);
+			if(sec < 10) {
+				return `${min}:0${sec}`;
+			}
 			return `${min}:${sec}`;
 		}
-		return flo;
+		sec = Number.parseFloat(secStr).toFixed(2);
+		return sec;
 	}
 
 	message.channel.send(`Are you sure you want to post podiums for this competition in this channel? Doing so will also delete all results for this competition cycle. **Y**/*N*`).then(msg => msg.delete(10000));
@@ -82,4 +89,4 @@ module.exports.run = async (bot, message, args, cube) => {
 			}
 		});
 };
-module.exports.config = { name: "podium", aliases: ["getpodium"] };
+module.exports.config = { name: "podium", aliases: ["getpodium", "podiums"] };
