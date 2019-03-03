@@ -44,9 +44,10 @@ module.exports.run = async (bot, message, args, cube) => {
 					if(config[key[ev]] && config[key[ev]].enabled) {
 						let keys = Object.keys(event);
 						for(let i = 0; i < keys.length; i++) entries.push(event[keys[i]]);
+
+						entries.sort((a, b) => a.time - b.time);
 					}
 					// console.log(`entries:\n${entries}`);
-					entries.sort((a, b) => a.time - b.time);
 					// console.log(`entries:\n${entries}`);
 					if(entries[0]) {
 						podium[0] = `${config[key[ev]].name} **Podium**\n`;

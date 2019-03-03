@@ -66,6 +66,7 @@ module.exports.run = async (bot, message, args, cube) => {
 			}
 		} else {
 			obj.dnf = true;
+			obj.time = 172800;
 		}
 		evResults[message.author.id] = obj;
 	} else {
