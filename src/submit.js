@@ -33,8 +33,10 @@ module.exports.run = async (bot, message, args, cube) => {
 				return parseInt(m) * 60 + parseFloat(s);
 			}
 		} else {
-			if(parseFloat(str)) {
-				return parseFloat(str);
+			if(str.includes(".")) {
+				if(parseFloat(str)) {
+					return parseFloat(str);
+				}
 			}
 		}
 		return NaN;
@@ -62,7 +64,7 @@ module.exports.run = async (bot, message, args, cube) => {
 			if(timeInSeconds(result)) {
 				obj.time = timeInSeconds(result).toFixed(2);
 			} else {
-				return message.channel.send(`Your submitted result \`${result}\` is invalid. Please enter it again in this format: \`M:SS.ss\``);
+				return message.channel.send(`Your submitted result \`${result}\` is invalid. Please enter it again in this format: \`M:SS.ss\` (Make sure you include at least one decimal place!)`);
 			}
 		} else {
 			obj.dnf = true;
