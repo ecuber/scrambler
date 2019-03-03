@@ -21,8 +21,8 @@ module.exports.run = async (bot, message, args, cube) => {
 		// All channels
 		if(args[0] == "all") {
 			// If no arguments are passed (channel mentions) it will send all channels to the ignored array.
+			let chanArr = message.guild.channels.keyArray();
 			if(!args[1]) {
-				let chanArr = message.guild.channels.keyArray();
 				bot.guildData.updateOne({ guildID: message.guild.id }, { $set: { restricted: chanArr } });
 				return message.channel.send("Okay, I have restricted all channels on this server. To undo, simply type \`s!restrict reset\`");
 			}
