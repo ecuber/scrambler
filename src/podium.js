@@ -68,7 +68,9 @@ module.exports.run = async (bot, message, args, cube) => {
 
 				if(podiums.length > 0) {
 					for(let i = 0; i < podiums.length; i++) {
-						message.channel.send(podiums[i]);
+						if(podiums[i]) {
+							message.channel.send(podiums[i]);
+						}
 					}
 					bot.compResults.updateOne({ guildID: message.guild.id }, { $unset: { events: {} } });
 					return message.channel.send("Okay, all competition podiums have been posted and results have been deleted from the database.").then(msg => msg.delete(7000));
