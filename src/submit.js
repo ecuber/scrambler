@@ -1,9 +1,18 @@
 const Discord = require("discord.js");
 const events = { events: { "2x2": {}, "3x3": {}, "4x4": {}, "5x5": {}, "6x6": {}, "7x7": {}, "oh": {}, "clock": {}, "pyra": {}, "mega": {}, "skewb": {}, "squareone": {}, "redi": {}, "2x2x3": {}, "ivy": {} } };
 const key = { "2x2": "twox", "3x3": "threex", "4x4": "fourx", "5x5": "fivex", "6x6": "sixx", "7x7": "sevenx", "oh": "oh", "clock": "clockx", "pyra": "pyrax", "mega": "megax", "skewb": "skewbx", "squareone": "squanx", "redi": "redi", "2x2x3": "x2x3", "ivy": "ivy" };
+const aliases = { "2x2": [], "3x3": [], "4x4": [], "5x5": [], "6x6": [], "7x7": [], "oh": ["onehanded", "onehand", "one-handed", "one-hand"], "clock": [], "pyra": ["pyraminx"], "mega": ["megaminx"], "skewb": ["skoob"], "squareone": ["square-1", "sq1", "squareone", "square1", "square_one", "squan"], "redi": ["redicube", "redi-cube"], "2x2x3": [], "ivy": ["ivy-cube", "ivycube"] };
 
 module.exports.run = async (bot, message, args, cube) => {
-	args[0] = args[0].toLowerCase();
+	if(args[0]) args[0] = args[0].toLowerCase();
+	if(!args[0] || args[0] == "help") {
+		return message.channel.send(new Discord.RichEmbed()
+			.setTitle("Submit Comp Times")
+			.setColor("RANDOM")
+			.setDescription("Usage: \`s!submit <event> <average/mean>\`")
+			.addField("Formatting your time", "The correct format is **MM:SS:dd**. (M = minutes, S = seconds, d = decimal) Your average result should be as precise as possible, ideally with a decimal to the hundredths place. Do not include any +2 penalties. DNF penalties will be registered, however.")
+			.addField("Updating submissions", "You should only submit one time, and that time should be your overall average. You *are* allowed to update your submission as many times as you need in case you made a typo when entering. Your most recent time is the one counted when podiums are posted."));
+	}
 	let guild = await bot.guildData.findOne({ guildID: message.guild.id });
 	if(!guild || !guild.compConfig) return message.channel.send("Competitions are not yet enabled on this server. To enable them, have someone with the Manage Server permission do \`s!config toggle\`");
 	let config = guild.compConfig;
@@ -15,14 +24,6 @@ module.exports.run = async (bot, message, args, cube) => {
 	results = results.events;
 
 	if(!config.enabled) return message.channel.send("Competitions are not enabled on this server. To enable them, have someone with the Manage Server permission do \`s!config toggle\`");
-	if(!args[0] || args[0] == "help") {
-		return message.channel.send(new Discord.RichEmbed()
-			.setTitle("Submit Comp Times")
-			.setColor("RANDOM")
-			.setDescription("Usage: \`s!submit <event> <average/mean>\`")
-			.addField("Formatting your time", "The correct format is **MM:SS:dd**. (M = minutes, S = seconds, d = decimal) Your average result should be as precise as possible, ideally with a decimal to the hundredths place. Do not include any +2 penalties. DNF penalties will be registered, however.")
-			.addField("Updating submissions", "You are allowed to update your submission as many times as you need, in case you made a typo when entering. Your most recent time is the one counted when podiums are posted."));
-	}
 
 	if(!args[1]) return message.channel.send("Please specify a time or DNF.");
 
@@ -44,9 +45,27 @@ module.exports.run = async (bot, message, args, cube) => {
 	}
 
 	let obj;
+	let keyified;
+	let event;
 
-	let keyified = key[args[0]];
-	let event = config[keyified];
+	if(Object.keys(key).includes(args[0])) {
+		keyified = key[args[0]];
+		event = config[keyified];
+	} else {
+		Object.keys(aliases).forEach(arr => {
+			if(aliases[arr].includes(args[0])) {
+				args[0] = arr;
+				keyified = key[arr];
+				event = config[keyified];
+			}
+		});
+	}
+
+	// console.log(event);
+	// console.log(keyified);
+
+	if(!event) return message.channel.send(`Event ${args[0]} is not recognized. Run \`s!events\` to see the correct naming scheme.`);
+
 	let evResults;
 	if(!results[args[0]]) {
 		results[args[0]] = {};
@@ -73,12 +92,11 @@ module.exports.run = async (bot, message, args, cube) => {
 		}
 		evResults[message.author.id] = obj;
 	} else {
-		if(!key[args[0]]) return message.channel.send(`Event ${args[0]} is not recognized. Run \`s!events\` to see the correct naming scheme.`);
-		if(!config[args[0]].enabled) return message.channel.send(`Event \`${args[0]}\` is not enabled.`);
+		if(!event.enabled) return message.channel.send(`Event \`${args[0]}\` is not enabled.`);
 	}
 
 	await bot.compResults.updateOne({ guildID: message.guild.id }, { $set: { events: results } });
 	if(obj.dnf) return message.channel.send(`Successfully submitted ${args[0]} time of \`DNF\`!`);
-	return message.channel.send(`Successfully submitted a ${args[0]} time of \`${args[1]}\`!`);
+	return message.channel.send(`Successfully submitted a ${event.name} time of \`${args[1]}\`!`);
 };
 module.exports.config = { name: "submit", aliases: ["submittime"] };
