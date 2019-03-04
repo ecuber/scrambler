@@ -6,8 +6,13 @@ const key = { "2x2": "twox", "3x3": "threex", "4x4": "fourx", "5x5": "fivex", "6
 module.exports.run = async (bot, message, args, cube) => {
 	if(!message.member.hasPermission("MANAGE_GUILD")) return message.reply("You do not have permission to use this command.");
 	let guild = await bot.guildData.findOne({ guildID: message.guild.id });
-	if(!guild || !guild.compConfig) await bot.guildData.updateOne({ guildID: message.guild.id }, { $set: { compConfig: defSet } }, { upsert: 1 });
+	let justCreated = false;
+	if(!guild || !guild.compConfig) {
+		await bot.guildData.updateOne({ guildID: message.guild.id }, { $set: { compConfig: defSet } }, { upsert: 1 });
+		justCreated = true;
+	}
 	guild = await bot.guildData.findOne({ guildID: message.guild.id });
+
 	let config = guild.compConfig;
 
 	if(!args[0] || args[0] == "help" || !["toggle", "event", "events", "reset"].includes(args[0])) {
@@ -43,14 +48,14 @@ module.exports.run = async (bot, message, args, cube) => {
 	}
 
 	if(args[0] == "toggle") {
-		if(config.enabled) {
-			config.enabled = false;
-			await bot.guildData.updateOne({ guildID: message.guild.id }, { $set: { compConfig: config } });
-			return message.channel.send("Okay, \`s!comps\` and \`s!submit \` have been `disabled`. To reenable, simply run this command again.");
-		} else {
+		if(!config.enabled || justCreated) {
 			config.enabled = true;
 			await bot.guildData.updateOne({ guildID: message.guild.id }, { $set: { compConfig: config } });
 			return message.channel.send("Okay, \`s!comps\` and \`s!submit \` have been `enabled`. To disable, simply run this command again.");
+		} else {
+			config.enabled = false;
+			await bot.guildData.updateOne({ guildID: message.guild.id }, { $set: { compConfig: config } });
+			return message.channel.send("Okay, \`s!comps\` and \`s!submit \` have been `disabled`. To reenable, simply run this command again.");
 		}
 	}
 	if(args[0] == "reset") {
