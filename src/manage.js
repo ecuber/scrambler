@@ -1,6 +1,8 @@
 const Discord = require("discord.js");
 const eventList = ["2x2", "3x3", "4x4", "5x5", "6x6", "7x7", "oh", "clock", "pyra", "mega", "skewb", "squareone", "redi", "2x2x3", "ivy"];
 const key = { "2x2": "twox", "3x3": "threex", "4x4": "fourx", "5x5": "fivex", "6x6": "sixx", "7x7": "sevenx", "oh": "oh", "clock": "clockx", "pyra": "pyrax", "mega": "megax", "skewb": "skewbx", "squareone": "squanx", "redi": "redi", "2x2x3": "x2x3", "ivy": "ivy" };
+const aliases = { "2x2": [], "3x3": [], "4x4": [], "5x5": [], "6x6": [], "7x7": [], "oh": ["onehanded", "onehand", "one-handed", "one-hand"], "clock": [], "pyra": ["pyraminx"], "mega": ["megaminx"], "skewb": ["skoob"], "squareone": ["square-1", "sq1", "squareone", "square1", "square_one", "squan"], "redi": ["redicube", "redi-cube"], "2x2x3": [], "ivy": ["ivy-cube", "ivycube"] };
+
 
 module.exports.run = async (bot, message, args, cube) => {
 	if(!message.member.hasPermission("MANAGE_MESSAGES") && !message.member.hasPermission("MANAGE_GUILD")) return message.reply("You do no have permission to use this command. Missing permission: `MANAGE_MESSAGES`").then(msg => msg.delete(7000));
@@ -21,6 +23,16 @@ module.exports.run = async (bot, message, args, cube) => {
 			.addField("Viewing Submissions", "**s!manage view <event>**\n  View all submissions for the specified event.")
 			.addField("Deleting Submissions", "**s!manage <event> <@usermention>**\n  Delete a user's submission in the specified event. This action is irreversible.")
 			.addField("Resetting all Submissions", "**s!manage reset**\nThis will delete all submitted times. You will be prompted to make sure you want to complete this action, as it is completely irreversible."));
+	}
+
+	if(args[1]) {
+		if(!Object.keys(key).includes(args[1])) {
+			Object.keys(aliases).forEach(arr => {
+				if(aliases[arr].includes(args[1])) {
+					args[1] = arr;
+				}
+			});
+		}
 	}
 
 	if(args[0] == "view") {
