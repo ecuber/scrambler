@@ -11,7 +11,8 @@ module.exports.run = async (bot, message, args, cube) => {
 			.setColor("RANDOM")
 			.setDescription("Usage: \`s!submit <event> <average/mean>\`")
 			.addField("Formatting your time", "The correct format is **MM:SS:dd**. (M = minutes, S = seconds, d = decimal) Your average result should be as precise as possible, ideally with a decimal to the hundredths place. Do not include any +2 penalties. DNF penalties will be registered, however.")
-			.addField("Updating submissions", "You should only submit one time, and that time should be your overall average. You *are* allowed to update your submission as many times as you need in case you made a typo when entering. Your most recent time is the one counted when podiums are posted."));
+			.addField("Updating submissions", "You should only submit one time, and that time should be your overall average. You *are* allowed to update your submission as many times as you need in case you made a typo when entering. Your most recent time is the one counted when podiums are posted.")
+			.addField("Documentation", "https://scrambler.gitbook.io/docs/comps/submit"));
 	}
 	let guild = await bot.guildData.findOne({ guildID: message.guild.id });
 	if(!guild || !guild.compConfig) return message.channel.send("Competitions are not yet enabled on this server. To enable them, have someone with the Manage Server permission do \`s!config toggle\`");

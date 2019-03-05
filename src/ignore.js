@@ -11,7 +11,8 @@ module.exports.run = async (bot, message, args, cube) => {
 			.addField("Toggling Multiple Channels", "`s!ignore #general #media`: Scrambler will toggle ignoring in the channels mentioned.")
 			.addField("Ignoring all channels", "`s!ignore all`: Scrambler will not respond to commands (except s!ignore) in any channel. **Not Recommended**")
 			.addField("Ignoring all channels except ones specified", "`s!ignore all #commands #race`: Scrambler commands will not work in any channel except for #commands and #race **RECOMMENDED**")
-			.addField("Resetting Restrictions", "`s!ignore reset`: Scrambler commands will work in all channels."));
+			.addField("Resetting Restrictions", "`s!ignore reset`: Scrambler commands will work in all channels.")
+			.addField("Documentation", "https://scrambler.gitbook.io/docs/util/ignore"));
 	}
 	let guild = await bot.guildData.findOne({ guildID: message.guild.id }, { _id: 0, upsert: true });
 	if(args[0] == "reset") {

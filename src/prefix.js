@@ -12,6 +12,7 @@ module.exports.run = async (bot, message, args, cube) => {
 				.addField("Example", `To set your prefix to \`?\`, do \`${bot.settings.prefix}prefix ?\``, true)
 				.addBlankField(true)
 				.addField("Resetting your prefix", `Simply type \`${bot.settings.prefix}prefix reset\``, true)
+				.addField("Documentation", "https://scrambler.gitbook.io/docs/util/prefix")
 				.setTimestamp()
 				.setFooter(`Scrambler`, bot.user.displayAvatarURL);
 			return message.channel.send(helpEmbed);

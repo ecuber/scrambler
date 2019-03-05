@@ -34,13 +34,14 @@ module.exports.run = async (bot, message, args, cube) => {
 		}
 
 		let embed = new Discord.RichEmbed()
-			.setTitle("Comp Scramble Configuration")
+			.setTitle("Competition Configuration")
 			.setColor("RANDOM")
 			.setDescription("This command configures the events to be included when running `s!comp`. Read the following examples to see how to configure your server competitions! Please note that only users with the **Manage Server** permission are allowed to edit the configuration, and only users with **Manage Messages** are allowed to use `s!comp`")
 			.addField("Default Events", "The default events included are the following: 2x2-7x7, one-handed, pyraminx, megaminx, skewb, and square-one. Aditionally, redi cube, 2x2x3, and ivy cube are available, but not part of the default set.")
 			.addField("Toggling Comps", "Competition scrambles are enabled by default, but can be toggled on or off via `s!compconfig toggle`. If you are unsure of whether competitions are toggled on or off, check the bottom of this embed.")
 			.addField("Toggling Events", "To enable or disable events, simply type `s!compconfig event redi 7x7 ivy`. Replace those three events with any number of events you would like to toggle. If the event you list is enabled, it will be disabled, and vice versa.")
 			.addField("Resetting Settings", "To reset all competition settings, do `s!compconfig reset`.")
+			.addField("Documentation", "https://scrambler.gitbook.io/docs/comps/configuration")
 			.addField("Your Settings", `Competition scrambles are ***${enabled}***`, true);
 		if(eventList.length > 0) {
 			embed.addField("Enabled Events", `• ${eventList.join("\n• ")}`);

@@ -11,6 +11,7 @@ module.exports.run = async (bot, message, args, cube) => {
 		.addField("Utility", "prefix, ignore, ignored, updates, stats, info, ping", true)
 		.addField("Comps", "submit, manageresults, compconfig, config, comp, events")
 		.addField("Gifs", "jay, egg", true)
+		.addField("Documentation", "For detailed instructions on using any of these commands, check out the documentation! https://scrambler.gitbook.io/docs/")
 		.setTimestamp()
 		.setFooter(`${bot.user.username}`, bot.user.displayAvatarURL);
 	message.channel.send(helpEmbed);

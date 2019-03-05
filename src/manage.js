@@ -22,7 +22,8 @@ module.exports.run = async (bot, message, args, cube) => {
 			.setDescription("Usage: s!manage <view, reset, help>")
 			.addField("Viewing Submissions", "**s!manage view <event>**\n  View all submissions for the specified event.")
 			.addField("Deleting Submissions", "**s!manage <event> <@usermention>**\n  Delete a user's submission in the specified event. This action is irreversible.")
-			.addField("Resetting all Submissions", "**s!manage reset**\nThis will delete all submitted times. You will be prompted to make sure you want to complete this action, as it is completely irreversible."));
+			.addField("Resetting all Submissions", "**s!manage reset**\nThis will delete all submitted times. You will be prompted to make sure you want to complete this action, as it is completely irreversible.")
+			.addField("Documentation", "https://scrambler.gitbook.io/docs/comps/manage"));
 	}
 
 	if(args[1]) {

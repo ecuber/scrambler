@@ -51,6 +51,7 @@ module.exports.run = async (bot, message, args, cube) => {
 			.addField("Default Events", "The default events included are the following: 2x2-7x7, one-handed, pyraminx, megaminx, skewb, and square-one. Aditionally, redi cube, 2x2x3, and ivy cube are available, but not part of the default set.")
 			.addField("Toggling Comps", "Competition scrambles are enabled by default, but can be toggled on or off via `s!compconfig toggle`. If you are unsure of whether competitions are toggled on or off, check the bottom of this embed.")
 			.addField("Toggling Events", "To enable or disable events, simply type `s!compconfig event redi 7x7 ivy`. Replace those three events with any number events you would like to toggle. If the event you list is enabled, it will be disabled, and vice versa.")
+			.addField("Documentation", "Read more detailed documentation on this command here: https://scrambler.gitbook.io/docs/comps/comp")
 			.addField("Your Settings", `Competition scrambles are ***${enabled}***`, true);
 		if(eventList.length > 0) {
 			embed.addField("Enabled Events", `• ${eventList.join("\n• ")}`);
