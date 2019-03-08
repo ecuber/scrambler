@@ -5,6 +5,7 @@ const key = { "2x2": "twox", "3x3": "threex", "4x4": "fourx", "5x5": "fivex", "6
 const aliases = { "2x2": [], "3x3": [], "4x4": [], "5x5": [], "6x6": [], "7x7": [], "oh": ["onehanded", "onehand", "one-handed", "one-hand"], "clock": [], "pyra": ["pyraminx"], "mega": ["megaminx"], "skewb": ["skoob"], "squareone": ["square-1", "sq1", "squareone", "square1", "square_one", "squan"], "redi": ["redicube", "redi-cube"], "2x2x3": [], "ivy": ["ivy-cube", "ivycube"] };
 
 module.exports.run = async (bot, message, args, cube) => {
+	return message.channel.send("Scrambler's competition features are not funcitonal at the moment. Apologies for the inconvenience.");
 	if(!message.member.hasPermission("MANAGE_GUILD")) return message.reply("You do not have permission to use this command.");
 	let guild = await bot.guildData.findOne({ guildID: message.guild.id });
 	let justCreated = false;

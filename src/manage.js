@@ -5,6 +5,7 @@ const aliases = { "2x2": [], "3x3": [], "4x4": [], "5x5": [], "6x6": [], "7x7": 
 
 
 module.exports.run = async (bot, message, args, cube) => {
+	return message.channel.send("Scrambler's competition features are not funcitonal at the moment. Apologies for the inconvenience.");
 	if(!message.member.hasPermission("MANAGE_MESSAGES") && !message.member.hasPermission("MANAGE_GUILD")) return message.reply("You do no have permission to use this command. Missing permission: `MANAGE_MESSAGES`").then(msg => msg.delete(7000));
 	let guild = await bot.guildData.findOne({ guildID: message.guild.id });
 	if(!guild || !guild.compConfig) return message.channel.send("Competitions are not yet enabled on this server. To enable them, have someone with the Manage Server permission do \`s!config toggle\`");
