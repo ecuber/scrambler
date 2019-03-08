@@ -27,7 +27,7 @@ module.exports.run = async (bot, message, args, cube) => {
 		.addField("Uptime", `${formatMili(bot.uptime)}`, true)
 		.addField("Creators", "**ecuber#0566** and **Bacon#1153**")
 		.addField("Created", bot.user.createdAt)
-		.addField("Description", "Scrambler is a Discord bot that generates scrambles for common twisty puzzles. Concept originated from ecuber#0566, this version of bot has been coded mostly by Bacon#1153, revised with new features by ecuber.")
+		.addField("Description", "Scrambler is a Discord bot that generates scrambles for common twisty puzzles. Concept originated from ecuber#0566, the groundwork for this version of the bot was been coded mostly by Bacon#1153, with most new features written by ecuber.")
 		.setTimestamp()
 		.setFooter(`Scrambler`, bot.user.displayAvatarURL);
 
