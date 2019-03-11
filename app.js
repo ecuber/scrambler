@@ -95,25 +95,24 @@ bot.on("message", async message => {
 	let prefix1;
 	// let guild = await bot.guildData.findOne({ guildID: message.guild.id }, { _id: 0 });
 	// if(guild && guild.prefix) prefix1 = guild.prefix;
-	let prefix2 = bot.settings.prefix;
+	// let prefix2 = bot.settings.prefix;
 	let prefix3 = message.guild.me.nickname ? `<@!${bot.user.id}>` : `<@${bot.user.id}>`;
 
 	messageArr[0] = messageArr[0].toLowerCase();
 	// if(prefix1 === messageArr[0] || prefix2 === messageArr[0] || prefix3 === messageArr[0]) {
-	if(prefix2 === messageArr[0] || prefix3 === messageArr[0]) {
+	if(prefix1 === messageArr[0] || prefix3 === messageArr[0]) {
 		messageArr[0] += messageArr[1];
 		messageArr.splice(1, 1);
 	}
 	let command = messageArr[0];
 	let args = messageArr.slice(1);
 	let prefix;
-	// if(command.startsWith(prefix1)) {
-	// 	prefix = prefix1;
-	// }
-	// } else 
-	if(command.startsWith(prefix2)) {
-		prefix = prefix2;
+	if(command.startsWith(prefix1)) {
+		prefix = prefix1;
 	}
+	// } else if(command.startsWith(prefix2)) {
+	// 	prefix = prefix2;
+	// }
 	else if(command.startsWith(prefix3)) {
 		prefix = prefix3;
 	} else {
