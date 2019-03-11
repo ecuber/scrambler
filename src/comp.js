@@ -22,7 +22,6 @@ const defSet = {
 };
 
 module.exports.run = async (bot, message, args, cube) => {
-	return message.channel.send("Scrambler's competition features are not funcitonal at the moment. Apologies for the inconvenience.");
 	if(!message.member.hasPermission("MANAGE_MESSAGES") && !message.member.hasPermission("MANAGE_GUILD")) return message.reply("You do no have permission to use this command. Missing permission: `MANAGE_MESSAGES`").then(msg => msg.delete(7000));
 	let guild = await bot.guildData.findOne({ guildID: message.guild.id });
 	if(!guild || !guild.compConfig) await bot.guildData.updateOne({ guildID: message.guild.id }, { $set: { compConfig: defSet } }, { upsert: 1 });

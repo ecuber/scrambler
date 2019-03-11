@@ -1,7 +1,6 @@
 const Discord = require("discord.js");
 const fs = require("fs");
 module.exports.run = async (bot, message, args, cube) => {
-	return message.channel.send("Scrambler's management features are not funcitonal at the moment. Apologies for the inconvenience.");
 	if(!message.member.hasPermission("MANAGE_GUILD")) return message.reply("You do not have permission to use this command.");
 	if(args[0] == "help" || !args[0]) {
 		return message.channel.send(new Discord.RichEmbed()

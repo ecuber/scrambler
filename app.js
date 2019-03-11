@@ -6,7 +6,7 @@ const fs = require("fs");
 const talkedRecently = new Set();
 const userWarned = new Set();
 const channelWarn = new Set();
-// const mongodb = require("mongodb");
+const mongodb = require("mongodb");
 bot.commands = new Discord.Collection();
 bot.aliases = new Discord.Collection();
 bot.settings = require("./settings.json");
@@ -34,10 +34,10 @@ bot.on("error", console.error);
 bot.on("ready", async () => {
 	console.log(`All commands loaded!`);
 
-	// const mongoClient = await mongodb.MongoClient.connect("mongodb://localhost:27017", { useNewUrlParser: true });
-	// const db = await mongoClient.db("Scrambler");
-	// bot.guildData = await db.collection("guildData");
-	// bot.compResults = await db.collection("Results");
+	const mongoClient = await mongodb.MongoClient.connect("mongodb://localhost:27017", { useNewUrlParser: true });
+	const db = await mongoClient.db("Scrambler");
+	bot.guildData = await db.collection("guildData");
+	bot.compResults = await db.collection("Results");
 
 	console.log("Connected to DB!");
 	// await bot.user.setActivity(`Scrambling cubes for ${bot.guilds.size} servers! | s!help`);
@@ -93,14 +93,13 @@ bot.on("message", async message => {
 	let messageArr = message.content.split(/\s+/g);
 
 	let prefix1;
-	// let guild = await bot.guildData.findOne({ guildID: message.guild.id }, { _id: 0 });
-	// if(guild && guild.prefix) prefix1 = guild.prefix;
-	// let prefix2 = bot.settings.prefix;
+	let guild = await bot.guildData.findOne({ guildID: message.guild.id }, { _id: 0 });
+	if(guild && guild.prefix) prefix1 = guild.prefix;
+	let prefix2 = bot.settings.prefix;
 	let prefix3 = message.guild.me.nickname ? `<@!${bot.user.id}>` : `<@${bot.user.id}>`;
 
 	messageArr[0] = messageArr[0].toLowerCase();
-	// if(prefix1 === messageArr[0] || prefix2 === messageArr[0] || prefix3 === messageArr[0]) {
-	if(prefix1 === messageArr[0] || prefix3 === messageArr[0]) {
+	if(prefix1 === messageArr[0] || prefix2 === messageArr[0] || prefix3 === messageArr[0]) {
 		messageArr[0] += messageArr[1];
 		messageArr.splice(1, 1);
 	}
@@ -109,11 +108,9 @@ bot.on("message", async message => {
 	let prefix;
 	if(command.startsWith(prefix1)) {
 		prefix = prefix1;
-	}
-	// } else if(command.startsWith(prefix2)) {
-	// 	prefix = prefix2;
-	// }
-	else if(command.startsWith(prefix3)) {
+	} else if(command.startsWith(prefix2)) {
+		prefix = prefix2;
+	} else if(command.startsWith(prefix3)) {
 		prefix = prefix3;
 	} else {
 		return;
@@ -137,17 +134,17 @@ bot.on("message", async message => {
 			}
 			return;
 		}
-		// if(guild && guild.restricted && guild.restricted.includes(message.channel.id)) {
-		// 	if(channelWarn.has(message.channel.id)) return;
-		// 	message.channel.send("This channel is currently restricted for Scrambler commands. Please try a different channel.").then(msg => msg.delete(10000));
-		// 	channelWarn.add(message.channel.id);
-		// 	setTimeout(() => {
-		// 		channelWarn.delete(message.channel.id);
-		// 	}, 30000, err => {
-		// 		if(err) throw err;
-		// 	});
-		// 	return;
-		// }
+		if(guild && guild.restricted && guild.restricted.includes(message.channel.id)) {
+			if(channelWarn.has(message.channel.id)) return;
+			message.channel.send("This channel is currently restricted for Scrambler commands. Please try a different channel.").then(msg => msg.delete(10000));
+			channelWarn.add(message.channel.id);
+			setTimeout(() => {
+				channelWarn.delete(message.channel.id);
+			}, 30000, err => {
+				if(err) throw err;
+			});
+			return;
+		}
 		if(talkedRecently.has(message.author.id)) {
 			if(userWarned.has(message.author.id)) return;
 			userWarned.add(message.author.id);
