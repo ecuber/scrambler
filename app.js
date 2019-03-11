@@ -40,8 +40,8 @@ bot.on("ready", async () => {
 	bot.compResults = await db.collection("Results");
 
 	console.log("Connected to DB!");
-	// await bot.user.setActivity(`Scrambling cubes for ${bot.guilds.size} servers! | s!help`);
-	await bot.user.setActivity(`s!updates | Scrambling cubes for ${bot.guilds.size} servers`);
+	await bot.user.setActivity(`Scrambling cubes for ${bot.guilds.size} servers! | s!help`);
+	// await bot.user.setActivity(`s!updates | Scrambling cubes for ${bot.guilds.size} servers`);
 	console.log("Scrambler is ready to go!");
 
 	const snekfetch = require("snekfetch");
