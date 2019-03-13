@@ -6,6 +6,7 @@ const aliases = { "2x2": [], "3x3": [], "4x4": [], "5x5": [], "6x6": [], "7x7": 
 
 module.exports.run = async (bot, message, args, cube) => {
 	if(args[0]) args[0] = args[0].toLowerCase();
+	if(args[1]) args[1] = args[1].toLowerCase();
 	if(!args[0] || args[0] == "help") {
 		return message.channel.send(new Discord.RichEmbed()
 			.setTitle("Submit Comp Times")
@@ -27,7 +28,7 @@ module.exports.run = async (bot, message, args, cube) => {
 
 	if(!config.enabled) return message.channel.send("Competitions are not enabled on this server. To enable them, have someone with the Manage Server permission do \`s!config toggle\`");
 
-	if(!args[1]) return message.channel.send("Please specify a time or DNF.");
+	if(!args[1]) return message.channel.send("Please specify a time or event.");
 
 	function timeInSeconds(str) {
 		if(str.includes(":")) {
@@ -63,6 +64,7 @@ module.exports.run = async (bot, message, args, cube) => {
 		});
 	}
 
+	// console.log(args[0]);
 	// console.log(event);
 	// console.log(keyified);
 
@@ -73,7 +75,7 @@ module.exports.run = async (bot, message, args, cube) => {
 		results[args[0]] = {};
 	}
 	evResults = results[args[0]];
-	if(key[args[0]] && event.enabled) {
+	if(event.enabled) {
 		let result = args[1];
 		let dnf = false;
 		let currentdate = new Date();
@@ -94,7 +96,7 @@ module.exports.run = async (bot, message, args, cube) => {
 		}
 		evResults[message.author.id] = obj;
 	} else {
-		if(!event.enabled) return message.channel.send(`Event \`${args[0]}\` is not enabled.`);
+		return message.channel.send(`Event \`${args[0]}\` is not enabled.`);
 	}
 
 	await bot.compResults.updateOne({ guildID: message.guild.id }, { $set: { events: results } });
