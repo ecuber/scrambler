@@ -1,7 +1,8 @@
 const Discord = require("discord.js");
 const events = { events: { "2x2": {}, "3x3": {}, "4x4": {}, "5x5": {}, "6x6": {}, "7x7": {}, "oh": {}, "clock": {}, "pyra": {}, "mega": {}, "skewb": {}, "squareone": {}, "redi": {}, "2x2x3": {}, "ivy": {} } };
 const key = { "2x2": "twox", "3x3": "threex", "4x4": "fourx", "5x5": "fivex", "6x6": "sixx", "7x7": "sevenx", "oh": "oh", "clock": "clockx", "pyra": "pyrax", "mega": "megax", "skewb": "skewbx", "squareone": "squanx", "redi": "redi", "2x2x3": "x2x3", "ivy": "ivy" };
-const aliases = { "2x2": [], "3x3": [], "4x4": [], "5x5": [], "6x6": [], "7x7": [], "oh": ["onehanded", "onehand", "one-handed", "one-hand"], "clock": [], "pyra": ["pyraminx"], "mega": ["megaminx"], "skewb": ["skoob"], "squareone": ["square-1", "sq1", "squareone", "square1", "square_one", "squan"], "redi": ["redicube", "redi-cube"], "2x2x3": [], "ivy": ["ivy-cube", "ivycube"] };
+const aliases = { "2x2": [], "3x3": [], "4x4": [], "5x5": [], "6x6": [], "7x7": [], "oh": ["onehanded", "onehand", "one-handed", "one-hand"], "clock": [], "pyra": ["pyraminx"], "mega": ["megaminx"], "skewb": ["skoob"], "squareone": ["square-1", "sq1", "squareone", "square1", "square_one", "squan", "sq-1"], "redi": ["redicube", "redi-cube"], "2x2x3": [], "ivy": ["ivy-cube", "ivycube"] };
+
 
 module.exports.run = async (bot, message, args, cube) => {
 	if(args[0]) args[0] = args[0].toLowerCase();

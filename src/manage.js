@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
 const eventList = ["2x2", "3x3", "4x4", "5x5", "6x6", "7x7", "oh", "clock", "pyra", "mega", "skewb", "squareone", "redi", "2x2x3", "ivy"];
 const key = { "2x2": "twox", "3x3": "threex", "4x4": "fourx", "5x5": "fivex", "6x6": "sixx", "7x7": "sevenx", "oh": "oh", "clock": "clockx", "pyra": "pyrax", "mega": "megax", "skewb": "skewbx", "squareone": "squanx", "redi": "redi", "2x2x3": "x2x3", "ivy": "ivy" };
-const aliases = { "2x2": [], "3x3": [], "4x4": [], "5x5": [], "6x6": [], "7x7": [], "oh": ["onehanded", "onehand", "one-handed", "one-hand"], "clock": [], "pyra": ["pyraminx"], "mega": ["megaminx"], "skewb": ["skoob"], "squareone": ["square-1", "sq1", "squareone", "square1", "square_one", "squan"], "redi": ["redicube", "redi-cube"], "2x2x3": [], "ivy": ["ivy-cube", "ivycube"] };
+const aliases = { "2x2": [], "3x3": [], "4x4": [], "5x5": [], "6x6": [], "7x7": [], "oh": ["onehanded", "onehand", "one-handed", "one-hand"], "clock": [], "pyra": ["pyraminx"], "mega": ["megaminx"], "skewb": ["skoob"], "squareone": ["square-1", "sq1", "squareone", "square1", "square_one", "squan", "sq-1"], "redi": ["redicube", "redi-cube"], "2x2x3": [], "ivy": ["ivy-cube", "ivycube"] };
 
 
 module.exports.run = async (bot, message, args, cube) => {
@@ -15,15 +15,17 @@ module.exports.run = async (bot, message, args, cube) => {
 	results = await bot.compResults.findOne({ guildID: message.guild.id });
 	results = results.events;
 
+	let embed = new Discord.RichEmbed()
+		.setTitle("Manage Comp Entries")
+		.setColor("RANDOM")
+		.setDescription("Usage: s!manage <view, reset, help>")
+		.addField("Viewing Submissions", "**s!manage view <event>**\n  View all submissions for the specified event.")
+		.addField("Deleting Submissions", "**s!manage <event> <@usermention>**\n  Delete a user's submission in the specified event. This action is irreversible.")
+		.addField("Resetting all Submissions", "**s!manage reset**\nThis will delete all submitted times. You will be prompted to make sure you want to complete this action, as it is completely irreversible.")
+		.addField("Documentation", "https://scrambler.gitbook.io/docs/comps/manage");
+
 	if(!args[0] || args[0] == "help") {
-		return message.channel.send(new Discord.RichEmbed()
-			.setTitle("Manage Comp Entries")
-			.setColor("RANDOM")
-			.setDescription("Usage: s!manage <view, reset, help>")
-			.addField("Viewing Submissions", "**s!manage view <event>**\n  View all submissions for the specified event.")
-			.addField("Deleting Submissions", "**s!manage <event> <@usermention>**\n  Delete a user's submission in the specified event. This action is irreversible.")
-			.addField("Resetting all Submissions", "**s!manage reset**\nThis will delete all submitted times. You will be prompted to make sure you want to complete this action, as it is completely irreversible.")
-			.addField("Documentation", "https://scrambler.gitbook.io/docs/comps/manage"));
+		return message.channel.send(embed);
 	}
 
 	if(args[1]) {
@@ -47,16 +49,16 @@ module.exports.run = async (bot, message, args, cube) => {
 		}
 		let count = Object.keys(submissions).length;
 		if(count > 0) {
-			let embed = new Discord.RichEmbed()
+			let sEmbed = new Discord.RichEmbed()
 				.setTitle(config[key[args[1]]].name)
 				.setColor("RANDOM")
 				.addField("Number of submissions", submissions.length);
 			for(let i = 0; i < submissions.length; i++) {
 				let sub = results[args[1]][submissions[i]];
 				let user = bot.users.get(sub.userID);
-				embed.addField(user.username, `Result: ${sub.time}\nSubmitted: ${sub.timestamp}`, true);
+				sEmbed.addField(user.username, `Result: ${sub.time}\nSubmitted: ${sub.timestamp}`, true);
 			}
-			return message.channel.send(embed);
+			return message.channel.send(sEmbed);
 		} else {
 			return message.channel.send("There are no submissions for this event.");
 		}
@@ -88,5 +90,6 @@ module.exports.run = async (bot, message, args, cube) => {
 				}
 			});
 	}
+	message.channel.send(embed);
 };
 module.exports.config = { name: "manage", aliases: ["manageresults"] };
