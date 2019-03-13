@@ -2,6 +2,9 @@
 Scrambler is the original discord bot created for generating scrambles for twisty puzzles.
 This project uses [Scrambo](https://github.com/nickcolley/scrambo) for some scrambles, and Redi Cube scrambles are provided by xyzzy, sourced [here](https://torchlight.github.io/rediscrambler.js). All other scrambles and commands were written by the scrambler dev team. 
 
+## Command Documentation:
+All commands are fully documented at this site: https://scrambler.gitbook.io/docs/
+
 ## How to add the bot:
 Simply click [here](https://discordapp.com/oauth2/authorize?client_id=423530119836073986&permissions=130048&scope=bot) and select the server you would like to add it to! Scrambler is hosted on a dedicated server monitored by [ecuber](https://github.com/ecuber/). Make sure scrambler has permission to read and send messages in the channels you want to use it in.
 
