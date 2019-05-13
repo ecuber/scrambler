@@ -54,9 +54,9 @@ module.exports.run = async (bot, message, args, cube) => {
 				.setColor("RANDOM")
 				.addField("Number of submissions", submissions.length);
 			for(let i = 0; i < submissions.length; i++) {
-				let sub = toMinSec(results[args[1]][submissions[i]]);
+				let sub = results[args[1]][submissions[i]];
 				let user = bot.users.get(sub.userID);
-				sEmbed.addField(user.username, `Result: ${sub.time}\nSubmitted: ${sub.timestamp}`, true);
+				sEmbed.addField(user.username, `Result: ${toMinSec(sub.time)}\nSubmitted: ${sub.timestamp}`, true);
 			}
 			return message.channel.send(sEmbed);
 		} else {
@@ -83,7 +83,6 @@ module.exports.run = async (bot, message, args, cube) => {
 			.then(async collected => {
 				if(collected.first() && collected.first().content.toLowerCase().startsWith("y")) {
 					delete results[args[0]][user.id];
-					await collected.first().delete();
 					await bot.compResults.updateOne({ guildID: message.guild.id }, { $set: { events: results } });
 					return message.channel.send(`Okay, I've deleted ${username}'s time from ${args[0]}!`);
 				} else {
