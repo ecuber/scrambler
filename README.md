@@ -11,6 +11,9 @@ Once you add the bot to your server, simply run `s!help` for a list of all of th
 ## Helpful commands
 Scrambler has multiple useful tools for managing the use of the bot on your server. You can a choose a convenient prefix with `s!prefix`, and restrict the use of the bot in certain channels with `s!ignore`. Also, check out server competition tools with `s!compsettings`. For any of these commands, add the argument "help" afterwards with a space to get more information on usage of the command.
 
+## Command Documentation
+[Check out the docs here!](https://scrambler.gitbook.io/docs/) The docs will be updated manually within 24 hours after a functionality update.
+
 ## Want to contribute to the project or report a bug?
   - You can join the scrambler support server [here](https://discord.gg/GeQvStw) and report bugs or make suggestions in the     `#suggestions` channel.
   - You can also suggest a command via the issue tracker, and a template for pull requests has been provided at `src\template.js`.
