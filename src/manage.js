@@ -20,7 +20,7 @@ module.exports.run = async (bot, message, args, cube) => {
 		.setColor("RANDOM")
 		.setDescription("Usage: s!manage <view, reset, help>")
 		.addField("Viewing Submissions", "**s!manage view <event>**\n  View all submissions for the specified event.")
-		.addField("Deleting Submissions", "**s!manage <event> <@usermention>**\n  Delete a user's submission in the specified event. This action is irreversible.")
+		.addField("Deleting Submissions", "**s!manage <event> <@usermention, ID, or username>**\n  Delete a user's submission in the specified event. This action is irreversible.")
 		.addField("Resetting all Submissions", "**s!manage reset**\nThis will delete all submitted times. You will be prompted to make sure you want to complete this action, as it is completely irreversible.")
 		.addField("Documentation", "https://scrambler.gitbook.io/docs/comps/manage");
 
@@ -54,7 +54,7 @@ module.exports.run = async (bot, message, args, cube) => {
 				.setColor("RANDOM")
 				.addField("Number of submissions", submissions.length);
 			for(let i = 0; i < submissions.length; i++) {
-				let sub = results[args[1]][submissions[i]];
+				let sub = toMinSec(results[args[1]][submissions[i]]);
 				let user = bot.users.get(sub.userID);
 				sEmbed.addField(user.username, `Result: ${sub.time}\nSubmitted: ${sub.timestamp}`, true);
 			}
@@ -74,22 +74,55 @@ module.exports.run = async (bot, message, args, cube) => {
 				}
 			});
 	} else if(eventList.includes(args[0])) {
-		if(!message.mentions.users.first()) return message.channel.send("Please mention a user.");
-		let user = message.mentions.users.first();
+		let user = args[1] ? message.mentions.users.first() != null ? message.mentions.users.first() : isID(args[1]) ? message.guild.members.get(args[1]) : findUser(args[1]) != null ? findUser(args[1]) : null : null;
+		if(!user) return message.channel.send("Please mention a user, enter their ID, or their username.");
+		let username = message.guild.members.get(user.id).displayName;
 		if(!results[args[0]][user.id]) return message.channel.send(`This user does not have a time entered for \`${args[0]}\``);
-		message.channel.send(`Are you sure you want to delete ${user.username}'s time in ${args[0]}? **Y**/*N*`);
+		message.channel.send(`Are you sure you want to delete ${username}'s time in ${args[0]}? **Y**/*N*`);
 		message.channel.awaitMessages(m => m.author.id == message.author.id, { max: 1, time: 10000, errors: ["time"] })
 			.then(async collected => {
 				if(collected.first() && collected.first().content.toLowerCase().startsWith("y")) {
 					delete results[args[0]][user.id];
 					await collected.first().delete();
 					await bot.compResults.updateOne({ guildID: message.guild.id }, { $set: { events: results } });
-					return message.channel.send(`Okay, I've deleted ${user.username}'s time from ${args[0]}!`);
+					return message.channel.send(`Okay, I've deleted ${username}'s time from ${args[0]}!`);
 				} else {
 					return message.channel.send("Action cancelled.");
 				}
 			});
 	}
-	message.channel.send(embed);
+
+	// Helper functions
+	function isID(string) {
+		if(typeof string == "string") {
+			if(string.length == 18) {
+				if(parseInt(string)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	function findUser(name) {
+		return message.guild.members.find("displayName", name);
+	}
+
+	function toMinSec(secStr) {
+		let flo;
+		let min;
+		let sec;
+		flo = Number.parseFloat(secStr).toFixed(2);
+		if(flo > 60) {
+			min = Math.floor(flo / 60);
+			sec = Number.parseFloat(flo % 60).toFixed(2);
+			if(sec < 10) {
+				return `${min}:0${sec}`;
+			}
+			return `${min}:${sec}`;
+		}
+		sec = Number.parseFloat(secStr).toFixed(2);
+		return sec;
+	}
 };
 module.exports.config = { name: "manage", aliases: ["manageresults"] };

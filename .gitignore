@@ -70,3 +70,4 @@ typings/
 .eslintrc.json
 guildSettings.json
 stuff.txt
+tests.js

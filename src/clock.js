@@ -5,7 +5,7 @@ module.exports.run = async (bot, message, args, cube) => {
 	let pm = ["+", "-"];
 	let msgArr = [];
 	let scrambles = parseInt(args[0]);
-	scrambles = scrambles ? scrambles > 10 ? 10 : scrambles < 0 ? 1 : scrambles : 1;
+	scrambles = scrambles ? scrambles > 12 ? 12 : scrambles < 0 ? 1 : scrambles : 1;
 
 	for(let x = 0; x < scrambles; x++) {
 		let scramble = [];
