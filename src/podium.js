@@ -10,6 +10,83 @@ module.exports.run = async (bot, message, args, cube) => {
 	if(!results || !results.events) return message.channel.send("No results found in the database for the current competition.");
 	results = results.events;
 
+	let channel = args[0] ? message.mentions.channels.first() ? message.mentions.channels.first() : getChannel(args[0]) ? getChannel(args[0]) : null : message.channel;
+	if(channel != null && channel != undefined) {
+		message.channel.send(`Are you sure you want to post podiums for this competition in \`#${channel.name}\`? Doing so will also delete all results for this competition cycle. **Y**/*N*`).then(msg => msg.delete(10000));
+	} else {
+		return message.channel.send(`Unable to find channel \`#${args[0]}\`.`);
+	}
+	await message.channel.awaitMessages(m => m.author.id === message.author.id, { max: 1, time: 10000, errors: ["time"] })
+		.then(async collected => {
+			if(collected.first() && collected.first().content.toLowerCase().startsWith("y")) {
+				postPodiums();
+			} else {
+				return message.channel.send("Action cancelled.");
+			}
+		});
+
+	async function postPodiums() {
+		let podiums = [];
+
+		let entries;
+		let podium;
+		let event;
+
+		for(let ev in results) {
+			event = results[ev];
+			entries = [];
+			podium = [];
+			if(config[key[ev]] && config[key[ev]].enabled) {
+				let keys = Object.keys(event);
+				for(let i = 0; i < keys.length; i++) entries.push(event[keys[i]]);
+
+				entries.sort((a, b) => a.time - b.time);
+			}
+			if(entries[0]) {
+				podium[0] = `${config[key[ev]].name} **Podium**\n`;
+				if(!entries[0].dnf) {
+					podium[1] = `**1st Place:** <@${entries[0].userID}> with a result of ${toMinSec(entries[0].time)}`;
+				} else {
+					podium[1] = `**1st Place:** <@${entries[0].userID}> with a result of DNF`;
+				}
+				if(entries[1]) {
+					if(!entries[1].dnf) {
+						podium[2] = `**2nd Place:** <@${entries[1].userID}> with a result of ${toMinSec(entries[1].time)}`;
+					} else {
+						podium[2] = `**2nd Place:** <@${entries[1].userID}> with a result of DNF`;
+					}
+					if(entries[2]) {
+						if(!entries[2].dnf) {
+							podium[3] = `**3rd Place:** <@${entries[2].userID}> with a result of ${toMinSec(entries[2].time)}`;
+						} else {
+							podium[3] = `**3rd Place:** <@${entries[2].userID}> with a result of DNF`;
+						}
+					}
+				}
+			}
+			if(podium) podiums.push(podium.join("\n"));
+		}
+		let error = false;
+		if(podiums.length > 0) {
+			for(let i = 0; i < podiums.length; i++) {
+				if(podiums[i]) {
+					await channel.send(podiums[i])
+						// eslint-disable-next-line arrow-body-style
+						.catch(_err => {
+							error = true;
+							return message.channel.send(`Unable to send a message to \`#${channel.name}\`. Please make sure Scrambler has permission to send messages in this channel.`);
+						});
+				}
+			}
+			if(!error) {
+				await bot.compResults.updateOne({ guildID: message.guild.id }, { $unset: { events: {} } });
+				return message.channel.send("Okay, all competition podiums have been posted and results have been deleted from the database.").then(msg => msg.delete(7000));
+			}
+		} else {
+			return message.channel.send("No results to post.").then(msg => msg.delete(7000));
+		}
+	}
+
 	function toMinSec(secStr) {
 		let flo;
 		let min;
@@ -27,67 +104,26 @@ module.exports.run = async (bot, message, args, cube) => {
 		return sec;
 	}
 
-	message.channel.send(`Are you sure you want to post podiums for this competition in this channel? Doing so will also delete all results for this competition cycle. **Y**/*N*`).then(msg => msg.delete(10000));
-	await message.channel.awaitMessages(m => m.author.id == message.author.id, { max: 1, time: 10000, errors: ["time"] })
-		.then(collected => {
-			if(collected.first() && collected.first().content.toLowerCase().startsWith("y")) {
-				let podiums = [];
-
-				let entries;
-				let podium;
-				let event;
-
-				for(let ev in results) {
-					event = results[ev];
-					entries = [];
-					podium = [];
-					if(config[key[ev]] && config[key[ev]].enabled) {
-						let keys = Object.keys(event);
-						for(let i = 0; i < keys.length; i++) entries.push(event[keys[i]]);
-
-						entries.sort((a, b) => a.time - b.time);
-					}
-					// console.log(`entries:\n${entries}`);
-					// console.log(`entries:\n${entries}`);
-					if(entries[0]) {
-						podium[0] = `${config[key[ev]].name} **Podium**\n`;
-						if(!entries[0].dnf) {
-							podium[1] = `**1st Place:** <@${entries[0].userID}> with a result of ${toMinSec(entries[0].time)}`;
-						} else {
-							podium[1] = `**1st Place:** <@${entries[0].userID}> with a result of DNF`;
-						}
-						if(entries[1]) {
-							if(!entries[1].dnf) {
-								podium[2] = `**2nd Place:** <@${entries[1].userID}> with a result of ${toMinSec(entries[1].time)}`;
-							} else {
-								podium[2] = `**2nd Place:** <@${entries[1].userID}> with a result of DNF`;
-							}
-							if(entries[2]) {
-								if(!entries[2].dnf) {
-									podium[3] = `**3rd Place:** <@${entries[2].userID}> with a result of ${toMinSec(entries[2].time)}`;
-								} else {
-									podium[3] = `**3rd Place:** <@${entries[2].userID}> with a result of DNF`;
-								}
-							}
-						}
-					}
-					if(podium) podiums.push(podium.join("\n"));
+	function isID(string) {
+		if(typeof string == "string") {
+			if(string.length == 18) {
+				if(parseInt(string)) {
+					return true;
 				}
-
-				if(podiums.length > 0) {
-					for(let i = 0; i < podiums.length; i++) {
-						if(podiums[i]) {
-							message.channel.send(podiums[i]);
-						}
-					}
-					bot.compResults.updateOne({ guildID: message.guild.id }, { $unset: { events: {} } });
-					return message.channel.send("Okay, all competition podiums have been posted and results have been deleted from the database.").then(msg => msg.delete(7000));
-				} else {
-					return message.channel.send("No results to post.").then(msg => msg.delete(7000));
-				}
-			} else {
-				return message.channel.send("Action cancelled.");
 			}
-		});
+		}
+		return false;
+	}
+
+	function getChannel(name) {
+		if(isID(name)) {
+			return message.guild.channels.get(name);
+		} else {
+			if(message.guild.channels.find(cha => cha.name === name)) {
+				return message.guild.channels.find(cha => cha.name === name);
+			}
+		}
+		return null;
+	}
 };
 module.exports.config = { name: "podium", aliases: ["getpodium", "podiums"] };

@@ -3,7 +3,6 @@ const events = { events: { "2x2": {}, "3x3": {}, "4x4": {}, "5x5": {}, "6x6": {}
 const key = { "2x2": "twox", "3x3": "threex", "4x4": "fourx", "5x5": "fivex", "6x6": "sixx", "7x7": "sevenx", "oh": "oh", "clock": "clockx", "pyra": "pyrax", "mega": "megax", "skewb": "skewbx", "squareone": "squanx", "redi": "redi", "2x2x3": "x2x3", "ivy": "ivy" };
 const aliases = { "2x2": [], "3x3": [], "4x4": [], "5x5": [], "6x6": [], "7x7": [], "oh": ["onehanded", "onehand", "one-handed", "one-hand"], "clock": [], "pyra": ["pyraminx"], "mega": ["megaminx"], "skewb": ["skoob"], "squareone": ["square-1", "sq1", "squareone", "square1", "square_one", "squan", "sq-1"], "redi": ["redicube", "redi-cube"], "2x2x3": [], "ivy": ["ivy-cube", "ivycube"] };
 
-
 module.exports.run = async (bot, message, args, cube) => {
 	if(args[0]) args[0] = args[0].toLowerCase();
 	if(args[1]) args[1] = args[1].toLowerCase();
@@ -12,7 +11,7 @@ module.exports.run = async (bot, message, args, cube) => {
 			.setTitle("Submit Comp Times")
 			.setColor("RANDOM")
 			.setDescription("Usage: \`s!submit <event> <average/mean>\`")
-			.addField("Formatting your time", "The correct format is **MM:SS:dd**. (M = minutes, S = seconds, d = decimal) Your average result should be as precise as possible, ideally with a decimal to the hundredths place. Do not include any +2 penalties. DNF penalties will be registered, however.")
+			.addField("Formatting your time", "The correct format is **MM:SS:dd**. (M = minutes, S = seconds, d = decimal) Your average result should be as precise as possible, ideally with a decimal to the hundredths place. Do not include any +2 penalties. If you DNF a time, you can submit it although it isn't recommended.")
 			.addField("Updating submissions", "You should only submit one time, and that time should be your overall average. You *are* allowed to update your submission as many times as you need in case you made a typo when entering. Your most recent time is the one counted when podiums are posted.")
 			.addField("Documentation", "https://scrambler.gitbook.io/docs/comps/submit"));
 	}
@@ -64,10 +63,6 @@ module.exports.run = async (bot, message, args, cube) => {
 		});
 	}
 
-	// console.log(args[0]);
-	// console.log(event);
-	// console.log(keyified);
-
 	if(!event) return message.channel.send(`Event ${args[0]} is not recognized. Run \`s!events\` to see the correct naming scheme.`);
 
 	let evResults;
@@ -82,13 +77,13 @@ module.exports.run = async (bot, message, args, cube) => {
 		if(result.toLowerCase() == "dnf") dnf = true;
 		obj = {
 			userID: message.author.id,
-			timestamp: `${currentdate.getMonth() + 1}/${currentdate.getDate()}/${currentdate.getFullYear()} @ ${currentdate.getHours()}:${currentdate.getMinutes()}:${currentdate.getSeconds()}`
+			timestamp: `${currentdate.getMonth() + 1}/${currentdate.getDate()}/${currentdate.getFullYear()} at ${currentdate.getHours()}:${currentdate.getMinutes()}:${currentdate.getSeconds()}`
 		};
 		if(!dnf) {
-			if(timeInSeconds(result)) {
+			if(timeInSeconds(result) && timeInSeconds(result) > 0) {
 				obj.time = timeInSeconds(result).toFixed(2);
 			} else {
-				return message.channel.send(`Your submitted result \`${result}\` is invalid. Please enter it again in this format: \`M:SS.ss\` (Make sure you include at least one decimal place!)`);
+				return message.channel.send(`Your submitted result \`${result}\` is invalid. Please enter it in this format: \`M:SS.ss\` with at least two decimal places, and make sure your time is greater than 0!`);
 			}
 		} else {
 			obj.dnf = true;
@@ -100,7 +95,24 @@ module.exports.run = async (bot, message, args, cube) => {
 	}
 
 	await bot.compResults.updateOne({ guildID: message.guild.id }, { $set: { events: results } });
-	if(obj.dnf) return message.channel.send(`Successfully submitted ${args[0]} time of \`DNF\`!`);
-	return message.channel.send(`Successfully submitted a ${event.name} time of \`${args[1]}\`!`);
+	if(obj.dnf) return message.channel.send(`Successfully submitted ${event.name} time of \`DNF\`!`);
+	return message.channel.send(`Successfully submitted a ${event.name} time of \`${obj.time < 60 ? obj.time : toMinSec(obj.time)}\`!`);
+
+	function toMinSec(secStr) {
+		let flo;
+		let min;
+		let sec;
+		flo = Number.parseFloat(secStr).toFixed(2);
+		if(flo > 60) {
+			min = Math.floor(flo / 60);
+			sec = Number.parseFloat(flo % 60).toFixed(2);
+			if(sec < 10) {
+				return `${min}:0${sec}`;
+			}
+			return `${min}:${sec}`;
+		}
+		sec = Number.parseFloat(secStr).toFixed(2);
+		return sec;
+	}
 };
 module.exports.config = { name: "submit", aliases: ["submittime"] };
