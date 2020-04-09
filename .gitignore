@@ -1,13 +1,5 @@
-cmd.bat
-prefixes.json
+ref/
 settings.json
-restricted.json
-mongoprefix.js
-mongorestrict.js
-mongorestricted.js
-test.js
-test2.js
-crap/
 
 # Logs
 logs

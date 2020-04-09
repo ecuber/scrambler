@@ -17,8 +17,9 @@
   },
   "homepage": "https://github.com/ecuber/scrambler#readme",
   "dependencies": {
-    "discord.js": "^11.4.2",
-    "mongodb": "^3.1.13",
+    "discord.js": "github:discordjs/discord.js",
+    "klasa": "github:dirigeants/klasa#master",
+    "mongodb": "^3.5.5",
     "scrambo": "^0.3.0"
   }
 }
