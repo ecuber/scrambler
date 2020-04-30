@@ -6,7 +6,7 @@ module.exports = class extends Command {
         super(...args, {
             name: '7x7',
             runIn: ['text'],
-            cooldown: 12,
+            cooldown: 5,
             aliases: ["seven-by-seven", "7x7x7"],
             usage: "[Count:number]", 
             description: "Generates 1-5 7x7 scrambles."
@@ -37,7 +37,7 @@ module.exports = class extends Command {
         }
         let scrambleStr = "";
         for (let i = 0; i < msgArr.length; i++)
-            scrambleStr += `${i + 1}: ${msgArr[i]}\n\n`;
+            scrambleStr += `${scrambles > 1 ? `${i + 1}: ` : ``}${msgArr[i]}\n\n`;
         return message.send(scrambleStr);
     }
 

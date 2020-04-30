@@ -1,5 +1,6 @@
 const { Command, util: { isFunction } } = require('klasa');
 const has = (obj, key) => Object.prototype.hasOwnProperty.call(obj, key);
+const Discord = require("discord.js");
 
 module.exports = class extends Command {
 
@@ -21,25 +22,52 @@ module.exports = class extends Command {
 
 	async run(message, [command]) {
 		if (command) {
-			const info = [
-				`**${command.name}**`,
-				isFunction(command.description) ? command.description(message.language) : command.description,
-				message.language.get('COMMAND_HELP_USAGE', command.usage.fullUsage(message)),
-				message.language.get('COMMAND_HELP_EXTENDED'),
-				isFunction(command.extendedHelp) ? command.extendedHelp(message.language) : command.extendedHelp
-			].join('\n');
-			return message.sendMessage(info, { code: 'asciidoc' });
+			const info = new Discord.MessageEmbed()
+				.setTitle(command.name)
+				.setColor("RANDOM")
+				.setFooter(this.client.user.username, this.client.user.displayAvatarURL())
+				.setTimestamp()
+				.addField(`**Description:**`, `${isFunction(command.description) ? command.description(message.language) : command.description}`)
+				.addField("**Usage**", command.usage.fullUsage(message))
+				.addField("Extended Help", isFunction(command.extendedHelp) ? command.extendedHelp(message.language) : command.extendedHelp)
+				
+			return message.sendMessage(info);
 		}
 		const help = await this.buildHelp(message);
-		const categories = Object.keys(help);
-		const helpMessage = [];
-		for (let cat = 0; cat < categories.length; cat++) {
-			helpMessage.push(`**${categories[cat]} Commands**:`);
-			const subCategories = Object.keys(help[categories[cat]]);
-			for (let subCat = 0; subCat < subCategories.length; subCat++) helpMessage.push(`${subCategories[subCat]}`, `${help[categories[cat]][subCategories[subCat]].join('\n')}\n`);
+		
+		let keys = Object.keys(help);
+
+		let helpMessage = new Discord.MessageEmbed()
+			.setColor("RANDOM")
+			.setTitle("**Comands**")
+			.setDescription("For more information on any command, use *s!help <command name>*")
+			.setFooter(this.client.user.username, this.client.user.displayAvatarURL())
+			.setTimestamp();
+
+		let adminHelp = new Discord.MessageEmbed()
+			.setColor("RANDOM")
+			.setTitle("**Admin Commands**")
+			.setDescription("For more information on any command, use *s!help <command name>*")
+			.setFooter(this.client.user.username, this.client.user.displayAvatarURL())
+			.setTimestamp();
+
+		let admin = RegExp(/\badmin\b/gi).test(keys[0]);
+		if (admin) {
+			const subCategories = Object.keys(help[keys[0]]); // help.Admin keys     General						
+			for (let subCat = 0; subCat < subCategories.length; subCat++) adminHelp.addField(`${subCategories[subCat]}`, `${help[keys[0]][subCategories[subCat]].join('\n')}\n`);
+			
 		}
 
-		return message.send(helpMessage, { split: { char: '\u200b' } });
+		helpMessage.setTitle(`**Commands**:`);
+		if (admin) {
+			delete help.Admin;
+		}
+		keys = Object.keys(help);
+		for (let i = 0; i < keys.length; i++) helpMessage.addField(`${keys[i]}`, help[keys[i]][Object.keys(help[keys[i]])].join("\n"));
+
+		message.sendMessage(helpMessage);
+		return admin ? message.author.sendMessage(adminHelp) : null;
+		
 	}
 
 	async buildHelp(message) {

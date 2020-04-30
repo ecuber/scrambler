@@ -61,3 +61,6 @@ typings/
 .env
 .eslintrc.json
 guildSettings.json
+scrambler.code-workspace
+util/ok.json
+util/test.js

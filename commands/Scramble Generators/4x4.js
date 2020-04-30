@@ -1,4 +1,14 @@
 const { Command } = require('klasa');
+const orient = () => {
+    let rotations = "";
+    let moves = ["x", "y", "z"];
+    for (let i = 0; i < (Math.floor(Math.random() * 2 + 1)); i++) {
+        let index = Math.floor(Math.random() * moves.length);
+        rotations += `${moves[index]}${Math.random > 0.5 ? "" : "\'"} `;
+        moves.splice(index, 1);
+    }
+        return rotations;
+}
 
 module.exports = class extends Command {
 
@@ -6,18 +16,20 @@ module.exports = class extends Command {
         super(...args, {
             name: '4x4',
             runIn: ['text'],
-            cooldown: 5,
+            cooldown: 3,
             aliases: ["four-by-four", "4x4x4"],
-            usage: "[Count:number]", 
+            usage: "[bld] [Count:number]", 
+            usageDelim: " ",
             description: "Generates 1-12 4x4 scrambles."
         });
     }
 
     async run(message, [...params]) {
         // console.log(params);
-        let scrambles = parseInt(params[0]);
+        let bld = RegExp(/\bbld\b/gi).test(params[0]);
+        let scrambles = parseInt(params[1]);
         scrambles = scrambles ? scrambles > 12 ? 12 : scrambles < 0 ? 1 : scrambles : 1;
-        // console.log(cube);
+
         let msgArr = [];
         for(let x = 0; x < scrambles; x++) {
             let wides = ["Rw", "Uw", "Fw"];
@@ -37,7 +49,7 @@ module.exports = class extends Command {
         }
         let scrambleStr = "";
         for (let i = 0; i < msgArr.length; i++)
-            scrambleStr += `${i + 1}: ${msgArr[i]}\n\n`;
+            scrambleStr += `${scrambles > 1 ? `${i + 1}: ` : ``}${msgArr[i]} ${bld ? orient() : ""}\n\n`;
         return message.send(scrambleStr);
     }
 
