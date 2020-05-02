@@ -1,13 +1,12 @@
-const { Command } = require('klasa');
+const { Command } = require("klasa");
 const Scrambo = require("scrambo");
 const cube = new Scrambo();
 
 module.exports = class extends Command {
-
     constructor(...args) {
         super(...args, {
-            name: 'sq1',
-            runIn: ['text'],
+            name: "sq1",
+            runIn: ["text"],
             cooldown: 3,
             aliases: ["squan", "square-one", "square-1"],
             usage: "[Count:number]",
@@ -28,6 +27,4 @@ module.exports = class extends Command {
             scrambleStr += `${scrambles > 1 ? `${i + 1}: ` : ``}${scramble[i]} \n\n`;
         return message.send(scrambleStr);
     }
-
-
 };

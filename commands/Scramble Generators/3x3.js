@@ -1,25 +1,24 @@
-const { Command } = require('klasa');
+const { Command } = require("klasa");
 const Scrambo = require("scrambo");
 const cube = new Scrambo();
 const orient = () => {
     let rotations = "";
     let moves = ["Rw", "Uw", "Fw"];
-    for (let i = 0; i < (Math.floor(Math.random() * 2 + 1)); i++) {
+    for (let i = 0; i < Math.floor(Math.random() * 2 + 1); i++) {
         let index = Math.floor(Math.random() * moves.length);
         rotations += `${moves[index]}${Math.random > 0.5 ? "" : "\'"} `;
         moves.splice(index, 1);
     }
-        return rotations;
-}
+    return rotations;
+};
 
 module.exports = class extends Command {
-
     constructor(...args) {
         super(...args, {
-            name: '3x3',
-            runIn: ['text'],
+            name: "3x3",
+            runIn: ["text"],
             cooldown: 3,
-            aliases: ["3x3x3"],
+            aliases: ["three-by-three", "3x3x3"],
             usage: "[bld|fmc] [Count:number]",
             usageDelim: " ",
             description: "Generates 1-12 3x3, 3x3 BLD, or 3x3 FMC scrambles.",
@@ -43,5 +42,4 @@ module.exports = class extends Command {
         }
         return message.send(scrambleStr);
     }
-    
 };

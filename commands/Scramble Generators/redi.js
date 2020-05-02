@@ -1,14 +1,13 @@
-const { Command } = require('klasa');
+const { Command } = require("klasa");
 
 module.exports = class extends Command {
-
     constructor(...args) {
         super(...args, {
-            name: 'redi',
-            runIn: ['text'],
+            name: "redi",
+            runIn: ["text"],
             cooldown: 3,
             aliases: ["redi-cube"],
-            usage: "[Count:number]", 
+            usage: "[Count:number]",
             description: "Generates 1-12 redi cube scrambles."
         });
     }
@@ -18,8 +17,8 @@ module.exports = class extends Command {
         let scrambles = parseInt(params[0]);
         scrambles = scrambles ? scrambles > 12 ? 12 : scrambles < 0 ? 1 : scrambles : 1;
         let msgArr = [];
-        
-    	for(let x = 0; x < scrambles; x++) {
+
+        for (let x = 0; x < scrambles; x++) {
             let moves = ["R", "L"];
             let scramble = [];
             let move;
@@ -39,5 +38,4 @@ module.exports = class extends Command {
             scrambleStr += `${scrambles > 1 ? `${i + 1}: ` : ``}${msgArr[i]}\n\n`;
         return message.send(scrambleStr);
     }
-
 };
