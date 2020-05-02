@@ -20,7 +20,8 @@ module.exports = class extends Command {
             aliases: ["five-by-five", "5x5x5"],
             usage: "[bld] [Count:number]", 
             usageDelim: " ",
-            description: "Generates 1-8 5x5 scrambles."
+            description: "Generates 1-8 5x5/5BLD scrambles.",
+            extendedHelp: "e.g. For 5 5BLD scrambles, do s!5x5 bld 5"
         });
     }
 

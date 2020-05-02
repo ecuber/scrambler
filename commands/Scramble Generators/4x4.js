@@ -20,7 +20,8 @@ module.exports = class extends Command {
             aliases: ["four-by-four", "4x4x4"],
             usage: "[bld] [Count:number]", 
             usageDelim: " ",
-            description: "Generates 1-12 4x4 scrambles."
+            description: "Generates 1-12 4x4/4BLD scrambles.",
+            extendedHelp: "e.g. For 5 4BLD scrambles, do s!4x4 bld 5"
         });
     }
 

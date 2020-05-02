@@ -19,11 +19,11 @@ module.exports = class extends Command {
             name: '3x3',
             runIn: ['text'],
             cooldown: 3,
-            aliases: ["three-by-three", "3x3x3"],
-            usage: "[bld] [Count:number]",
+            aliases: ["3x3x3"],
+            usage: "[bld|fmc] [Count:number]",
             usageDelim: " ",
-            description: "Generates 1-12 3x3 scrambles.",
-            category: "Scramble Generators"
+            description: "Generates 1-12 3x3, 3x3 BLD, or 3x3 FMC scrambles.",
+            extendedHelp: "e.g. For 5 FMC scrambles, do s!3x3 fmc 5"
         });
     }
 
@@ -31,14 +31,15 @@ module.exports = class extends Command {
     async run(message, [...params]) {
         // console.log(params);
         let bld = RegExp(/\bbld\b/gi).test(params[0]);
+        let fmc = RegExp(/\bfmc\b/gi).test(params[0]);
         let scrambles = parseInt(params[1]);
         scrambles = scrambles ? scrambles > 12 ? 12 : scrambles < 0 ? undefined : scrambles : undefined;
         // console.log(cube);
-        let scramble = cube.type("333").length(Math.floor(Math.random() * 3) + 18).get(scrambles);
+        let scramble = cube.type("333").length(Math.floor(Math.random() * 2) + 19).get(scrambles);
         let scrambleStr = "";
 
         for (let i = 0; i < scramble.length; i++) {
-            scrambleStr += `${scrambles > 1 ? `${i + 1}: ` : ``}${scramble[i]} ${bld ? orient() : ""}\n\n`;
+            scrambleStr += `${scrambles > 1 ? `${i + 1}: ` : ``}${fmc ? "R\' U\' F " : ""}${scramble[i]} ${fmc ? "R\' U\' F " : ""}${bld ? orient() : ""}\n\n`;
         }
         return message.send(scrambleStr);
     }

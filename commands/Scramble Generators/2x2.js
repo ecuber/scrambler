@@ -22,8 +22,8 @@ module.exports = class extends Command {
             aliases: ["two-by-two", "2x2x2"],
             usage: "[bld] [Count:number]", 
             usageDelim: " ",
-            description: "Generates 1-12 2x2 scrambles.",
-            category: "Scramble Generators"
+            description: "Generates 1-12 2x2/2BLD scrambles.",
+            extendedHelp: "2x2 BLD is also available. (e.g. For 5 2x2 BLD scrambles, do s!2x2 bld 5)"
         });
     }
 
