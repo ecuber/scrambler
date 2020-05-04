@@ -2,7 +2,7 @@ const { Command } = require("klasa");
 const orient = () => {
     let rotations = "";
     let moves = ["3Rw", "3Uw", "3Fw"];
-    for (let i = 0; i < Math.floor(Math.random() * 2 + 1); i++) {
+    for (let i = 0; i < Math.floor(Math.random() * 3); i++) {
         let index = Math.floor(Math.random() * moves.length);
         rotations += `${moves[index]}${Math.random > 0.5 ? "" : "\'"} `;
         moves.splice(index, 1);
