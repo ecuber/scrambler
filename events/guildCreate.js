@@ -8,7 +8,7 @@ module.exports = class extends Event {
             guild.leave();
             this.client.emit("warn", `Blacklisted guild detected: ${guild.name} [${guild.id}]`);
         }
-        console.log(`Joined guild ${guild.name} [${guild.id}]`);
-        this.client.user.setActivity(`s!updates | Scrambling cubes for ${bot.guilds.size} servers!`);
+        console.log(`Joined guild: ${guild.name} [${guild.id}]`);
+        this.client.user.setActivity(`s!updates | Scrambling cubes for ${this.client.guilds.cache.size} servers!`);
     }
 };

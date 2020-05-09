@@ -14,7 +14,7 @@ const formatMili = (miliseconds) => {
 module.exports = class extends Command {
     constructor(...args) {
         super(...args, {
-            aliases: ["about"],
+            aliases: ["about", "support"],
             guarded: true,
             description: language => language.get("COMMAND_INFO_DESCRIPTION")
         });

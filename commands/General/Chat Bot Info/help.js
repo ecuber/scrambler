@@ -40,7 +40,7 @@ module.exports = class extends Command {
         let helpMessage = new Discord.MessageEmbed()
             .setColor("RANDOM")
             .setTitle("**Comands**")
-            .setDescription("For more information on any command, use *s!help <command name>*")
+            .setDescription("For more information on any command, use *s!help <command name>*. If you need more help operating the bot, join our support server linked **[here](https://discord.gg/bzKHzXc)**.")
             .setFooter(this.client.user.username, this.client.user.displayAvatarURL())
             .setTimestamp();
 
@@ -64,6 +64,8 @@ module.exports = class extends Command {
         helpMessage.setTitle(`**Commands**:`);
 
         keys = Object.keys(help);
+        keys.sort(); // alphabetizes categories (general, scramble generators, settings)
+
         for (let i = 0; i < keys.length; i++) helpMessage.addField(`${keys[i]}`, help[keys[i]][Object.keys(help[keys[i]])].join("\n"));
 
         return message.sendMessage(helpMessage);

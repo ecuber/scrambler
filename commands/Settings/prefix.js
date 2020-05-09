@@ -18,7 +18,7 @@ module.exports = class extends Command {
     async run(message, [...params]) {
         // console.log(params);
         let reset = RegExp(/\breset\b/gi).test(params[0]);
-        if(params[0]) {
+        if (params[0]) {
             await message.guild.settings.update("prefix", reset ? "s!" : params[0]);
             return message.send(`Successfully ${reset ? "reset" : "updated"} your prefix to \`${message.guild.settings.prefix}\``);
         } else {
