@@ -16,13 +16,12 @@ client.on("ready", async () => {
     client.user.setActivity(`s!updates | Scrambling cubes for ${client.guilds.cache.size} servers.`);
 
     client.gateways.guilds.schema
-        .add("ignoredChannels", "TextChannel", { array: true, default: [] })
-        .add("comp", folder => folder
-            .add("enabled", "boolean", { default: true })
-            .add("disabledEvents", "string", { array: true, default: ["redi", "ivy", "4bld", "5bld", "2bld"] })
-            .add("dnfCanPodium", "boolean", { default: true }))
-        .add("results", "any", { default: {} });
+        .add("ignoredChannels", "string", { array: true });
+    // .add("comp", folder => folder
+    //     .add("enabled", "boolean", { default: true })
+    //     .add("disabledEvents", "string", { array: true, default: ["redi", "ivy", "4bld", "5bld", "2bld"] })
+    //     .add("dnfCanPodium", "boolean", { default: false }))
+    // .add("results", "any", { default: {} });
 });
-
 
 client.login(settings.token);
