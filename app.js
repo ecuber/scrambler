@@ -9,19 +9,19 @@ const client = new Client({
     prefixCaseInsensitive: true,
     providers: { default: "mongodb" },
     // eslint-disable-next-line no-shadow
-    readyMessage: (client) => `Scrambler is ready to go! Now serving ${client.guilds.cache.size} guilds.`
+    readyMessage: client => `Scrambler is ready to go! Now serving ${client.guilds.cache.size} guilds.`
 });
 
 client.on("ready", async () => {
     client.user.setActivity(`s!updates | Scrambling cubes for ${client.guilds.cache.size} servers.`);
-
-    client.gateways.guilds.schema
-        .add("ignoredChannels", "string", { array: true });
-    // .add("comp", folder => folder
-    //     .add("enabled", "boolean", { default: true })
-    //     .add("disabledEvents", "string", { array: true, default: ["redi", "ivy", "4bld", "5bld", "2bld"] })
-    //     .add("dnfCanPodium", "boolean", { default: false }))
-    // .add("results", "any", { default: {} });
 });
+
+client.gateways.guilds.schema
+    .add("ignored", "textchannel", { array: true })
+    .add("comp", folder => folder
+        .add("enabled", "boolean", { default: true })
+        .add("disabledEvents", "string", { array: true, default: ["redi", "ivy", "4bld", "5bld", "2bld"] })
+        .add("dnfCanPodium", "boolean", { default: false }))
+    .add("results", "any", { default: {} });
 
 client.login(settings.token);

@@ -10,6 +10,7 @@ module.exports = class extends Inhibitor {
     }
 
     async run(message, command) {
-        // return command && message.guild.settings.get("ignoredChannels").indexOf(message.channel.id) != -1;
+        let ignored = message.guild.settings.ignored;
+        return command != "ignore" && ignored && ignored.indexOf(message.channel.id) != -1;
     }
 };

@@ -64,3 +64,5 @@ guildSettings.json
 scrambler.code-workspace
 util/ok.json
 util/test.js
+.vscode/launch.json
+commands/Settings/test.js
