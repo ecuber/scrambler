@@ -20,8 +20,10 @@ client.gateways.guilds.schema
     .add("ignored", "textchannel", { array: true })
     .add("comp", folder => folder
         .add("enabled", "boolean", { default: true })
-        .add("disabledEvents", "string", { array: true, default: ["redi", "ivy", "4bld", "5bld", "2bld"] })
-        .add("dnfCanPodium", "boolean", { default: false }))
-    .add("results", "any", { default: {} });
+        .add("disabledEvents", "string", { array: true, default: ["2x2x3", "ivy", "4bld", "5bld", "2bld"] }))
+    .add("results", "any", { default: {} })
+    .add("modRoles", "role", { array: true });
+
+Client.defaultPermissionLevels.add(5, ({ guild, member }) => guild && guild.settings.modRoles.filter(role => member._roles.includes(role).length > 0));
 
 client.login(settings.token);

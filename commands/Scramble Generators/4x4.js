@@ -17,7 +17,7 @@ module.exports = class extends Command {
 
     async run(message, [...params]) {
         // console.log(params);
-        let bld = RegExp(/\bbld\b/gi).test(params[0]);
+        let bld = params[0] === "bld";
         let scrambles = parseInt(params[1]);
         scrambles = scrambles ? scrambles > 12 ? 12 : scrambles < 0 ? 1 : scrambles : 1;
 

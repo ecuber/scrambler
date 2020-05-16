@@ -1,36 +1,47 @@
 const { Command } = require("klasa");
 const channelMention = arr => arr.map(id => `<#${id}>`);
+const buildStr = (ignored, unignored) => {
+    let on, off;
+    console.log(ignored);
+    console.log(unignored);
+    if (ignored.length > 0)
+        on = `will ignore commands in ${ignored.join(", ")}`;
+    if (unignored.length > 0)
+        off = `will no longer ignore commands in ${unignored.join(", ")}`;
+    return `Scrambler${on ? ` ${on}` : ""}${on && off ? " and" : ""}${off ? ` ${off}` : ""}.`;
+};
 
 module.exports = class extends Command {
     constructor(...args) {
         super(...args, {
             name: "ignore",
             runIn: ["text"],
-            permissionLevel: 6,
+            permissionLevel: 5,
             cooldown: 3,
             aliases: [],
             usage: "[reset|all|view] [channels:channel] [...]",
             usageDelim: " ",
             description: "Configures channel ignore settings for Scrambler.",
-            extendedHelp: "Mentioning a channel will toggle its ignore status. (i.e. active channels will be ignored, ignored channels will be reactivated.) Additionally, you can have scrambler ignore all channels except a list of channels with \`s!ignore all #channel1 #channel2\`",
+            extendedHelp: "See full documentation on this command here: https://scrambler.gitbook.io/docs/util/ignore",
             category: "Config"
         });
     }
 
     async run(message, [...params]) {
-        let reset = RegExp(/\breset\b/gi).test(params[0]);
-        let all = RegExp(/\ball\b/gi).test(params[0]);
-        let view = RegExp(/\bview\b/gi).test(params[0]);
-        let currentChannels = message.guild.settings.ignored;
+        const reset = params[0] === "reset";
+        const all = params[0] === "all";
+        const view = params[0] === "view";
+        const currentChannels = message.guild.settings.ignored;
         let channels = [];
         let n = 0;
+
         if (currentChannels) {
             n = currentChannels.length;
         }
 
         if (view) {
             if (n > 0) {
-                return message.send(`Scrambler is currently ignoring commands in the following channels: \n-${currentChannels.map(c => `<#${c}>`).join("\n- ")}`);
+                return message.send(`Scrambler is currently ignoring commands in the following channels: ${currentChannels.map(c => `<#${c}>`).join(", ")}`);
             } else {
                 return message.send(`Scrambler is not ignoring any channels.`);
             }
@@ -55,19 +66,16 @@ module.exports = class extends Command {
             let ignored = [];
             let unignored = [];
             for (let i = 1; i < params.length; i++) {
-                let channelID = params[i].id;
-                if (currentChannels && currentChannels.indexOf(channelID) != -1) {
-                    unignored.push(`<#${channelID}>`);
+                if (currentChannels && currentChannels.indexOf(params[i]) != -1) {
+                    unignored.push(params[i]);
                 } else {
-                    ignored.push(`<#${channelID}>`);
+                    ignored.push(params[i]);
                 }
-                await message.guild.settings.update("ignored", channelID, message.guild);
+                await message.guild.settings.update("ignored", params[i], message.guild);
             }
-            let i = ignored.length;
-            let u = unignored.length;
-            return message.send(`Scrambler will ${i > 0 ? `ignore commands in ${ignored.join(", ")}` : ""}${i > 0 && u > 0 ? " and " : u > 0 ? "" : "."}${u > 0 ? `no longer ignore commands in ${unignored.join(", ")}.` : ""}`);
+            return message.send(buildStr(unignored, ignored));
         } else {
-            return message.send(`Scrambler is currently ignoring commands in \`${n}\` channels. Please mention a channel to toggle it.`);
+            return message.send(`Scrambler is currently ignoring commands in \`${n}\` channels. *Please mention a channel to toggle it.*`);
         }
     }
 };
