@@ -27,6 +27,9 @@
         "pyraminx",
         "pyram"
     ],
+    "mega": [
+        "megaminx"
+    ],
     "skewb": [],
     "sq1": [
         "squan"

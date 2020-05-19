@@ -1,5 +1,6 @@
 const { Command } = require("klasa");
 const { orient } = require("../../util/orient.js");
+const cube = require("scrambler-util");
 
 module.exports = class extends Command {
     constructor(...args) {
@@ -16,28 +17,10 @@ module.exports = class extends Command {
     }
 
     async run(message, [...params]) {
-        // console.log(params);
         let bld = params[0] === "bld";
         let scrambles = parseInt(params[1]);
         scrambles = scrambles ? scrambles > 8 ? 8 : scrambles < 0 ? 1 : scrambles : 1;
-
-        let msgArr = [];
-        for (let x = 0; x < scrambles; x++) {
-            let wides = ["Rw", "Uw", "Lw", "Dw", "Fw", "Bw"];
-            let nonWides = ["R", "U", "L", "D", "F", "B"];
-            let scramble = [];
-            let i = 0;
-            while (scramble.length < 60) {
-                let move = Math.random() > 0.3 ? nonWides[Math.floor(Math.random() * nonWides.length)] : wides[Math.floor(Math.random() * wides.length)];
-                if (i > 0 && (scramble[i - 1] === move)) {
-                    continue;
-                } else {
-                    scramble.push(move);
-                    i++;
-                }
-            }
-            msgArr.push(scramble.map(index => Math.random() < 0.5 ? index += "2" : index += "\'").join(" "));
-        }
+        let msgArr = cube("555", scrambles);
         let scrambleStr = "";
         for (let i = 0; i < msgArr.length; i++)
             scrambleStr += `${scrambles > 1 ? `${i + 1}: ` : ``}${msgArr[i]} ${bld ? orient("555") : ""}\n\n`;

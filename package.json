@@ -19,7 +19,7 @@
   "dependencies": {
     "discord.js": "github:discordjs/discord.js#master",
     "klasa": "github:dirigeants/klasa",
-    "mongodb": "^3.5.5",
-    "scrambo": "^0.3.0"
+    "mongodb": "^3.5.7",
+    "scrambler-util": "^0.1.4"
   }
 }

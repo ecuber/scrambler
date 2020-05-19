@@ -1,6 +1,5 @@
 const { Command } = require("klasa");
-const Scrambo = require("scrambo");
-const cube = new Scrambo();
+const cube = require("scrambler-util");
 const { orient } = require("../../util/orient.js");
 
 module.exports = class extends Command {
@@ -18,15 +17,11 @@ module.exports = class extends Command {
     }
 
     async run(message, [...params]) {
-        // console.log(params);
         let bld = params[0] === "bld";
         let scrambles = parseInt(params[1]);
         scrambles = scrambles ? scrambles > 12 ? 12 : scrambles < 0 ? undefined : scrambles : undefined;
-
-        let scramble = cube.type("222").length(Math.floor(Math.random() * 3) + 10).get(scrambles);
+        let scramble = cube("222", scrambles);
         let scrambleStr = "";
-
-        // console.log(`bruh ${orient("222")}`);
         for (let i = 0; i < scramble.length; i++)
             scrambleStr += `${scrambles > 1 ? `${i + 1}: ` : ``}${scramble[i]} ${bld ? orient("222") : ""}\n\n`;
         return message.send(scrambleStr);
