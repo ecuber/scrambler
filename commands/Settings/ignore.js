@@ -2,8 +2,6 @@ const { Command } = require("klasa");
 const channelMention = arr => arr.map(id => `<#${id}>`);
 const buildStr = (ignored, unignored) => {
     let on, off;
-    console.log(ignored);
-    console.log(unignored);
     if (ignored.length > 0)
         on = `will ignore commands in ${ignored.join(", ")}`;
     if (unignored.length > 0)
@@ -27,49 +25,63 @@ module.exports = class extends Command {
         });
     }
 
-    async run(message, [...params]) {
-        const reset = params[0] === "reset";
-        const all = params[0] === "all";
-        const view = params[0] === "view";
-        const currentChannels = message.guild.settings.ignored;
-        let channels = [];
-        let n = 0;
+    async run(message, [type, ...params]) {
+        let info = {
+            currentChannels: message.guild.settings.ignored,
+            channels: [],
+            n: 0
+        };
+        if (info.currentChannels)
+            info.n = info.currentChannels.length;
+        if (type)
+            return this[type](message, info, params);
+        return this.other(message, info, params);
+    }
 
-        if (currentChannels) {
-            n = currentChannels.length;
+    async view(message, { currentChannels, n }, params) {
+        if (n > 0) {
+            return message.send(`Scrambler is currently ignoring commands in the following channels: ${currentChannels.map(c => `<#${c}>`).join(", ")}`);
+        } else {
+            return message.send(`Scrambler is not ignoring any channels.`);
         }
+    }
 
-        if (view) {
-            if (n > 0) {
-                return message.send(`Scrambler is currently ignoring commands in the following channels: ${currentChannels.map(c => `<#${c}>`).join(", ")}`);
+    async reset(message, info, params) {
+        await message.prompt("Are you sure you want to reset channel restrictions? Respond **Y**/n", 5000).then(async response => {
+            if (response && response.content.toLowerCase() === "y") {
+                await message.guild.settings.reset("ignored");
+                return message.send("Reset all channel restrictions.");
             } else {
-                return message.send(`Scrambler is not ignoring any channels.`);
+                return message.send("Cancelled.");
             }
-        } else if (reset || all) {
-            await message.guild.settings.reset("ignored");
-            if (all) {
-                if (params[1] != null) {
-                    for (let i = 1; i < params.length; i++) {
-                        channels.push(params[i].id);
-                    }
-                }
-                for (let [id, channel] of message.guild.channels.cache) {
-                    if (channel.type === "text" && channels.indexOf(id) == -1) {
-                        await message.guild.settings.update("ignored", id, message.guild);
-                    }
-                }
-                channels = channelMention(channels);
-                return message.send(`Scrambler will ignore commands in all channels${channels.length > 0 ? ` with the exception of ${channels.join(", ")}` : "."}`);
+        });
+    }
+
+    async all(message, { channels }, params) {
+        await message.guild.settings.reset("ignored");
+        if (params[0] != null) {
+            for (let i = 0; i < params.length; i++) {
+                channels.push(params[i].id);
             }
-            return message.send("Reset all channel restrictions.");
-        } else if (params[1]) {
+        }
+        for (let [id, channel] of message.guild.channels.cache) {
+            if (channel.type === "text" && !channels.includes(id)) {
+                await message.guild.settings.update("ignored", id, message.guild);
+            }
+        }
+        channels = channelMention(channels);
+        return message.send(`Scrambler will ignore commands in all channels${channels.length > 0 ? ` with the exception of ${channels.join(", ")}` : "."}`);
+    }
+
+    async other(message, { currentChannels, n }, params) {
+        if (params[0]) {
             let ignored = [];
             let unignored = [];
-            for (let i = 1; i < params.length; i++) {
-                if (currentChannels && currentChannels.indexOf(params[i]) != -1) {
-                    unignored.push(params[i]);
-                } else {
+            for (let i = 0; i < params.length; i++) {
+                if (currentChannels && currentChannels.includes(params[i].id)) {
                     ignored.push(params[i]);
+                } else {
+                    unignored.push(params[i]);
                 }
                 await message.guild.settings.update("ignored", params[i], message.guild);
             }

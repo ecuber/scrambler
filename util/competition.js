@@ -63,6 +63,17 @@ module.exports = {
     },
 
     /**
+     * Returns the formatted & capitalized name of an event
+     * @param {string} event An event name or alias
+     * @returns {string} Formatted name
+     */
+    getName(event) {
+        if (events[getEvent(event)])
+            return events[getEvent(event)].name;
+        throw new Error(`Unrecognized event: ${event}`);
+    },
+
+    /**
      * Returns the number of scrambles for the specified event.
      * @param {string} event An event name or alias
      * @returns {Integer} Number of scrambles
@@ -82,5 +93,23 @@ module.exports = {
      */
     getScrambles(event, count = this.countScrambles(event), args = null) {
         return cube(event, count, args);
+    },
+
+    /**
+     * Formats time from seconds to MM:SS.ss if necessary,
+     * otherwise rounds to 3 decimal places.
+     * @param {float} time A time in seconds
+     * @returns {string} Formatted time string
+     */
+    formatTime(time) {
+        if (time) {
+            if (time > 60) {
+                let m = Math.floor(time / 60);
+                let s = (time % 60).toFixed(2);
+                return `${m}:${s}`;
+            } else {
+                return parseFloat(time).toFixed(2);
+            }
+        }
     }
 };
