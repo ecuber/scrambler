@@ -5,7 +5,7 @@ module.exports = class extends Command {
         super(...args, {
             name: "prefix",
             runIn: ["text"],
-            permissionLevel: 6,
+            permissionLevel: 5,
             cooldown: 3,
             aliases: [],
             usage: "[reset|Prefix:String]",
@@ -16,7 +16,6 @@ module.exports = class extends Command {
     }
 
     async run(message, [...params]) {
-        // console.log(params);
         const reset = params[0] === "reset";
         if (params[0]) {
             await message.guild.settings.update("prefix", reset ? "s!" : params[0]);
