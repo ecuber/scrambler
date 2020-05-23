@@ -1,7 +1,6 @@
 const { Command, util: { isFunction } } = require("klasa");
 const has = (obj, key) => Object.prototype.hasOwnProperty.call(obj, key);
 const Discord = require("discord.js");
-const settings = require("../../../settings.json");
 
 module.exports = class extends Command {
     constructor(...args) {

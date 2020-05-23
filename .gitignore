@@ -66,3 +66,4 @@ util/ok.json
 util/test.js
 .vscode/launch.json
 commands/Settings/test.js
+scramblerdev.code-workspace
