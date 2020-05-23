@@ -9,8 +9,8 @@ const buildStr = (enabled, disabled, str1, str2) => {
         off = `${str2} ${disabled.join(", ")}`;
     return `Scrambler has${on ? ` ${on}` : ""}${on && off ? " and" : ""}${off ? ` ${off}` : ""}.`;
 };
-const isRole = (guild, id) => guild.roles.cache.get(id) != null;
-const isUser = (guild, id) => guild.members.cache.get(id) != null;
+const isRole = (guild, id) => guild.roles.cache.get(id) != undefined;
+const isUser = (guild, id) => guild.members.cache.get(id) != undefined;
 
 module.exports = class extends Command {
     constructor(...args) {
@@ -21,7 +21,7 @@ module.exports = class extends Command {
             cooldown: 3,
             aliases: [],
             // TODO: When changing an event's scramble count, only takes int parameter when it's an alias of an event.
-            usage: "<view|enable|disable|events|mods|ban|reset> [reset|event:name|count:int|user:role|user:user] [...]",
+            usage: "<view|enable|disable|events|mods|ban|reset> [mod:role|user:user|event:name|reset] [...]",
             usageDelim: " ",
             description: "Configures Scrambler permissions and competitions.",
             category: "Config",

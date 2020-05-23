@@ -1,6 +1,6 @@
 const { Argument } = require("klasa");
 const getFloat = string => [...string].filter(char => char == "." || !isNaN(parseInt(char))).length == string.length ? parseFloat(string) : null;
-const getInt = string => [...string].filter(char => parseInt(char)).length == string.length ? parseInt(string) : null;
+const getInt = string => [...string].filter(char => !isNaN(parseInt(char))).length == string.length ? parseInt(string) : null;
 const timeInSeconds = (input) => {
     let m, s, hasDecimal;
     if (input && input.includes(":")) {
@@ -9,9 +9,9 @@ const timeInSeconds = (input) => {
             m = getInt(solve[0]);
             s = getFloat(solve[1]);
             hasDecimal = solve[1].split(".").length > 1;
-            if (m && s) {
+            if (!isNaN(m) && !isNaN(s)) {
                 if (m < 60 && s < 60) {
-                    const calc = m * 60 + s;
+                    const calc = (m * 60) + s;
                     if (calc > 0) {
                         return {
                             time: calc,

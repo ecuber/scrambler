@@ -12,7 +12,7 @@ module.exports = class extends Command {
             aliases: [],
             usage: "<start|end>",
             usageDelim: " ",
-            description: "Submits times to the server competition.",
+            description: "Starts and ends the server competition.",
             category: "Config"
         });
     }
@@ -72,17 +72,28 @@ module.exports = class extends Command {
                         if (settings.comp.events[event].results) {
                             let podium = ["", "", ""];
                             let sorted = sortResults(objToArray(settings.comp.events[event].results));
-                            for (let i = 0; i < (sorted.length >= 3 ? 3 : sorted.length); i++) {
-                                let single = sorted[0].times.length > 0 ? ` and a single of ${formatTime(Math.min(...sorted[0].times))}!` : "!";
-                                podium[i] = `${message.guild.members.cache.get(sorted[0].user.id)} with a time of ${formatTime(sorted[0].average)}${single}`;
+                            let lim = sorted.length >= 3 ? 3 : sorted.length;
+                            for (let i = 0; i < lim; i++) {
+                                // Makes sure user is still in guild. If not, skips entry.
+                                if (sorted[i]) {
+                                    let user = message.guild.members.cache.get(sorted[i].user.id);
+                                    if (user) {
+                                        let single = sorted[i].times.length > 0 ? ` and a single of ${formatTime(Math.min(...spliceDNF(sorted[0].times)))}!` : "!";
+                                        podium[i] = `${user} with a time of ${formatTime(sorted[0].average)}${single}`;
+                                    } else if (i < sorted.length) {
+                                        lim++;
+                                    }
+                                }
                             }
-                            let str = `\n\n**${getName(event)} Podium**\n1st: **${podium[0]}**`;
-                            if (podium[1])
-                                str += `\n2nd: ${podium[1]}`;
-                            if (podium[2])
-                                str += `\n3rd: ${podium[2]}`;
-                            msgArr.push(str);
-                            settings.reset(`comp.events.${event}.results`);
+                            if (podium[0]) {
+                                let str = `\n\n**${getName(event)} Podium**\n1st: **${podium[0]}**`;
+                                if (podium[1])
+                                    str += `\n2nd: ${podium[1]}`;
+                                if (podium[2])
+                                    str += `\n3rd: ${podium[2]}`;
+                                msgArr.push(str);
+                                settings.reset([`comp.events.${event}.results`, `comp.scrambles.${event}`]);
+                            }
                         }
                     });
                     msgArr = condense(msgArr);

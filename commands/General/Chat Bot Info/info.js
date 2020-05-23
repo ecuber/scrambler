@@ -1,14 +1,14 @@
 const { Command } = require("klasa");
 const { MessageEmbed } = require("discord.js");
 const formatMili = (miliseconds) => {
-    let days, hours, minutes, total_hours, total_minutes, total_seconds;
+    let days, hours, minutes, totalHours, totalMinutes, totalSeconds;
 
-    total_seconds = parseInt(Math.floor(miliseconds / 1000));
-    total_minutes = parseInt(Math.floor(total_seconds / 60));
-    total_hours = parseInt(Math.floor(total_minutes / 60));
-    days = parseInt(Math.floor(total_hours / 24));
-    minutes = parseInt(total_minutes % 60);
-    hours = parseInt(total_hours % 24);
+    totalSeconds = parseInt(Math.floor(miliseconds / 1000));
+    totalMinutes = parseInt(Math.floor(totalSeconds / 60));
+    totalHours = parseInt(Math.floor(totalMinutes / 60));
+    days = parseInt(Math.floor(totalHours / 24));
+    minutes = parseInt(totalMinutes % 60);
+    hours = parseInt(totalHours % 24);
     return `${days} days, ${hours} hours, ${minutes} minutes`;
 };
 module.exports = class extends Command {
