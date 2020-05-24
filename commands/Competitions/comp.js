@@ -78,8 +78,8 @@ module.exports = class extends Command {
                                 if (sorted[i]) {
                                     let user = message.guild.members.cache.get(sorted[i].user.id);
                                     if (user) {
-                                        let single = sorted[i].times.length > 0 ? ` and a single of ${formatTime(Math.min(...spliceDNF(sorted[0].times)))}!` : "!";
-                                        podium[i] = `${user} with a time of ${formatTime(sorted[0].average)}${single}`;
+                                        let single = sorted[i].times.length > 0 && !settings.comp.classic ? ` and a single of ${formatTime(Math.min(...spliceDNF(sorted[0].times)))}!` : "!";
+                                        podium[i] = `${user} with a time of ${formatTime(sorted[i].average)}${single}`;
                                     } else if (i < sorted.length) {
                                         lim++;
                                     }
@@ -88,9 +88,9 @@ module.exports = class extends Command {
                             if (podium[0]) {
                                 let str = `\n\n**${getName(event)} Podium**\n1st: **${podium[0]}**`;
                                 if (podium[1])
-                                    str += `\n2nd: ${podium[1]}`;
+                                    str += `\n2nd: **${podium[1]}**`;
                                 if (podium[2])
-                                    str += `\n3rd: ${podium[2]}`;
+                                    str += `\n3rd: **${podium[2]}**`;
                                 msgArr.push(str);
                                 settings.reset([`comp.events.${event}.results`, `comp.scrambles.${event}`]);
                             }

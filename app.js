@@ -23,6 +23,7 @@ client.gateways.guilds.schema
     .add("comp", folder => folder
         .add("enabled", "boolean", { default: true })
         .add("active", "boolean", { default: false })
+        .add("classic", "boolean", { default: false })
         .add("disabledEvents", "string", { array: true, default: ["2x2x3", "ivy", "4bld", "5bld"] })
         .add("scrambles", sub => getEvents().forEach(event => sub.add(event, "string", { array: true })))
         .add("events", sub => {

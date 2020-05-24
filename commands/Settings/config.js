@@ -21,7 +21,7 @@ module.exports = class extends Command {
             cooldown: 3,
             aliases: [],
             // TODO: When changing an event's scramble count, only takes int parameter when it's an alias of an event.
-            usage: "<view|enable|disable|events|mods|ban|reset> [mod:role|user:user|event:name|reset] [...]",
+            usage: "<view|enable|disable|events|mods|ban|classic|reset> [mod:role|user:user|event:name|reset] [...]",
             usageDelim: " ",
             description: "Configures Scrambler permissions and competitions.",
             category: "Config",
@@ -53,11 +53,21 @@ module.exports = class extends Command {
         if (message.guild.settings.comp.active) {
             return message.send("Cannot reset settings while a competition is active!");
         }
-        await message.guild.settings.reset(["comp.enabled", "comp.disabledEvents"]);
+        await message.guild.settings.reset(["comp.enabled", "comp.disabledEvents", "comp.oldStyle"]);
         await Object.keys(message.guild.settings.comp.events).forEach(e => {
             message.guild.settings.reset([`comp.events.${e}.count`]);
         });
         return message.send("All competition configuration settings have been reset to their default values.");
+    }
+
+    async classic(message) {
+        if (message.guild.settings.comp.active) {
+            return message.send("Cannot change submission style while a competition is active!");
+        }
+        let current = message.guild.settings.comp.classic;
+        await message.guild.settings.update("comp.classic", !current);
+        current = message.guild.settings.comp.classic;
+        return message.send(`Scrambler will now use ${current ? `classic` : `default`} style submissions.`);
     }
 
     async events(message, params) {
@@ -176,6 +186,7 @@ module.exports = class extends Command {
     async view(message) {
         const settings = message.guild.settings;
         const comps = settings.comp.enabled;
+        const style = settings.comp.classic;
         const disabledEvents = settings.comp.disabledEvents;
         const modRoles = settings.modRoles;
         const banned = settings.banned;
@@ -186,6 +197,7 @@ module.exports = class extends Command {
         return message.send(new MessageEmbed()
             .setColor("RANDOM")
             .setDescription(`Competitions are **${comps ? "enabled" : "disabled"}**.`)
+            .addField("Submission Style", style ? `Classic` : `Default`)
             .addField("Enabled Events", enabledEvents && enabledEvents.length > 0 ? enabledEvents.join(", ") : "None.")
             .addField("Disabled Events", disabledEvents && disabledEvents.length > 0 ? `${disabledEvents.sort().join(", ")}.` : "None.")
             .addField("Moderator Roles", modRoles && modRoles.length > 0 ? modRoles.map(r => message.guild.roles.cache.get(r).name).join(", ") : "None set.")
