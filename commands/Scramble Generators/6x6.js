@@ -7,9 +7,10 @@ module.exports = class extends Command {
             name: "6x6",
             runIn: ["text"],
             cooldown: 5,
-            aliases: ["six-by-six", "6x6x6"],
+            aliases: ["six-by-six", "6x6x6", "6"],
             usage: "[Count:number]",
-            description: "Generates 1-5 6x6 scrambles."
+            description: "Generates 1-5 6x6 scrambles.",
+            extendedHelp: "https://docs.scramblr.app/docs/scramblers/args"
         });
     }
 

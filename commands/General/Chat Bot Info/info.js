@@ -31,13 +31,13 @@ module.exports = class extends Command {
             .addField("Invite Bot", "[Invite Here!](https://discordapp.com/api/oauth2/authorize?client_id=423530119836073986&permissions=67111936&scope=bot)", true)
             .addField("Support Server", "[Join Here!](https://discord.gg/bzKHzXc)", true)
             .addField("GitHub Repository", "[Check it out!](https://github.com/ecuber/scrambler)", true)
-            .addField("Documentation", "[Click here to read the docs! (Outdated)](https://scrambler.gitbook.io/docs/)")
+            .addField("Documentation", "[Click here!](https://docs.scramblr.app/docs)")
             .addField("Guilds", bot.guilds.cache.size, true)
             .addField("Human Users", bot.users.cache.filter((usr) => !usr.bot).size, true)
             .addField("Uptime", `${formatMili(bot.uptime)}`, true)
             .addField("Creators", "**ecuber#0566** & **Bacon#1153**")
             .addField("Created", bot.user.createdAt)
-            .addField("About", "Scrambler is a Discord bot that generates scrambles for a variety of twisty puzzles. The bot was originally written by ecuber in discord.js in early 2018 and rewritten by Bacon later that year. In early 2020, ecuber rewrote scrambler from the ground up in Klasa using Bacon's custom new scramble generation module, scrambled-eggs.")
+            .addField("About", "Scrambler is a Discord bot that generates scrambles for a variety of twisty puzzles. Originally written by ecuber, revised by Bacon, then rewritten by ecuber.")
             .setTimestamp()
             .setFooter(`Scrambler`, bot.user.displayAvatarURL());
 

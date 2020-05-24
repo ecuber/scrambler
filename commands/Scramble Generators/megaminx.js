@@ -9,7 +9,8 @@ module.exports = class extends Command {
             cooldown: 5,
             aliases: ["megaminx"],
             usage: "[Count:number]",
-            description: "Generates 1-5 Megaminx scrambles."
+            description: "Generates 1-5 Megaminx scrambles.",
+            extendedHelp: "https://docs.scramblr.app/docs/scramblers/args"
         });
     }
 

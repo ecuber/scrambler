@@ -9,7 +9,8 @@ module.exports = class extends Command {
             cooldown: 5,
             aliases: ["notacube"],
             usage: "[Count:number]",
-            description: "Generates 1-12 Clock scrambles."
+            description: "Generates 1-12 Clock scrambles.",
+            extendedHelp: "https://docs.scramblr.app/docs/scramblers/args"
         });
     }
 

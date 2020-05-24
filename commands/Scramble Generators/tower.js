@@ -9,7 +9,8 @@ module.exports = class extends Command {
             cooldown: 3,
             aliases: ["2x2x3", "tower-cube"],
             usage: "[Count:number]",
-            description: "Generates 1-12 2x2x3 scrambles."
+            description: "Generates 1-12 2x2x3 scrambles.",
+            extendedHelp: "https://docs.scramblr.app/docs/scramblers/args"
         });
     }
 

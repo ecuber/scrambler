@@ -10,7 +10,7 @@ module.exports = class extends Command {
             aliases: ["squan", "square-one", "square-1"],
             usage: "[Count:number]",
             description: "Generates 1-12 Square-1 scrambles.",
-            category: "Scramble Generators"
+            extendedHelp: "https://docs.scramblr.app/docs/scramblers/args"
         });
     }
 
