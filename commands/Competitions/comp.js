@@ -13,7 +13,7 @@ module.exports = class extends Command {
             usage: "<start|end>",
             usageDelim: " ",
             description: "Starts and ends the server competition.",
-            category: "Config"
+            extendedHelp: "[Starting a competition (documentation)](https://docs.scramblr.app/docs/comps/comp)\n[Ending a competition (documentation)](https://docs.scramblr.app/docs/comps/podiums)"
         });
     }
 
