@@ -19,12 +19,13 @@ module.exports = class extends Command {
     }
 
     async run(message, [event, ...params]) {
-        if (message.guild.settings.comp.active) {
+        const settings = message.guild.settings;
+        if (settings.comp.active) {
             if (event) {
-                const disabledEvents = message.guild.settings.comp.disabledEvents;
+                const disabledEvents = settings.comp.disabledEvents;
                 if (getEnabled(disabledEvents).includes(event)) {
                     let avg, customCount = message.guild.settings.get(`comp.results.${getEvent(event)}.count`);
-                    const count = customCount ? customCount : countScrambles(event);
+                    const count = settings.comp.classic ? 1 : customCount ? customCount : countScrambles(event);
                     if (params.length == count) {
                         let times = [];
                         for (let i = 0; i < params.length; i++) {
@@ -45,15 +46,15 @@ module.exports = class extends Command {
                             avg = getAverage(times);
                         }
 
-                        let results = message.guild.settings.get(`comp.events.${event}.results`);
+                        let results = settings.get(`comp.events.${event}.results`);
                         if (!results)
                             results = {};
                         const hasEntry = Object.prototype.hasOwnProperty.call(results, message.author.id);
                         const previousEntry = hasEntry ? results[message.author.id] : null;
                         results[message.author.id] = { user: message.author, times: times, average: avg };
-                        await message.guild.settings.update(`comp.events.${event}.results`, results);
+                        await settings.update(`comp.events.${event}.results`, results);
 
-                        return message.send(`Successfully submitted ${event} ${count == 1 ? "single" : count == 5 ? "average" : "mean"} of ${formatTime(avg)}. ${hasEntry ? `Your previous entry of \`${formatTime(previousEntry.average)}\` has been removed.` : ""}`);
+                        return message.send(`Successfully submitted ${event} ${count == 1 ? "time" : count == 5 ? "average" : "mean"} of ${formatTime(avg)}. ${hasEntry ? `Your previous entry of \`${formatTime(previousEntry.average)}\` has been removed.` : ""}`);
                     } else {
                         return message.send(`Invalid submission format detected! Make sure your times are formatted correctly and you've submitted the correct number of solves. *(You submitted **${params.length}** valid solve(s) but should have submitted **${count}**.)*`);
                     }
