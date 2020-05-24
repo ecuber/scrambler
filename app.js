@@ -33,11 +33,6 @@ client.gateways.guilds.schema
                     s.add("results", "any");
                 });
             });
-        })
-        .add("pending", sub => {
-            getEvents().forEach(event => {
-                sub.add(event, "any", { default: { count: null, toggle: false } });
-            });
         }))
     .add("modRoles", "role", { array: true })
     .add("banned", folder => folder
