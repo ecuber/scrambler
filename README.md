@@ -8,7 +8,7 @@ Scrambler's invite link can be found here: https://discordapp.com/oauth2/authori
 
 Once you've added Scrambler, you can run the s!help command to view a list of the all available commands.
 
-# Documentation
+## Documentation
 All of Scrambler's commands have detailed documentation which can be found at https://docs.scramblr.app/docs.
 
 ## Want to contribute to the project or report a bug?
