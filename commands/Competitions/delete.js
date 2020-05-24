@@ -11,7 +11,7 @@ module.exports = class extends Command {
             usage: "<user:user|id:uid> [event:name] [...]",
             usageDelim: " ",
             description: "Manages users' times in the server competition.",
-            category: "Config"
+            extendedHelp: "https://docs.scramblr.app/docs/comps/manage"
         });
     }
 

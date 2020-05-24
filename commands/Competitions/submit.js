@@ -14,7 +14,7 @@ module.exports = class extends Command {
             usage: "<event:name> [solve:result] [...]",
             usageDelim: " ",
             description: "Submits times to the server competition.",
-            category: "Config"
+            extendedHelp: "https://docs.scramblr.app/docs/comps/submit"
         });
     }
 

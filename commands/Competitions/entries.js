@@ -12,7 +12,7 @@ module.exports = class extends Command {
             usage: "<event:name>",
             usageDelim: " ",
             description: "Shows entries for a certain event.",
-            category: "Config"
+            extendedHelp: "https://docs.scramblr.app/docs/comps/view-entries"
         });
     }
 
