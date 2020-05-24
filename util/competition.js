@@ -27,6 +27,13 @@ function getEvent(string) {
 module.exports = {
     getEvent,
 
+    isBestOf(event) {
+        if (events[getEvent(event)]) {
+            return events[getEvent(event)].best;
+        }
+        throw new Error(`Unrecognized event: ${event}`);
+    },
+
     /**
      * Returns an array of top-level events that are not included in the array.
      * @param {array} disabled disabled events

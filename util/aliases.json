@@ -42,24 +42,28 @@
         "scrambles": 5
     },
     "fmc": {
+        "best": true,
         "name": "Fewest Moves",
         "type": "333",
         "aliases": ["fewest"],
         "scrambles": 1
     },
     "3bld": {
+        "best": true,
         "name": "3BLD",
         "type": "333",
         "aliases": ["blind"],
         "scrambles": 3
     },
     "4bld": {
+        "best": true,
         "name": "4BLD",
         "type": "444",
         "aliases": [],
         "scrambles": 3
     },
     "5bld": {
+        "best": true,
         "name": "5BLD",
         "type": "555",
         "aliases": [],

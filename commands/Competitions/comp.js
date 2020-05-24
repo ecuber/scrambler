@@ -1,5 +1,5 @@
 const { Command } = require("klasa");
-const { getEnabled, countScrambles, getType, getName, formatTime } = require("../../util/competition");
+const { getEnabled, countScrambles, getType, getName, formatTime, isBestOf } = require("../../util/competition");
 const cube = require("scrambler-util");
 
 module.exports = class extends Command {
@@ -71,7 +71,7 @@ module.exports = class extends Command {
                     enabledEvents.forEach(event => {
                         if (settings.comp.events[event].results) {
                             let podium = ["", "", ""];
-                            let sorted = sortResults(objToArray(settings.comp.events[event].results));
+                            let sorted = sortResults(objToArray(settings.comp.events[event].results), event);
                             let lim = sorted.length >= 3 ? 3 : sorted.length;
                             for (let i = 0; i < lim; i++) {
                                 // Makes sure user is still in guild. If not, skips entry.
@@ -167,12 +167,12 @@ const intSort = (a, b) => a - b;
 function compare(arr1, arr2) {
     arr1.sort(intSort);
     arr2.sort(intSort);
-    let min1 = Math.min([...arr1]), min2 = Math.min([...arr2]);
-    while (min1 - min2 != 0 && arr1.length > 1 && arr2.length > 1) {
+    let min1 = Math.min(...arr1), min2 = Math.min(...arr2);
+    while (min1 - min2 == 0 && arr1.length > 1 && arr2.length > 1) {
         arr1.splice(0, 1);
         arr2.splice(0, 1);
-        min1 = Math.min([...arr1]);
-        min2 = Math.min([...arr2]);
+        min1 = Math.min(...arr1);
+        min2 = Math.min(...arr2);
     }
     return min1 - min2;
 }
@@ -193,24 +193,29 @@ function objToArray(obj) {
 /**
  * Sorts results by average then single if ties occur.
  * @param {Array<Object>} results Results in database format
+ * @param {string} event Event name
  * @returns {Array<Object>} Sorted results
  */
-function sortResults(results) {
+function sortResults(results, event) {
     results.sort((a, b) => {
-        a.dnf = a.average == "DNF";
-        b.dnf = b.average == "DNF";
-        if (a.dnf && !b.dnf)
-            return 1;
-        else if (!a.dnf && a.dnf)
-            return -1;
-        else if (a.dnf && b.dnf) {
-            a.times = spliceDNF(a.times);
-            b.times = spliceDNF(b.times);
-            return compare(a.times, b.times);
+        if (!isBestOf(event)) {
+            a.dnf = a.average == "DNF";
+            b.dnf = b.average == "DNF";
+            if (a.dnf && !b.dnf)
+                return 1;
+            else if (!a.dnf && a.dnf)
+                return -1;
+            else if (a.dnf && b.dnf) {
+                a.times = spliceDNF(a.times);
+                b.times = spliceDNF(b.times);
+                return compare(a.times, b.times);
+            } else {
+                if (a.average - b.average != 0)
+                    return a.average - b.average;
+                return compare(a.times, b.times);
+            }
         } else {
-            if (a.average - b.average != 0)
-                return a.average - b.average;
-            return compare(a.times, b.times);
+            return compare(spliceDNF(a.times), spliceDNF(b.times));
         }
     });
     return results;
