@@ -31,7 +31,7 @@ module.exports = class extends Command {
             .addField("Invite Bot", "[Invite Here!](https://discordapp.com/api/oauth2/authorize?client_id=423530119836073986&permissions=67111936&scope=bot)", true)
             .addField("Support Server", "[Join Here!](https://discord.gg/bzKHzXc)", true)
             .addField("GitHub Repository", "[Check it out!](https://github.com/ecuber/scrambler)", true)
-            .addField("Documentation", "[Click here to read the docs! (Outdated)](https://scrambler.gitbook.io/docs/)")
+            .addField("Documentation", "[Click here!](https://docs.scramblr.app/docs)")
             .addField("Guilds", bot.guilds.cache.size, true)
             .addField("Human Users", bot.users.cache.filter((usr) => !usr.bot).size, true)
             .addField("Uptime", `${formatMili(bot.uptime)}`, true)

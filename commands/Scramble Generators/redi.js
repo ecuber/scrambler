@@ -9,7 +9,8 @@ module.exports = class extends Command {
             cooldown: 3,
             aliases: ["redi-cube"],
             usage: "[Count:number]",
-            description: "Generates 1-12 redi cube scrambles."
+            description: "Generates 1-12 redi cube scrambles.",
+            extendedHelp: "https://docs.scramblr.app/docs/scramblers/args"
         });
     }
 

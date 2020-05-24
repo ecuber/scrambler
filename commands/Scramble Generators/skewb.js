@@ -10,7 +10,7 @@ module.exports = class extends Command {
             aliases: ["skoob", "ivy", "ivy-cube"],
             usage: "[Count:number]",
             description: "Generates 1-12 skewb/ivy cube scrambles.",
-            category: "Scramble Generators"
+            extendedHelp: "https://docs.scramblr.app/docs/scramblers/args"
         });
     }
 

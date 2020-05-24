@@ -7,11 +7,11 @@ module.exports = class extends Command {
             name: "4x4",
             runIn: ["text"],
             cooldown: 5,
-            aliases: ["four-by-four", "4x4x4"],
+            aliases: ["four-by-four", "4x4x4", "4"],
             usage: "[bld] [Count:number]",
             usageDelim: " ",
             description: "Generates 1-12 4x4 or 4BLD scrambles.",
-            extendedHelp: "e.g. For 5 4BLD scrambles, do s!4x4 bld 5"
+            extendedHelp: "https://docs.scramblr.app/docs/scramblers/args"
         });
     }
 

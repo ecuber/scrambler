@@ -7,11 +7,11 @@ module.exports = class extends Command {
             name: "2x2",
             runIn: ["text"],
             cooldown: 3,
-            aliases: ["two-by-two", "2x2x2"],
+            aliases: ["two-by-two", "2x2x2", "2"],
             usage: "[bld] [Count:number]",
             usageDelim: " ",
             description: "Generates 1-12 2x2 or 2BLD scrambles.",
-            extendedHelp: "2x2 BLD is also available. (e.g. For 5 2x2 BLD scrambles, do s!2x2 bld 5)"
+            extendedHelp: "https://docs.scramblr.app/docs/scramblers/args"
         });
     }
 

@@ -7,7 +7,7 @@ module.exports = class extends Command {
             name: "5x5",
             runIn: ["text"],
             cooldown: 5,
-            aliases: ["five-by-five", "5x5x5"],
+            aliases: ["five-by-five", "5x5x5", "5"],
             usage: "[bld] [Count:number]",
             usageDelim: " ",
             description: "Generates 1-8 5x5 or 5BLD scrambles.",
@@ -16,13 +16,13 @@ module.exports = class extends Command {
     }
 
     async run(message, [...params]) {
-        let bld = params[0] === "bld";
         let count = parseInt(params[1]);
         count = count ? count > 8 ? 8 : count < 0 ? 1 : count : 1;
-        let scrambles = cube("555", count, bld ? "bld" : null);
+        let scrambles = await cube("555", count, params[0] === "bld" ? "bld" : null);
         let scrambleStr = "";
+        console.log(scrambles);
         for (let i = 0; i < scrambles.length; i++)
-            scrambleStr += `${count > 1 ? `${i + 1}: ` : ``}\n\n`;
+            scrambleStr += `${count > 1 ? `${i + 1}: ` : ``}${scrambles[i]}\n\n`;
         return message.send(scrambleStr);
     }
 };

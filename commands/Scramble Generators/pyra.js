@@ -10,7 +10,7 @@ module.exports = class extends Command {
             aliases: ["pyraminx"],
             usage: "[Count:number]",
             description: "Generates 1-12 Pyraminx scrambles.",
-            category: "Scramble Generators"
+            extendedHelp: "https://docs.scramblr.app/docs/scramblers/args"
         });
     }
 

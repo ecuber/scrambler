@@ -1,6 +1,6 @@
 const { Command, util: { isFunction } } = require("klasa");
 const has = (obj, key) => Object.prototype.hasOwnProperty.call(obj, key);
-const Discord = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 
 module.exports = class extends Command {
     constructor(...args) {
@@ -21,7 +21,7 @@ module.exports = class extends Command {
 
     async run(message, [command]) {
         if (command) {
-            const info = new Discord.MessageEmbed()
+            const info = new MessageEmbed()
                 .setTitle(command.name)
                 .setColor("RANDOM")
                 .setFooter(this.client.user.username, this.client.user.displayAvatarURL())
@@ -36,26 +36,16 @@ module.exports = class extends Command {
 
         let keys = Object.keys(help);
 
-        let helpMessage = new Discord.MessageEmbed()
+        let helpMessage = new MessageEmbed()
             .setColor("RANDOM")
             .setTitle("**Comands**")
             .setDescription("For more information on any command, use *s!help <command name>*. If you need more help operating the bot, join our support server linked **[here](https://discord.gg/bzKHzXc)**.")
             .setFooter(this.client.user.username, this.client.user.displayAvatarURL())
-            .setTimestamp();
+            .setTimestamp()
+            .addField("Documentation", "**Every scrambler command has detailed documentation available [here!](https://docs.scramblr.app/docs/)** If you're new to the bot, it is highly recommended that you take a look at this site.");
 
-        // let adminHelp = new Discord.MessageEmbed()
-        //     .setColor("RANDOM")
-        //     .setTitle("**Admin Commands**")
-        //     .setDescription("For more information on any command, use *s!help <command name>*")
-        //     .setFooter(this.client.user.username, this.client.user.displayAvatarURL())
-        //     .setTimestamp();
         let admin = RegExp(/\badmin\b/gi).test(keys[0]);
-        // if (admin) {
-        //     const subCategories = Object.keys(help[keys[0]]); // help.Admin keys     General
-        //     for (let subCat = 0; subCat < subCategories.length; subCat++) adminHelp.addField(`${subCategories[subCat]}`, `${help[keys[0]][subCategories[subCat]].join("\n")}\n`);
-        // }
 
-        // disabling admin help for now, too many dm's and not practical at the moment.
         if (admin) {
             delete help.Admin;
         }
