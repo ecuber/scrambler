@@ -42,10 +42,10 @@ module.exports = class extends Command {
             .setDescription("For more information on any command, use *s!help <command name>*. If you need more help operating the bot, join our support server linked **[here](https://discord.gg/bzKHzXc)**.")
             .setFooter(this.client.user.username, this.client.user.displayAvatarURL())
             .setTimestamp()
-            .addField("Documentation", "**Every scrambler command has detailed documentation available [here!](https://docs.scramblr.app/docs/)** If you're new to the bot, it is highly recommended that you take a look at this site.");
+            .addField("Documentation", "**Every scrambler command has detailed documentation available [here!](https://docs.scramblr.app/docs/)** If you're new to the bot, it is highly recommended that you take a look at this site.")
+            .setTimestamp();
 
         let admin = RegExp(/\badmin\b/gi).test(keys[0]);
-
         if (admin) {
             delete help.Admin;
         }
@@ -58,7 +58,6 @@ module.exports = class extends Command {
         for (let i = 0; i < keys.length; i++) helpMessage.addField(`${keys[i]}`, help[keys[i]][Object.keys(help[keys[i]])].join("\n"));
 
         return message.sendMessage(helpMessage);
-        // return admin ? message.author.sendMessage(adminHelp) : null;
     }
 
     async buildHelp(message) {

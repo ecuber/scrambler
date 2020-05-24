@@ -7,7 +7,7 @@ module.exports = class extends Command {
             name: "fg",
             runIn: ["text"],
             cooldown: 5,
-            aliases: ["guildford"],
+            aliases: ["guildford", "g"],
             usage: "",
             usageDelim: " ",
             description: "Generates one scramble for each puzzle in the Guildford challenge.",

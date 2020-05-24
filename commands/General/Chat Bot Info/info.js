@@ -37,7 +37,7 @@ module.exports = class extends Command {
             .addField("Uptime", `${formatMili(bot.uptime)}`, true)
             .addField("Creators", "**ecuber#0566** & **Bacon#1153**")
             .addField("Created", bot.user.createdAt)
-            .addField("About", "Scrambler is a Discord bot that generates scrambles for a variety of twisty puzzles. The bot was originally written by ecuber in discord.js in early 2018 and rewritten by Bacon later that year. In early 2020, ecuber rewrote scrambler from the ground up in Klasa using Bacon's custom new scramble generation module, scrambled-eggs.")
+            .addField("About", "Scrambler is a Discord bot that generates scrambles for a variety of twisty puzzles. Originally written by ecuber, revised by Bacon, then rewritten by ecuber.")
             .setTimestamp()
             .setFooter(`Scrambler`, bot.user.displayAvatarURL());
 
