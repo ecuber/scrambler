@@ -12,7 +12,7 @@ const timeInSeconds = (input) => {
             if (!isNaN(m) && !isNaN(s)) {
                 if (m < 60 && s < 60) {
                     const calc = (m * 60) + s;
-                    if (calc > 0) {
+                    if (calc > 0.3) {
                         return {
                             time: calc,
                             notes: hasDecimal ? null : "Reminder: It is recommended to have at least two decimal places of precision for each submission."
@@ -31,7 +31,7 @@ const timeInSeconds = (input) => {
         hasDecimal = input.split(".").length > 1;
         s = getFloat(input);
         if (s) {
-            if (s < 90 && s > 0) {
+            if (s < 90 && s > 0.3) {
                 return {
                     time: s,
                     notes: hasDecimal ? null : "Reminder: It is recommended to have at least two decimal places of precision for each submission."
