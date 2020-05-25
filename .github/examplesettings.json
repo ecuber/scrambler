@@ -1,0 +1,10 @@
+{
+    "note (delete me)": "this file should go in root directory (same place as app.js)",
+    "host": "localhost",
+    "port": 27017,
+    "db": "Scrambler",
+    "dbOptions": {},
+    "prefix": "s!",
+    "guildLog": "channelid",
+    "token": "game"
+}
