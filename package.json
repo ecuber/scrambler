@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/ecuber/scrambler#readme",
   "dependencies": {
+    "dblapi.js": "^2.4.0",
     "discord.js": "github:discordjs/discord.js#master",
     "klasa": "github:dirigeants/klasa",
     "mongodb": "^3.5.7",

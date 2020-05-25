@@ -1,6 +1,8 @@
 const { Client } = require("klasa");
 const { getEvents, countScrambles } = require("./util/competition");
 const settings = require("./settings.json");
+const DBL = require("dblapi.js");
+const dbl = new DBL(settings.dblKey);
 
 const client = new Client({
     fetchAllMembers: false,
@@ -15,6 +17,15 @@ const client = new Client({
 
 client.on("ready", async () => {
     client.user.setActivity(`s!updates | Scrambling cubes for ${client.guilds.cache.size} servers.`);
+    dbl.postStats(client.guilds.cache.size);
+});
+
+dbl.on("posted", () => {
+    console.log("DBL: Server count posted!");
+});
+
+dbl.on("error", e => {
+    console.log(`DBL: Error! ${e}`);
 });
 
 // Main Settings
@@ -39,6 +50,7 @@ client.gateways.guilds.schema
         .add("users", "user", { array: true })
         .add("roles", "role", { array: true }))
     .add("archive", "any", { array: true });
+
 
 Client.defaultPermissionLevels
     .add(5, ({ guild, member }) => guild && guild.settings.modRoles.filter(role => member._roles.includes(role)).length > 0)
