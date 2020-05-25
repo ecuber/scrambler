@@ -20,7 +20,6 @@ module.exports = class extends Command {
         count = count ? count > 8 ? 8 : count < 0 ? 1 : count : 1;
         let scrambles = await cube("555", count, params[0] === "bld" ? "bld" : null);
         let scrambleStr = "";
-        console.log(scrambles);
         for (let i = 0; i < scrambles.length; i++)
             scrambleStr += `${count > 1 ? `${i + 1}: ` : ``}${scrambles[i]}\n\n`;
         return message.send(scrambleStr);

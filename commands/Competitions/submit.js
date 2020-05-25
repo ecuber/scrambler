@@ -24,7 +24,7 @@ module.exports = class extends Command {
             if (event) {
                 const disabledEvents = settings.comp.disabledEvents;
                 if (getEnabled(disabledEvents).includes(event)) {
-                    let avg, customCount = message.guild.settings.get(`comp.results.${getEvent(event)}.count`);
+                    let avg, valid = 0, customCount = message.guild.settings.get(`comp.results.${getEvent(event)}.count`);
                     const count = settings.comp.classic ? 1 : customCount ? customCount : countScrambles(event);
                     if (params.length == count) {
                         let times = [];
@@ -35,6 +35,7 @@ module.exports = class extends Command {
                                 } else {
                                     times.push("DNF");
                                 }
+                                valid++;
                             } else {
                                 let msgArr = message.content.split(" ");
                                 return message.send(`Invalid time: \`${msgArr[i + 2]}\`. Please check your formatting and try again.`);
@@ -50,13 +51,15 @@ module.exports = class extends Command {
                         if (!results)
                             results = {};
                         const hasEntry = Object.prototype.hasOwnProperty.call(results, message.author.id);
-                        const previousEntry = hasEntry ? results[message.author.id] : null;
+                        let previousEntry = hasEntry ? results[message.author.id] : null;
+                        previousEntry = event == "fmc" ? previousEntry : formatTime(previousEntry);
+                        avg = event == "fmc" ? avg : formatTime(avg);
                         results[message.author.id] = { user: message.author, times: times, average: avg };
                         await settings.update(`comp.events.${event}.results`, results);
 
-                        return message.send(`Successfully submitted ${event} ${count == 1 ? "time" : count == 5 ? "average" : "mean"} of ${formatTime(avg)}. ${hasEntry ? `Your previous entry of \`${formatTime(previousEntry.average)}\` has been removed.` : ""}`);
+                        return message.send(`Successfully submitted ${event} ${count == 1 ? "time" : count == 5 ? "average" : "mean"} of ${avg}. ${hasEntry ? `Your previous entry of \`${previousEntry.average}\` has been removed.` : ""}`);
                     } else {
-                        return message.send(`Invalid submission format detected! Make sure your times are formatted correctly and you've submitted the correct number of solves. *(You submitted **${params.length}** valid solve(s) but should have submitted **${count}**.)*`);
+                        return message.send(`Invalid submission format detected! Make sure your times are formatted correctly and you've submitted the correct number of solves. *(You submitted **${valid}** valid solve(s) but should have submitted **${count}**.)*`);
                     }
                 } else {
                     return message.send("This event is disabled.");
