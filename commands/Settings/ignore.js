@@ -1,4 +1,4 @@
-const { Command } = require("klasa");
+const { Command, Usage, TextPrompt } = require("klasa");
 const channelMention = arr => arr.map(id => `<#${id}>`);
 const buildStr = (ignored, unignored) => {
     let on, off;
@@ -47,8 +47,10 @@ module.exports = class extends Command {
     }
 
     async reset(message, info, params) {
-        await message.prompt("Are you sure you want to reset channel restrictions? Respond **Y**/n", 5000).then(async response => {
-            if (response && response.content.toLowerCase() === "y") {
+        let usage = new Usage(this.client, "<y|n>", " ");
+        let prompt = new TextPrompt(message, usage, { time: 15000, limit: 2 }).run("Are you sure you want to reset channel restrictions? Respond **Y**/n");
+        prompt.then(async response => {
+            if (response[0] && response[0].toLowerCase() == "y") {
                 await message.guild.settings.reset("ignored");
                 return message.send("Reset all channel restrictions.");
             } else {

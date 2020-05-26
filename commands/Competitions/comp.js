@@ -1,4 +1,4 @@
-const { Command } = require("klasa");
+const { Command, TextPrompt, Usage } = require("klasa");
 const { getEnabled, countScrambles, getType, getName, formatTime, isBestOf } = require("../../util/competition");
 const cube = require("scrambler-util");
 
@@ -64,8 +64,10 @@ module.exports = class extends Command {
             return message.send("There is no active competition.");
         } else {
             const enabledEvents = getEnabled(settings.comp.disabledEvents);
-            message.prompt("Are you sure you want to end this competition? **Y**/n", 10000).then(async response => {
-                if (response.content.toLowerCase().includes("y")) {
+            let usage = new Usage(this.client, "<y|n>", " ");
+            let prompt = new TextPrompt(message, usage, { time: 15000, limit: 2 }).run("Are you sure you want to end this competition? **Y**/n");
+            prompt.then(async response => {
+                if (response[0].toLowerCase().includes("y")) {
                     await message.guild.settings.update("comp.active", false);
                     let msgArr = [];
                     enabledEvents.forEach(event => {

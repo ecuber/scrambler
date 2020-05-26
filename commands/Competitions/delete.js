@@ -1,4 +1,4 @@
-const { Command } = require("klasa");
+const { Command, Usage, TextPrompt } = require("klasa");
 
 module.exports = class extends Command {
     constructor(...args) {
@@ -22,8 +22,10 @@ module.exports = class extends Command {
                 user = user.id ? user.id : user;
                 if (user) {
                     if (params[0]) {
-                        await message.prompt(`Are you sure you want to delete these entries from user with ID ${user}? **Y**/n`, 10000).then(response => {
-                            if (response.content.toLowerCase().includes("y")) {
+                        let usage = new Usage(this.client, "<y|n>", " ");
+                        let prompt = new TextPrompt(message, usage, { time: 15000, limit: 2 }).run(`Are you sure you want to delete these entries from user with ID ${user}? **Y**/n`);
+                        prompt.then(async response => {
+                            if (response[0].toLowerCase().includes("y")) {
                                 for (let i = 0; i < params.length; i++) {
                                     if (params[i]) {
                                         let results = settings.comp.events[params[i]].results;
