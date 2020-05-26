@@ -13,11 +13,11 @@ module.exports = class extends Event {
         this.client.channels.cache.get(guildLog).send(
             new MessageEmbed()
                 .setColor("#64d175")
-                .setThumbnail(guild.iconURL)
+                .setThumbnail(guild.iconURL())
                 .setTitle("Joined Guild:")
                 .addField("Name", `**${guild.name}** [ID: ${guild.id}]`)
                 .addField("Owner", `**${guild.owner.user.username}#${guild.owner.user.discriminator}** [ID: ${guild.owner.id}]`)
-                .addField("Member Count", `${guild.members.size}`)
+                .addField("Member Count", `${guild.memberCount}`)
                 .setTimestamp());
         this.client.user.setActivity(`s!updates | Scrambling cubes for ${this.client.guilds.cache.size} servers!`);
     }
