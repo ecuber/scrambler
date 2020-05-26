@@ -22,7 +22,7 @@ module.exports = class extends Command {
             cooldown: 3,
             aliases: [],
             // TODO: When changing an event's scramble count, only takes int parameter when it's an alias of an event.
-            usage: "<view|enable|disable|events|mods|ban|classic|reset> [mod:role|user:user|event:name|reset] [...]",
+            usage: "<view|enable|disable|events|mods|ban|classic|reset> [reset|mod:role|user:user|event:name] [...]",
             usageDelim: " ",
             description: "Configures Scrambler permissions and competitions.",
             category: "Config",
@@ -75,10 +75,10 @@ module.exports = class extends Command {
         if (message.guild.settings.comp.active)
             return message.send("Cannot change event settings while a competition is active!");
         const disabledEvents = message.guild.settings.comp.disabledEvents;
-        let enabled = [], disabled = [], event = getEvent(params[0]);
+        let enabled = [], disabled = [], event = getEvent(params[0], "config");
         if (params[0] !== "reset" && event) {
             // Sets scramble count
-            if (params[1] && getInt(params[1])) {
+            if (params[1] != undefined && getInt(params[1])) {
                 let count = getInt(params[1]);
                 if (count > 0 && count <= 5) {
                     let obj = await message.guild.settings.get(`comp.events.${event}`);

@@ -7,16 +7,21 @@ Object.keys(events).forEach(key => {
     events[key].aliases.forEach(alias => names.push({ name: alias, level: 1, parent: key }));
 });
 
+const getInt = string => [...string].filter(char => !isNaN(parseInt(char))).length == string.length ? parseInt(string) : null;
+
 /**
  * Returns the event name. If string is not a valid event name, returns null
  * @param {string} string event input
+ * @param {string} context whether or not in config
  * @returns {string} event name
  */
-function getEvent(string) {
+function getEvent(string, context) {
     if (typeof string === "string") {
         let matches = names.filter(n => n.name === string.toLowerCase());
         if (matches.length > 0) {
             let obj = matches[0];
+            if (context == "config" && getInt(obj.name))
+                return obj.name;
             return obj.level == 0 ? obj.name : obj.parent;
         }
     } else {
