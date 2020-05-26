@@ -21,6 +21,6 @@
     "discord.js": "github:discordjs/discord.js#master",
     "klasa": "^0.5.0",
     "mongodb": "^3.5.7",
-    "scrambler-util": "^0.2.6"
+    "scrambler-util": "^0.2.8"
   }
 }
