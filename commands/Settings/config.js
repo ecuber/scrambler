@@ -11,6 +11,7 @@ const buildStr = (enabled, disabled, str1, str2) => {
 };
 const isRole = (guild, id) => guild.roles.cache.get(id) != undefined;
 const isUser = (guild, id) => guild.members.cache.get(id) != undefined;
+const getInt = string => [...string].filter(char => !isNaN(parseInt(char))).length == string.length ? parseInt(string) : null;
 
 module.exports = class extends Command {
     constructor(...args) {
@@ -77,8 +78,8 @@ module.exports = class extends Command {
         let enabled = [], disabled = [], event = getEvent(params[0]);
         if (params[0] !== "reset" && event) {
             // Sets scramble count
-            if (params[1] && parseInt(params[1])) {
-                let count = parseInt(params[1]);
+            if (params[1] && getInt(params[1])) {
+                let count = getInt(params[1]);
                 if (count > 0 && count <= 5) {
                     let obj = await message.guild.settings.get(`comp.events.${event}`);
                     let warn = disabledEvents.includes(params[0]) ? ` Please note that you currently have ${event} disabled.` : "";
