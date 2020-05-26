@@ -25,12 +25,11 @@ module.exports = class extends Command {
         types = [
             { name: "**OH**: ", type: "333" },
             { name: "**Clock**: ", type: "clock" },
-            { name: "**Megaminx**: ", type: "mega" },
             { name: "**Pyraminx**: ", type: "pyra" },
             { name: "**Skewb**: ", type: "skewb" },
-            { name: "**Feet**: ", type: "333" }];
+            { name: "**Megaminx**: ", type: "mega" }];
         scrambles = types.map(type => `${type.name}${cube(type.type)[0]}`);
         scrambles.forEach(scramble => scrambleStr += `${scramble}\n\n`);
-        return message.send(scrambleStr);
+        return message.send(`${scrambleStr}`);
     }
 };
