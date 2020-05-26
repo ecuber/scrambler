@@ -8,7 +8,7 @@ module.exports = class extends Command {
             permissionLevel: 5,
             cooldown: 3,
             aliases: [],
-            usage: "[reset|Prefix:String]",
+            usage: "[reset|Prefix:string]",
             usageDelim: " ",
             description: "Sets a custom prefix for Scrambler.",
             category: "Config"
