@@ -71,8 +71,10 @@ module.exports = class extends Command {
                     await message.guild.settings.update("comp.active", false);
                     let msgArr = [];
                     enabledEvents.forEach(event => {
+                        // gets results
                         if (settings.comp.events[event].results) {
                             let podium = ["", "", ""];
+                            // sorted contains all of the results for the event, sorted by average/single depending on the event.
                             let sorted = sortResults(objToArray(settings.comp.events[event].results), event);
                             let lim = sorted.length >= 3 ? 3 : sorted.length;
                             for (let i = 0; i < lim; i++) {
@@ -80,9 +82,12 @@ module.exports = class extends Command {
                                 if (sorted[i]) {
                                     let user = message.guild.members.cache.get(sorted[i].user.id);
                                     if (user) {
-                                        let single = sorted[i].times.length > 0 && !settings.comp.classic ? ` and a single of ${formatTime(Math.min(...spliceDNF(sorted[0].times)))}!` : "!";
+                                        // only includes single if there are more than 1 results, and if
+                                        // competition submission mode is default.
+                                        let single = sorted[i].times.length > 0 && !settings.comp.classic ? ` and a single of ${formatTime(Math.min(...spliceDNF(sorted[i].times)))}!` : "!";
                                         podium[i] = `${user} with a time of ${formatTime(sorted[i].average)}${single}`;
-                                    } else if (i < sorted.length) {
+                                    } else if (i < sorted.length - 1) {
+                                        // if no user is found, adds one to the limit
                                         lim++;
                                     }
                                 }
@@ -193,7 +198,8 @@ function objToArray(obj) {
 }
 
 /**
- * Sorts results by average then single if ties occur.
+ * Sorts results by average then single if ties occur. For events
+ * sorted by best result (FMC, BLD, etc.) it will ignore mean.
  * @param {Array<Object>} results Results in database format
  * @param {string} event Event name
  * @returns {Array<Object>} Sorted results
