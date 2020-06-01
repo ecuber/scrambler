@@ -75,10 +75,11 @@ module.exports = class extends Command {
 
 /**
  * Returns an average of 5 solves, highest and lowest removed.
- * @param {array} times Solve times or DNF's
+ * @param {array} params Solve times or DNF's
  * @returns {string} DNF or average
  */
-function getAverage(times) {
+function getAverage(params) {
+    let times = [...params];
     let dnfs = times.filter(n => n == "DNF");
     if (dnfs.length >= 2) {
         return "DNF";
@@ -102,6 +103,6 @@ function getMean(times) {
     if (dnfs.length > 0) {
         return "DNF";
     } else {
-        return average(times);
+        return average([...times]);
     }
 }

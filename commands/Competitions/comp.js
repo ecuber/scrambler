@@ -84,7 +84,8 @@ module.exports = class extends Command {
                                     if (user) {
                                         // only includes single if there are more than 1 results, and if
                                         // competition submission mode is default.
-                                        let single = sorted[i].times.length > 0 && !settings.comp.classic ? ` and a single of ${formatTime(Math.min(...spliceDNF(sorted[i].times)))}!` : "!";
+                                        let removedDNF = spliceDNF(sorted[i].times);
+                                        let single = sorted[i].times.length > 0 && removedDNF.length > 0 && !settings.comp.classic ? ` and a single of ${formatTime(Math.min(...removedDNF))}!` : "!";
                                         podium[i] = `${user} with a time of ${formatTime(sorted[i].average)}${single}`;
                                     } else if (i < sorted.length - 1) {
                                         // if no user is found, adds one to the limit
@@ -172,14 +173,15 @@ const intSort = (a, b) => a - b;
  * @returns {number} Negative if arr2 > arr 1, positive if arr1 > arr2, 0 if equal
  */
 function compare(arr1, arr2) {
-    arr1.sort(intSort);
-    arr2.sort(intSort);
-    let min1 = Math.min(...arr1), min2 = Math.min(...arr2);
-    while (min1 - min2 == 0 && arr1.length > 1 && arr2.length > 1) {
-        arr1.splice(0, 1);
-        arr2.splice(0, 1);
-        min1 = Math.min(...arr1);
-        min2 = Math.min(...arr2);
+    let a = [...arr1], b = [...arr2];
+    a.sort(intSort);
+    b.sort(intSort);
+    let min1 = Math.min(...a), min2 = Math.min(...b);
+    while (min1 - min2 == 0 && a.length > 1 && b.length > 1) {
+        a.splice(0, 1);
+        b.splice(0, 1);
+        min1 = Math.min(...a);
+        min2 = Math.min(...b);
     }
     return min1 - min2;
 }
@@ -205,7 +207,8 @@ function objToArray(obj) {
  * @returns {Array<Object>} Sorted results
  */
 function sortResults(results, event) {
-    results.sort((a, b) => {
+    results.sort((res1, res2) => {
+        let a = [...res1], b = [...res2];
         if (!isBestOf(event)) {
             a.dnf = a.average == "DNF";
             b.dnf = b.average == "DNF";
