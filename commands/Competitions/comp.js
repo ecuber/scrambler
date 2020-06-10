@@ -207,8 +207,7 @@ function objToArray(obj) {
  * @returns {Array<Object>} Sorted results
  */
 function sortResults(results, event) {
-    results.sort((res1, res2) => {
-        let a = [...res1], b = [...res2];
+    results.sort((a, b) => {
         if (!isBestOf(event)) {
             a.dnf = a.average == "DNF";
             b.dnf = b.average == "DNF";

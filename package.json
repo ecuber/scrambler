@@ -20,7 +20,7 @@
     "dblapi.js": "^2.4.0",
     "discord.js": "github:discordjs/discord.js#master",
     "klasa": "^0.5.0",
-    "mongodb": "^3.5.7",
-    "scrambler-util": "^0.2.8"
+    "mongodb": "^3.5.8",
+    "scrambler-util": "^0.2.9"
   }
 }
