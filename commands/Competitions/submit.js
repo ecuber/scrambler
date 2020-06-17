@@ -25,8 +25,9 @@ module.exports = class extends Command {
                 const disabledEvents = settings.comp.disabledEvents;
                 if (getEnabled(disabledEvents).includes(event)) {
                     let avg, valid = 0, customCount = message.guild.settings.get(`comp.results.${getEvent(event)}.count`);
-                    const count = settings.comp.classic ? 1 : customCount ? customCount : countScrambles(event);
-                    if (params.length == count) {
+                    const count = settings.comp.classic ? 1 : customCount ? customCount : countScrambles(event); // if using classic submissions, defaults to 1, otherwise checks if a custom count is configured
+
+                    if (params.length <= count) {
                         let times = [];
                         for (let i = 0; i < params.length; i++) {
                             if (params[i]) {
@@ -41,25 +42,29 @@ module.exports = class extends Command {
                                 return message.send(`Invalid time: \`${msgArr[i + 2]}\`. Please check your formatting and try again.`);
                             }
                         }
-                        if (count <= 4) {
-                            avg = getMean(times);
+                        if (times.length == count) { // only if they submitted the right number of times.
+                            if (count <= 4) {
+                                avg = getMean(times);
+                            } else {
+                                avg = getAverage(times);
+                            }
+
+                            let results = settings.get(`comp.events.${event}.results`);
+                            if (!results)
+                                results = {};
+                            const hasEntry = Object.prototype.hasOwnProperty.call(results, message.author.id);
+                            let previousEntry = hasEntry ? results[message.author.id] : null;
+                            previousEntry = event == "fmc" ? previousEntry : formatTime(previousEntry);
+                            avg = event == "fmc" ? avg : formatTime(avg);
+                            results[message.author.id] = { user: message.author, times: times, average: avg };
+                            await settings.update(`comp.events.${event}.results`, results);
+
+                            return message.send(`Successfully submitted ${event} ${count == 1 ? "time" : count == 5 ? "average" : "mean"} of ${avg}. ${hasEntry ? `Your previous entry of \`${previousEntry.average}\` has been removed.` : ""}`);
                         } else {
-                            avg = getAverage(times);
+                            return message.send(`Invalid submission format detected! Please ensure proper formatting and that you enter **${count}** solves. (You submitted ${valid}.)`);
                         }
-
-                        let results = settings.get(`comp.events.${event}.results`);
-                        if (!results)
-                            results = {};
-                        const hasEntry = Object.prototype.hasOwnProperty.call(results, message.author.id);
-                        let previousEntry = hasEntry ? results[message.author.id] : null;
-                        previousEntry = event == "fmc" ? previousEntry : formatTime(previousEntry);
-                        avg = event == "fmc" ? avg : formatTime(avg);
-                        results[message.author.id] = { user: message.author, times: times, average: avg };
-                        await settings.update(`comp.events.${event}.results`, results);
-
-                        return message.send(`Successfully submitted ${event} ${count == 1 ? "time" : count == 5 ? "average" : "mean"} of ${avg}. ${hasEntry ? `Your previous entry of \`${previousEntry.average}\` has been removed.` : ""}`);
                     } else {
-                        return message.send(`Invalid submission format detected! Make sure your times are formatted correctly and you've submitted the correct number of solves. *(You submitted **${valid}** valid solve(s) but should have submitted **${count}**.)*`);
+                        return message.send(`You've submitted too many times! Please only enter **${count}** result(s) and try again.`);
                     }
                 } else {
                     return message.send("This event is disabled.");
