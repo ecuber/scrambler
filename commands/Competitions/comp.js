@@ -43,13 +43,14 @@ module.exports = class extends Command {
                 await scrambles.push({ event: event, scrambles: cube(scrambleType, count, arg) });
             });
 
-            // Saves scrambles
+            // Saves scrambles to scrambles folder in comp settings
+            // TODO: Add a s!scrambles command to get scrambles from competition for existing event
             scrambles.forEach(obj => obj.scrambles.forEach(scr => settings.update(`comp.scrambles.${obj.event}`, scr)));
 
             // Formats scrambles array
             scrambles = scrambles.map(set => set.scrambles = numberList(getName(set.event), set.scrambles));
 
-            // Combines scrambles into 2000-character long blocks
+            // Combines scrambles into 2000-character long blocks to reduce # of messages sent
             let msgArr = condense(scrambles);
 
             for (let i = 0; i < msgArr.length; i++) {
@@ -75,20 +76,23 @@ module.exports = class extends Command {
                         if (settings.comp.events[event].results) {
                             let podium = ["", "", ""];
                             // sorted contains all of the results for the event, sorted by average/single depending on the event.
-                            let sorted = sortResults(objToArray(settings.comp.events[event].results), event);
+                            let sorted = sortResults(settings.comp.events[event].results, event);
+                            // limit is the index in the results at which the loop will stop modifying the podium array
                             let lim = sorted.length >= 3 ? 3 : sorted.length;
                             for (let i = 0; i < lim; i++) {
-                                // Makes sure user is still in guild. If not, skips entry.
                                 if (sorted[i]) {
+                                    // Makes sure user is still in guild. If not, skips entry.
                                     let user = message.guild.members.cache.get(sorted[i].user.id);
                                     if (user) {
                                         // only includes single if there are more than 1 results, and if
                                         // competition submission mode is default.
-                                        let removedDNF = spliceDNF(sorted[i].times);
-                                        let single = sorted[i].times.length > 0 && removedDNF.length > 0 && !settings.comp.classic ? ` and a single of ${formatTime(Math.min(...removedDNF))}!` : "!";
-                                        podium[i] = `${user} with a time of ${formatTime(sorted[i].average)}${single}`;
+                                        const removedDNF = spliceDNF(sorted[i].times);
+                                        const min = Math.min(...removedDNF);
+                                        const single = sorted[i].times.length > 0 && removedDNF.length > 0 && !settings.comp.classic ? ` and a single of ${event == "fmc" ? min : formatTime(min)}!` : "!";
+                                        const time = event == "fmc" ? sorted[i].average : formatTime(sorted[i].average);
+                                        podium[i] = `${user} with a time of ${time}${single}`;
                                     } else if (i < sorted.length - 1) {
-                                        // if no user is found, adds one to the limit
+                                        // if no user is found, adds one to the limit index
                                         lim++;
                                     }
                                 }
@@ -184,19 +188,6 @@ function compare(arr1, arr2) {
         min2 = Math.min(...b);
     }
     return min1 - min2;
-}
-
-/**
- * Returns de-key'ed objects from an object in an array.
- * @param {Object} obj object with keys
- * @returns {Array<Object>} contents of each key
- */
-function objToArray(obj) {
-    let arr = [];
-    Object.keys(obj).forEach(key => {
-        arr.push(obj[key]);
-    });
-    return arr;
 }
 
 /**

@@ -29,13 +29,15 @@ module.exports = class extends Command {
                                 for (let i = 0; i < params.length; i++) {
                                     if (params[i]) {
                                         let results = settings.comp.events[params[i]].results;
-                                        if (Object.prototype.hasOwnProperty.call(results, user)) {
-                                            delete results[user];
+                                        let userTimes = results.filter(n => n.user.id == user.id);
+                                        if (userTimes[0]) {
+                                            await settings.update(`comp.events.${params[i]}.results`, userTimes[0]);
+                                            return message.send("Deleted!");
+                                        } else {
+                                            return message.send("No time found for this user!");
                                         }
-                                        settings.update(`comp.events.${params[i]}.results`, results);
                                     }
                                 }
-                                return message.send("Deleted!");
                             }
                         });
                     } else
