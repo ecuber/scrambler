@@ -55,7 +55,7 @@ module.exports = class extends Command {
                             previousEntry = previousEntry ? event == "fmc" ? previousEntry.average : formatTime(previousEntry.average) : null;
                             // removes all of the users existing entries in the competition (should be 1 maximum)
                             if (previousEntries && previousEntries.length > 0)
-                                await previousEntries.forEach(entry => settings.update(`comp.events.${event}.results`, previousEntries.splice(0, 1)));
+                                await previousEntries.forEach(entry => settings.update(`comp.events.${event}.results`, entry));
                             // adds their new time to the array
                             await settings.update(`comp.events.${event}.results`, { user: message.author, times: times, average: avg });
                             return message.send(`Successfully submitted ${event} ${count == 1 ? "result" : count == 5 ? "average" : "mean"} of ${event == "fmc" ? avg : formatTime(avg)}. ${previousEntries.length > 0 ? `Your previous entry of \`${previousEntry}\` has been removed.` : ""}`);
