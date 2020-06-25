@@ -51,7 +51,7 @@ module.exports = class extends Command {
 
                             const results = settings.get(`comp.events.${event}.results`); // array of objects
                             const previousEntries = results && results.filter(entry => entry.user.id == message.author.id); // any previous entries with matching user id (max 1)
-                            let previousEntry = previousEntries[0] ? previousEntries[0] : null;
+                            let previousEntry = previousEntries && previousEntries[0] ? previousEntries[0] : null;
                             previousEntry = previousEntry ? event == "fmc" ? previousEntry.average : formatTime(previousEntry.average) : null;
                             // removes all of the users existing entries in the competition (should be 1 maximum)
                             if (previousEntries.length > 0)
