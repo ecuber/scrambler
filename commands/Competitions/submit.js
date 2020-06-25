@@ -54,7 +54,7 @@ module.exports = class extends Command {
                             let previousEntry = previousEntries && previousEntries[0] ? previousEntries[0] : null;
                             previousEntry = previousEntry ? event == "fmc" ? previousEntry.average : formatTime(previousEntry.average) : null;
                             // removes all of the users existing entries in the competition (should be 1 maximum)
-                            if (previousEntries.length > 0)
+                            if (previousEntries && previousEntries.length > 0)
                                 await previousEntries.forEach(entry => settings.update(`comp.events.${event}.results`, previousEntries.splice(0, 1)));
                             // adds their new time to the array
                             await settings.update(`comp.events.${event}.results`, { user: message.author, times: times, average: avg });
