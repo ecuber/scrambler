@@ -50,16 +50,15 @@ module.exports = class extends Command {
                             }
 
                             const results = settings.get(`comp.events.${event}.results`); // array of objects
-                            const previousEntries = results.filter(entry => entry.user.id == message.author.id); // any previous entries with matching user id (max 1)
-                            const hasEntry = previousEntries.length > 0;
-                            let previousEntry = hasEntry ? results[message.author.id] : null;
-                            previousEntry = hasEntry ? event == "fmc" ? previousEntry.average : formatTime(previousEntry.average) : null;
+                            const previousEntries = results && results.filter(entry => entry.user.id == message.author.id); // any previous entries with matching user id (max 1)
+                            let previousEntry = previousEntries[0] ? results[message.author.id] : null;
+                            previousEntry = previousEntry ? event == "fmc" ? previousEntry.average : formatTime(previousEntry.average) : null;
                             // removes all of the users existing entries in the competition (should be 1 maximum)
-                            if (hasEntry)
+                            if (previousEntry)
                                 await previousEntries.forEach(entry => settings.update(`comp.events.${event}.results`, previousEntries.splice(0, 1)));
                             // adds their new time to the array
                             await settings.update(`comp.events.${event}.results`, { user: message.author, times: times, average: avg });
-                            return message.send(`Successfully submitted ${event} ${count == 1 ? "result" : count == 5 ? "average" : "mean"} of ${event == "fmc" ? avg : formatTime(avg)}. ${hasEntry ? `Your previous entry of \`${previousEntry}\` has been removed.` : ""}`);
+                            return message.send(`Successfully submitted ${event} ${count == 1 ? "result" : count == 5 ? "average" : "mean"} of ${event == "fmc" ? avg : formatTime(avg)}. ${previousEntry ? `Your previous entry of \`${previousEntry}\` has been removed.` : ""}`);
                         } else {
                             return message.send(`Invalid submission format detected! Please ensure proper formatting and that you enter **${count}** solves. (You submitted ${valid}.)`);
                         }
