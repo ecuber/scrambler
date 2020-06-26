@@ -54,7 +54,7 @@ module.exports = class extends Command {
                             let previousEntry = previousEntries && previousEntries[0] ? previousEntries[0] : null;
                             previousEntry = previousEntry ? event == "fmc" ? previousEntry.average : formatTime(previousEntry.average) : null;
                             // removes the user's existing entry
-                            if (previousEntries && previousEntries[0])
+                            if (results && previousEntries && previousEntries[0])
                                 await settings.update(`comp.events.${event}.results`, previousEntries[0]);
                             // adds their new time to the array
                             await settings.update(`comp.events.${event}.results`, { user: message.author, times: times, average: avg });
