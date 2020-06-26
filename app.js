@@ -16,7 +16,7 @@ const client = new Client({
 });
 
 client.on("ready", async () => {
-    client.user.setActivity(`Podiums are fixed! | s!updates | Scrambling cubes for ${client.guilds.cache.size} servers.`);
+    client.user.setActivity(`s!help | Scrambling cubes for ${client.guilds.cache.size} servers.`);
     dbl.postStats(client.guilds.cache.size);
 });
 
