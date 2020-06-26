@@ -56,13 +56,14 @@ module.exports = class extends Command {
                                 previousEntries = results.filter(entry => entry.user.id == message.author.id); // any previous entries with matching user id (max 1)
                                 previousEntry = previousEntries && previousEntries[0] ? previousEntries[0] : null;
                                 previousEntry = previousEntry ? event == "fmc" ? previousEntry.average : formatTime(previousEntry.average) : null;
+
+                                // removes the user's existing entry
+                                if (previousEntries && previousEntry)
+                                    settings.update(`comp.events.${event}.results`, previousEntries[0]);
                             }
-                            // removes the user's existing entry
-                            if (results && previousEntries && previousEntry)
-                                await settings.update(`comp.events.${event}.results`, previousEntries[0]);
 
                             // adds their new time to the array
-                            await settings.update(`comp.events.${event}.results`, { user: message.author, times: times, average: avg });
+                            settings.update(`comp.events.${event}.results`, { user: message.author, times: times, average: avg });
                             return message.send(`Successfully submitted ${event} ${count == 1 ? "result" : count == 5 ? "average" : "mean"} of ${event == "fmc" ? avg : formatTime(avg)}. ${previousEntries.length > 0 ? `Your previous entry of \`${previousEntry}\` has been removed.` : ""}`);
                         } else {
                             return message.send(`Invalid submission format detected! Please ensure proper formatting and that you enter **${count}** solves. (You submitted ${valid}.)`);
