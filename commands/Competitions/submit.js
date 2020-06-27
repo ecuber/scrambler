@@ -63,8 +63,8 @@ module.exports = class extends Command {
                             }
 
                             // adds their new time to the array
-                            settings.update(`comp.events.${event}.results`, { user: message.author, times: times, average: avg });
-                            return message.send(`Successfully submitted ${event} ${count == 1 ? "result" : count == 5 ? "average" : "mean"} of ${event == "fmc" ? avg : formatTime(avg)}. ${previousEntries ? `Your previous entry of \`${previousEntry}\` has been removed.` : ""}`);
+                            await settings.update(`comp.events.${event}.results`, { user: message.author, times: times, average: avg });
+                            return message.send(`Successfully submitted ${event} ${count == 1 ? "result" : count == 5 ? "average" : "mean"} of ${event == "fmc" ? avg : formatTime(avg)}. ${previousEntry ? `Your previous entry of \`${previousEntry}\` has been removed.` : ""}`);
                         } else {
                             return message.send(`Invalid submission format detected! Please ensure proper formatting and that you enter **${count}** solves. (You submitted ${valid}.)`);
                         }
