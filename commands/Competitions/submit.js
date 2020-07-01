@@ -65,8 +65,6 @@ module.exports = class extends Command {
                             let obj = { user: message.author, times: times, average: avg };
 
                             // adds their new time to the array
-                            if (!results)
-                                await settings.reset(`comp.events.${event}.results`, { force: true });
                             await settings.update(`comp.events.${event}.results`, obj, { action: "add" });
                             return message.send(`Successfully submitted ${event} ${count == 1 ? "result" : count == 5 ? "average" : "mean"} of ${event == "fmc" ? avg : formatTime(avg)}. ${previousEntry ? `Your previous entry of \`${previousEntry}\` has been removed.` : ""}`);
                         } else {
