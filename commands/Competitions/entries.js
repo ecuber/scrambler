@@ -30,7 +30,8 @@ module.exports = class extends Command {
                     let i = 1;
                     entries.forEach(entry => {
                         if (i < 26) {
-                            embed.addField(`${i}: **${entry.user.username}**#${entry.user.discriminator}`, formatTime(entry.avg), true);
+                            let time = event != "fmc" ? formatTime(entry.average) : entry.average;
+                            embed.addField(`${i}: **${entry.user.username}**#${entry.user.discriminator}`, time, true);
                             i++;
                         }
                     });
@@ -50,7 +51,7 @@ module.exports = class extends Command {
                     let results = comp.events[eve].results;
                     let matches = results.filter(n => n.user.id == member.id);
                     if (matches[0]) {
-                        const time = results[member.id].average;
+                        const time = results[0].average;
                         embed.addField(eve, eve == "fmc" ? time : formatTime(time), true);
                         count++;
                     }
