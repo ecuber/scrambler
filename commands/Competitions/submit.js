@@ -24,7 +24,7 @@ module.exports = class extends Command {
             if (event) {
                 const disabledEvents = settings.comp.disabledEvents;
                 if (getEnabled(disabledEvents).includes(event)) {
-                    let avg, valid = 0, customCount = message.guild.settings.get(`comp.results.${getEvent(event)}.count`);
+                    let avg, valid = 0, customCount = message.guild.settings.get(`comp.events.${getEvent(event)}.count`);
                     const count = settings.comp.classic ? 1 : customCount ? customCount : countScrambles(event); // if using classic submissions, defaults to 1, otherwise checks if a custom count is configured
 
                     if (params.length <= count) {
@@ -62,8 +62,12 @@ module.exports = class extends Command {
                                     settings.update(`comp.events.${event}.results`, previousEntries[0]);
                             }
 
+                            let obj = { user: message.author, times: times, average: avg };
+
                             // adds their new time to the array
-                            await settings.update(`comp.events.${event}.results`, { user: message.author, times: times, average: avg });
+                            if (!results)
+                                await settings.reset(`comp.events.${event}.results`);
+                            await settings.update(`comp.events.${event}.results`, obj);
                             return message.send(`Successfully submitted ${event} ${count == 1 ? "result" : count == 5 ? "average" : "mean"} of ${event == "fmc" ? avg : formatTime(avg)}. ${previousEntry ? `Your previous entry of \`${previousEntry}\` has been removed.` : ""}`);
                         } else {
                             return message.send(`Invalid submission format detected! Please ensure proper formatting and that you enter **${count}** solves. (You submitted ${valid}.)`);
