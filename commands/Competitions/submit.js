@@ -62,10 +62,8 @@ module.exports = class extends Command {
                                     settings.update(`comp.events.${event}.results`, previousEntries[0]);
                             }
 
-                            let obj = { user: message.author, times: times, average: avg };
-
                             // adds their new time to the array
-                            await settings.update(`comp.events.${event}.results`, obj, { action: "add", force: true });
+                            await settings.update(`comp.events.${event}.results`, { user: message.author, times: times, average: avg });
                             return message.send(`Successfully submitted ${event} ${count == 1 ? "result" : count == 5 ? "average" : "mean"} of ${event == "fmc" ? avg : formatTime(avg)}. ${previousEntry ? `Your previous entry of \`${previousEntry}\` has been removed.` : ""}`);
                         } else {
                             return message.send(`Invalid submission format detected! Please ensure proper formatting and that you enter **${count}** solves. (You submitted ${valid}.)`);
