@@ -18,8 +18,8 @@
   "homepage": "https://github.com/ecuber/scrambler#readme",
   "dependencies": {
     "dblapi.js": "^2.4.0",
-    "discord.js": "github:discordjs/discord.js#master",
-    "klasa": "^0.5.0",
+    "discord.js": "discordjs/discord.js",
+    "klasa": "dirigeants/klasa#v0.5.0",
     "mongodb": "^3.5.8",
     "scrambler-util": "^0.2.9"
   }
