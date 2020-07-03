@@ -1,5 +1,5 @@
 const { Command, TextPrompt, Usage } = require("klasa");
-const { getEnabled, countScrambles, getType, getName, formatTime, isBestOf } = require("../../util/competition");
+const { getEnabled, countScrambles, getType, getName, formatTime, isBestOf, getEvents } = require("../../util/competition");
 const cube = require("scrambler-util");
 
 module.exports = class extends Command {
@@ -32,6 +32,10 @@ module.exports = class extends Command {
             await message.channel.send("Loading scrambles... Please wait.");
             const enabledEvents = getEnabled(settings.comp.disabledEvents);
             let scrambles = [];
+
+            getEvents().forEach(event => {
+                message.guild.settings.update(`comp.events.${event}.results`, null);
+            });
 
             // Generates all scrambles and adds to the array
             enabledEvents.forEach(async event => {
