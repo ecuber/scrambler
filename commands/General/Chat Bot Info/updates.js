@@ -14,11 +14,9 @@ module.exports = class extends Command {
     async run(message) {
         const bot = this.client;
         let embed = new MessageEmbed()
-            .setTitle("Bug Fixes!")
+            .setTitle("Submission Bugs")
             .setColor("RANDOM")
-            .setDescription("Recently, many issues have come up surrounding competitions (podiums, submissions). **Now, all issues with competitions should be fixed.** The issue stemmed from some servers being on older competition data structures I never considered having to migrate.")
-            .addField("What now?", "For roughly 90% of servers, all you have to do is start a new competition like normal! Your configuration has been saved and commands should work as you would expect.")
-            .addField("I'm still having issues.", "If you're still having issues or have other questions, **please join the scrambler support server [here!](http://discord.gg/KHCFQX7) ** I can reset your server manually and answer any other questions you may have. Thanks for using scrambler!")
+            .setDescription("Due to problems with Klasa's Settings Gateway the submit command is not functional. I reached out to the Klasa developers and they told me I'll have to rewrite much of the bot that is affected by the issue fixed in a new version of Klasa that is not backwards compatible with my code. I would estimate in the next 2-3 days I'll have updated the code to the new version, and hopefully everything should be fixed. I'll do my best to leave your server settings and comp results untouched but I may have to reset them so the bot has a clean slate to work with. Sorry the bot's relaunch has been so shaky, I'm just doing my best to roll with the punches and use the latest technologies for you guys!\n\nlmk if u have questions on the [support server](https://discord.gg/vdxGtKK)!\n-ecuber#0566 (developer)")
             .setTimestamp()
             .setFooter(`Scrambler`, bot.user.displayAvatarURL());
 
