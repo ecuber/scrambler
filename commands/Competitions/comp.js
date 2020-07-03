@@ -33,8 +33,8 @@ module.exports = class extends Command {
             const enabledEvents = getEnabled(settings.comp.disabledEvents);
             let scrambles = [];
 
-            getEvents().forEach(event => {
-                message.guild.settings.update(`comp.events.${event}.results`, null);
+            getEvents().forEach(async event => {
+                await message.guild.settings.update(`comp.events.${event}.results`, null, { action: "remove" });
             });
 
             // Generates all scrambles and adds to the array

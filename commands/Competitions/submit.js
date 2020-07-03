@@ -54,13 +54,17 @@ module.exports = class extends Command {
                             let previousEntry, previousEntries;
                             // only performs checks on prevous entries if any results have been entered
                             if (results[0]) {
-                                previousEntries = results.filter(entry => entry.user.id == message.author.id); // any previous entries with matching user id (max 1)
-                                previousEntry = previousEntries && previousEntries[0] ? previousEntries[0] : null;
-                                previousEntry = previousEntry ? event == "fmc" ? previousEntry.average : formatTime(previousEntry.average) : null;
+                                if (results[0] == null) {
+                                    await settings.update(`comp.events.${event}.results`, results[0], { action: "remove" });
+                                } else {
+                                    previousEntries = results.filter(entry => entry.user.id == message.author.id); // any previous entries with matching user id (max 1)
+                                    previousEntry = previousEntries && previousEntries[0] ? previousEntries[0] : null;
+                                    previousEntry = previousEntry ? event == "fmc" ? previousEntry.average : formatTime(previousEntry.average) : null;
 
-                                // removes the user's existing entry
-                                if (previousEntries && previousEntry)
-                                    await settings.update(`comp.events.${event}.results`, previousEntries[0]);
+                                    // removes the user's existing entry
+                                    if (previousEntries && previousEntry)
+                                        await settings.update(`comp.events.${event}.results`, previousEntries[0]);
+                                }
                             }
 
                             // adds their new time to the array
