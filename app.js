@@ -41,7 +41,7 @@ client.gateways.guilds.schema
             getEvents().forEach(event => {
                 sub.add(event, s => {
                     s.add("count", "number", { default: countScrambles(event) });
-                    s.add("results", "any", { array: true, default: [] });
+                    s.add("results", "any", { array: true, default: [null] });
                 });
             });
         }))

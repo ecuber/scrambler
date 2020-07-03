@@ -50,6 +50,8 @@ module.exports = class extends Command {
                             }
 
                             const results = settings.get(`comp.events.${event}.results`); // array of objects
+                            if (results[0] == null)
+                                await settings.update(`comp.events.${event}.results`, null);
                             let previousEntry, previousEntries;
                             // only performs checks on prevous entries if any results have been entered
                             if (results) {
