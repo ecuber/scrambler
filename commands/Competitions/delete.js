@@ -19,16 +19,16 @@ module.exports = class extends Command {
         const settings = message.guild.settings;
         if (settings.comp.enabled) {
             if (settings.comp.active) {
-                user = user.id ? user.id : user;
+                user = user.id ? user : message.guild.members.cache.get(user);
                 if (user) {
                     if (params[0]) {
                         let usage = new Usage(this.client, "<y|n>", " ");
-                        let prompt = new TextPrompt(message, usage, { time: 15000, limit: 2 }).run(`Are you sure you want to delete these entries from user with ID ${user}? **Y**/n`);
+                        let prompt = new TextPrompt(message, usage, { time: 15000, limit: 2 }).run(`Are you sure you want to delete entries from ${user.username}#${user.discriminator} (ID: ${user.id})? **Y**/n`);
                         prompt.then(async response => {
                             if (response[0].toLowerCase().includes("y")) {
                                 for (let i = 0; i < params.length; i++) {
                                     if (params[i]) {
-                                        let results = settings.comp.events[params[i]].results;
+                                        let results = settings.get(`comp.events.${params[i]}.results`);
                                         let userTimes = results.filter(n => n.user.id == user.id);
                                         if (userTimes[0]) {
                                             await settings.update(`comp.events.${params[i]}.results`, userTimes[0]);
