@@ -76,7 +76,7 @@ module.exports = class extends Command {
             return message.send("Cannot change event settings while a competition is active!");
         const disabledEvents = message.guild.settings.comp.disabledEvents;
         let enabled = [], disabled = [], event = getEvent(params[0], "config");
-        if (params[0] !== "reset" && event) {
+        if (params[0] && params[0] !== "reset" && event) {
             // Sets scramble count
             if (params[1] != undefined && getInt(params[1])) {
                 let count = getInt(params[1]);
@@ -116,7 +116,7 @@ module.exports = class extends Command {
         const modRoles = message.guild.settings.modRoles;
         let enabled = [];
         let disabled = [];
-        if (params[0] !== "reset" && isRole(message.guild, params[0].id)) {
+        if (params[0] && params[0] !== "reset" && isRole(message.guild, params[0].id)) {
             for (let i = 0; i < params.length; i++) {
                 if (params[i] === "reset")
                     continue;
