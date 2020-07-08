@@ -93,7 +93,7 @@ module.exports = {
     countScrambles(event) {
         if (events[getEvent(event)])
             return events[getEvent(event)].scrambles;
-        throw new Error(`Unrecognized event: ${event}`);
+        return undefined;
     },
 
     /**

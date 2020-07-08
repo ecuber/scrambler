@@ -38,9 +38,11 @@ client.gateways.guilds.schema
         .add("disabledEvents", "string", { array: true, default: ["2x2x3", "ivy", "4bld", "5bld"] })
         .add("scrambles", sub => getEvents().forEach(event => sub.add(event, "string", { array: true })))
         .add("events", sub => {
-            getEvents().forEach(event => {
+            let events = getEvents();
+            events.unshift("0");
+            events.forEach(event => {
                 sub.add(event, s => {
-                    s.add("count", "number", { default: countScrambles(event) });
+                    s.add("count", "number", { default: countScrambles(event) ? countScrambles(event) : 0 });
                     s.add("results", "any", { array: true, default: [null] });
                 });
             });

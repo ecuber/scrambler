@@ -112,6 +112,10 @@ module.exports = class extends Command {
                             }
                         }
                     });
+                    if (!settings.get("comp.events.0")) {
+                        await settings.reset("comp.events");
+                        message.channel.send("Please note that any custom event settings (custom solve counts) have been reset to be updated with the latest version of Scrambler.");
+                    }
                     msgArr = condense(msgArr);
                     if (msgArr[0]) {
                         msgArr.forEach(block => {
