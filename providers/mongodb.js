@@ -11,8 +11,6 @@ module.exports = class extends Provider {
 
     async init() {
         const connection = mergeDefault({
-            host: settings.host,
-            port: settings.port,
             db: settings.db,
             options: settings.dbOptions
         }, this.client.options.providers.mongodb);

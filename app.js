@@ -1,9 +1,11 @@
+// eslint-disable-next-line no-unused-vars
+const dotenv = require("dotenv").config();
+
 const { Client } = require("klasa");
 const { getEvents, countScrambles } = require("./util/competition");
 const settings = require("./settings.json");
 const DBL = require("dblapi.js");
 const dbl = new DBL(process.env.DBL_KEY);
-const dotenv = require("dotenv").config();
 
 const client = new Client({
     fetchAllMembers: false,
