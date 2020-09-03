@@ -17,7 +17,7 @@ module.exports = class extends Provider {
             options: settings.dbOptions
         }, this.client.options.providers.mongodb);
 
-        const connectionString = connection.host;
+        const connectionString = process.env.MONGO_URI;
 
         const mongoClient = await Mongo.connect(
             connectionString,

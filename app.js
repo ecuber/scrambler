@@ -2,7 +2,8 @@ const { Client } = require("klasa");
 const { getEvents, countScrambles } = require("./util/competition");
 const settings = require("./settings.json");
 const DBL = require("dblapi.js");
-const dbl = new DBL(settings.dblKey);
+const dbl = new DBL(process.env.DBL_KEY);
+const dotenv = require("dotenv").config();
 
 const client = new Client({
     fetchAllMembers: false,
@@ -58,4 +59,4 @@ Client.defaultPermissionLevels
     .add(5, ({ guild, member }) => guild && guild.settings.modRoles.filter(role => member._roles.includes(role)).length > 0)
     .add(3, ({ guild, member }) => guild && !(guild.settings.banned.roles.filter(role => member._roles.includes(role)).length > 0) || guild.settings.banned.users.includes(member.id));
 
-client.login(settings.token);
+client.login(process.env.TOKEN);
