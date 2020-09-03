@@ -15,6 +15,6 @@ module.exports = class extends Event {
                 .addField("Owner", `**${guild.owner.user.username}#${guild.owner.user.discriminator}** [ID: ${guild.owner.id}]`)
                 .addField("Member Count", `${guild.memberCount}`)
                 .setTimestamp());
-        this.client.user.setActivity(`it's finally fixed | Scrambling cubes for ${this.client.guilds.cache.size} servers!`);
+        this.client.user.setActivity(`Scrambling cubes for ${this.client.guilds.cache.size} servers!`);
     }
 };
