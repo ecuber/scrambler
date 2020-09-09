@@ -4,8 +4,8 @@
   "description": "Scrambler is the original discord bot created for generating scrambles for twisty puzzles.\r This project uses [Scrambo](https://github.com/nickcolley/scrambo) for some scrambles, and Redi Cube scrambles are provided by xyzzy, sourced [here](https://torchlight.github.io/rediscrambler.js). All other scrambles and commands were written by the scrambler dev team.",
   "main": "app.js",
   "scripts": {
-    "test": "node app.js",
-    "start": "pm2 start app.js"
+    "dev": "nodemon app.js",
+    "start": "pm2-runtime start ecosystem.config.js --env production"
   },
   "repository": {
     "type": "git",
