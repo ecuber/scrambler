@@ -16,7 +16,7 @@ module.exports = class extends Event {
                 .setThumbnail(guild.iconURL())
                 .setTitle("Joined Guild:")
                 .addField("Name", `**${guild.name}** [ID: ${guild.id}]`)
-                .addField("Owner", `**${guild.owner.user.username}#${guild.owner.user.discriminator}** [ID: ${guild.owner.id}]`)
+                .addField("Owner", `**${guild.owner.user.username}#${guild.owner.user.discriminator}** [ID: ${guild.owner.user.id}]`)
                 .addField("Member Count", `${guild.memberCount}`)
                 .setTimestamp());
         this.client.user.setActivity(`Scrambling cubes for ${this.client.guilds.cache.size} servers!`);
