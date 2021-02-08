@@ -10,13 +10,14 @@ module.exports = class extends Event {
             this.client.emit("warn", `Blacklisted guild detected: ${guild.name} [${guild.id}]`);
         }
         console.log(`Joined guild: ${guild.name} [${guild.id}]`);
+        console.log(guild);
         this.client.channels.cache.get(guildLog).send(
             new MessageEmbed()
                 .setColor("#64d175")
                 .setThumbnail(guild.iconURL())
                 .setTitle("Joined Guild:")
                 .addField("Name", `**${guild.name}** [ID: ${guild.id}]`)
-                .addField("Owner", `**${guild.owner.user.username}#${guild.owner.user.discriminator}** [ID: ${guild.owner.user.id}]`)
+                // .addField("Owner", `**${guild.owner.user.username}#${guild.owner.user.discriminator}** [ID: ${guild.owner.id}]`)
                 .addField("Member Count", `${guild.memberCount}`)
                 .setTimestamp());
         this.client.user.setActivity(`Scrambling cubes for ${this.client.guilds.cache.size} servers!`);
