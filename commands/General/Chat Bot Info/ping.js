@@ -9,6 +9,6 @@ module.exports = class extends Command {
     }
 
     async run(message) {
-        return message.send(`Pong! \`${Math.floor(this.client.ws.ping)} ms\``);
+        return message.send(`pOng! \`${Math.floor(this.client.ws.ping)} ms\``);
     }
 };
