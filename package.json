@@ -1,42 +1,30 @@
 {
   "name": "scrambler",
-  "version": "3.0.0",
-  "description": "Scrambler is the original Discord bot created for generating scrambles for twisty puzzles.",
-  "main": "src/app.ts",
+  "version": "1.0.0",
+  "description": "Scrambler is the original discord bot created for generating scrambles for twisty puzzles.\r This project uses [Scrambo](https://github.com/nickcolley/scrambo) for some scrambles, and Redi Cube scrambles are provided by xyzzy, sourced [here](https://torchlight.github.io/rediscrambler.js). All other scrambles and commands were written by the scrambler dev team.",
+  "main": "app.js",
   "scripts": {
-    "dev": "nodemon src/app.ts --exec 'npx ts-node src/app.ts --project ./tsconfig.jso'",
-    "start": "pm2-runtime start ecosystem.config.js --env production",
-    "build": "tsc --build"
+    "dev": "nodemon app.js",
+    "start": "pm2-runtime start ecosystem.config.js --env production"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ecuber/scrambler.git"
   },
-  "author": "Elijah Sippel",
+  "author": "",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/ecuber/scrambler/issues"
   },
   "homepage": "https://github.com/ecuber/scrambler#readme",
   "dependencies": {
-    "dblapi.js": "^2.4.1",
-    "discord.js": "^12.5.1",
-    "discord.js-commando": "^0.12.2",
+    "dblapi.js": "^2.4.0",
+    "discord.js": "discordjs/discord.js",
     "dotenv": "^8.2.0",
-    "mongodb": "^3.6.4",
-    "nodemon": "^2.0.7",
-    "pm2": "^4.5.5",
+    "klasa": "dirigeants/klasa#v0.5.0",
+    "mongodb": "^3.5.8",
+    "nodemon": "^2.0.4",
+    "pm2": "^4.5.1",
     "scrambler-util": "^0.2.9"
-  },
-  "devDependencies": {
-    "@types/node": "^14.14.31",
-    "@typescript-eslint/eslint-plugin": "^4.16.1",
-    "@typescript-eslint/parser": "^4.16.1",
-    "eslint": "^7.12.1",
-    "eslint-config-standard": "^16.0.2",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^4.2.1",
-    "typescript": "^4.2.3"
   }
 }

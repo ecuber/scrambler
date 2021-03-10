@@ -17,6 +17,6 @@ All of Scrambler's commands have detailed documentation which can be found at ht
   - You may also suggest a command via the issue tracker or by contributing one directly.
 
 ## Bot Status:
-<a href="https://top.gg/bot/423530119836073986" >
-  <img src="https://top.gg/api/widget/423530119836073986.svg" alt="bot-stats" />
+<a href="https://discordbots.org/bot/423530119836073986" >
+  <img src="https://discordbots.org/api/widget/423530119836073986.svg" alt="scrambler" />
 </a>
