@@ -1,7 +1,0 @@
-{
-    "port": 27017,
-    "db": "Scrambler",
-    "dbOptions": {},
-    "prefix": "s!",
-    "guildLog": "455088142475591691"
-}
