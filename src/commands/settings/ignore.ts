@@ -56,6 +56,8 @@ class Ignore extends Command {
     const ignored: TextChannel[] = []
     const unignored: TextChannel[] = []
 
+    if (channels?.length < 1) { return msg.say(`You didn't specify any channels! ${usageString}`) }
+
     channels.forEach(channel => {
       const channelIndex = settings?.indexOf(channel.id)
       if (channelIndex !== -1) {
@@ -71,10 +73,10 @@ class Ignore extends Command {
   }
 
   all (msg: CommandoMessage, { channels }: { type: string, channels: TextChannel[] }) {
-    const ids = channels?.map(channel => channel.id)
+    const ids = channels.length > 0 ? channels.map(channel => channel.id) : []
     const guildChannels = msg.guild.channels.cache.filter(channel => channel instanceof TextChannel && !ids.includes(channel.id))
     msg.guild.settings.set('ignored', guildChannels.map(channel => channel.id))
-    return msg.say(`Successfully updated your settings! All channels will be ignored${channels ? ` except ${channels.join(', ')}.` : '.'}`)
+    return msg.say(`Successfully updated your settings! All channels will be ignored${channels.length > 0 ? ` except ${channels.join(', ')}.` : '.'}`)
   }
 
   reset (msg: CommandoMessage, args: { type: string, channels: TextChannel[] }) {

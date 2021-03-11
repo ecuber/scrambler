@@ -40,7 +40,7 @@ client.setProvider(
 // Inhibitor for ignored channels
 client.dispatcher.addInhibitor(msg => {
   const blockedChannels: string[] = msg.guild.settings.get('ignored')
-  return blockedChannels?.includes(msg.channel.id) ? 'channel blocked' : false
+  return blockedChannels?.includes(msg.channel.id) && msg.command.name !== 'ignore' ? 'channel blocked' : false
 })
 
 // Fires on ready event
