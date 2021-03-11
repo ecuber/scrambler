@@ -9,6 +9,7 @@ class Scramble extends Command {
       group: 'generators',
       memberName: 'clock',
       description: 'Generates scrambles for clock.',
+      guildOnly: true,
       throttling: {
         usages: 2,
         duration: 5

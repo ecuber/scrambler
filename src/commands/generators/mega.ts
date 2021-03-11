@@ -9,6 +9,7 @@ class Scramble extends Command {
       group: 'generators',
       memberName: 'mega',
       description: 'Generates scrambles for megaminx.',
+      guildOnly: true,
       throttling: {
         usages: 2,
         duration: 5

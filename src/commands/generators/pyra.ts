@@ -9,6 +9,7 @@ class Scramble extends Command {
       group: 'generators',
       memberName: 'pyra',
       description: 'Generates scrambles for pyraminx.',
+      guildOnly: true,
       throttling: {
         usages: 2,
         duration: 5

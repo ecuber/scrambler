@@ -9,6 +9,7 @@ class Scramble extends Command {
       group: 'generators',
       memberName: '3x3',
       description: 'Generates scrambles for 3x3 with options for BLD and FMC.',
+      guildOnly: true,
       throttling: {
         usages: 2,
         duration: 5

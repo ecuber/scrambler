@@ -9,6 +9,7 @@ class Scramble extends Command {
       group: 'generators',
       memberName: 'squan',
       description: 'Generates scrambles for square-1.',
+      guildOnly: true,
       throttling: {
         usages: 2,
         duration: 5

@@ -9,6 +9,7 @@ class Scramble extends Command {
       group: 'generators',
       memberName: 'redi',
       description: 'Generates scrambles for the redi cube.',
+      guildOnly: true,
       throttling: {
         usages: 2,
         duration: 5

@@ -9,6 +9,7 @@ class Scramble extends Command {
       group: 'generators',
       memberName: 'skewb',
       description: 'Generates scrambles for skewb/ivy cube.',
+      guildOnly: true,
       throttling: {
         usages: 2,
         duration: 5

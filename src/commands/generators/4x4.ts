@@ -9,6 +9,7 @@ class Scramble extends Command {
       group: 'generators',
       memberName: '4x4',
       description: 'Generates scrambles for 4x4 or 4BLD.',
+      guildOnly: true,
       throttling: {
         usages: 1,
         duration: 5
