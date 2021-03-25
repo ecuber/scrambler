@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon src/app.ts --exec 'npx --trace-warnings ts-node src/app.ts --project ./tsconfig.json'",
     "start": "pm2-runtime start ecosystem.config.js --env production",
-    "build": "tsc --build"
+    "build": "tsc --build",
+    "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'test/**/*.ts'"
   },
   "repository": {
     "type": "git",
@@ -30,15 +31,21 @@
     "scrambler-util": "^0.2.9"
   },
   "devDependencies": {
+    "@types/chai": "^4.2.15",
+    "@types/mocha": "^8.2.2",
     "@types/mongodb": "^3.6.9",
     "@types/node": "^14.14.31",
     "@typescript-eslint/eslint-plugin": "^4.16.1",
     "@typescript-eslint/parser": "^4.16.1",
+    "chai": "^4.3.4",
     "eslint": "^7.12.1",
     "eslint-config-standard": "^16.0.2",
+    "eslint-config-standard-with-typescript": "^20.0.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
+    "mocha": "^8.3.2",
+    "ts-node": "^9.1.1",
     "typescript": "^4.2.3"
   }
 }

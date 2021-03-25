@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import { stripIndents, oneLine } from 'common-tags'
-import { Command } from 'discord.js-commando'
+import { Message } from 'discord.js'
+import { Command, CommandoMessage } from 'discord.js-commando'
 
 class Prefix extends Command {
   constructor (client) {
@@ -29,26 +31,18 @@ class Prefix extends Command {
     })
   }
 
-  async run (msg, args: { prefix: string }) {
+  async run (msg: CommandoMessage, args: { prefix: string }): Promise<Message> {
     if (!args.prefix) {
       const prefix = msg.guild ? msg.guild.commandPrefix : this.client.commandPrefix
-      return msg.say(stripIndents`
+      return await msg.say(stripIndents`
         ${prefix ? `Your prefix is currently set to \`${prefix}\`.` : 'There is no command prefix.'} To change it, use ${msg.anyUsage('prefix <new prefix>')}.
       `)
-    }
-
-    if (msg.guild) {
-      if (!msg.member.hasPermission('ADMINISTRATOR') && !this.client.isOwner(msg.author)) {
-        return msg.reply('Only administrators may change the command prefix.')
-      }
-    } else if (!this.client.isOwner(msg.author)) {
-      return msg.reply('Only the bot owner(s) may change the global command prefix.')
     }
 
     // Save the prefix
     const lowercase = args.prefix.toLowerCase()
     const prefix = lowercase === 'none' ? '' : args.prefix
-    let response
+    let response: string
     if (lowercase === 'reset') {
       if (msg.guild) msg.guild.commandPrefix = null; else this.client.commandPrefix = null
       const current = this.client.commandPrefix ? `\`${this.client.commandPrefix}\`` : 'no prefix'

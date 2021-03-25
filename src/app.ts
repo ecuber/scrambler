@@ -3,6 +3,7 @@ import { MongoClient } from 'mongodb'
 import { MongoDBProvider } from 'commando-provider-mongo'
 import * as settings from '../settings'
 import path from 'path'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config()
 
 const client = new Commando.Client({
@@ -43,10 +44,32 @@ client.dispatcher.addInhibitor(msg => {
   return blockedChannels?.includes(msg.channel.id) && msg.command.name !== 'ignore' ? 'channel blocked' : false
 })
 
+const adminCommands = ['ignore', 'mod', 'op', 'config', 'prefix']
+client.dispatcher.addInhibitor(msg => {
+  if (msg.command === null) { return false }
+  const mods: string[] = msg.guild.settings.get('modRoles')
+  const ops: string[] = msg.guild.settings.get('ops')
+  const authorRoles = msg.member.roles.cache.map(role => role.id)
+  let isMod = false
+  if (mods !== undefined) {
+    mods.forEach(role => {
+      if (authorRoles.includes(role)) {
+        isMod = true
+      }
+    })
+  }
+  isMod = isMod || msg.member.hasPermission('MANAGE_GUILD') || client.isOwner(msg.author) || ops.includes(msg.author.id)
+  const result = adminCommands.includes(msg.command.memberName) && !isMod ? 'no perms' : false
+  if (result === 'no perms') {
+    msg.reply('You don\'t have permission to use this command!')
+  }
+  return result
+})
+
 // Fires on ready event
 client.once('ready', () => {
-  console.log(`Logged in as ${client.user.tag}! (${client.user.id})`)
-  client.user.setActivity(`Scrambling cubes for ${client.guilds.cache.size} servers!`)
+  console.log(`Logged in as ${client.user.tag}! (${client.user?.id !== null ? client.user.id : 'none'})`)
+  client.user?.setActivity(`Scrambling cubes for ${client.guilds.cache.size} servers!`)
 })
 
 client.on('error', console.error)
