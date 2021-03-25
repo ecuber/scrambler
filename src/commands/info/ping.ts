@@ -1,4 +1,4 @@
-import { Command } from 'discord.js-commando'
+import { Command, CommandoMessage } from 'discord.js-commando'
 
 class Ping extends Command {
   constructor (client) {
@@ -12,7 +12,7 @@ class Ping extends Command {
     })
   }
 
-  run (message) {
+  run (message: CommandoMessage): Promise<CommandoMessage> {
     return message.say(`pOng! \`${Math.floor(this.client.ws.ping)} ms\``)
   }
 }
