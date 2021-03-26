@@ -1,7 +1,7 @@
 import { Message, Role } from 'discord.js'
 import { Command, CommandoMessage } from 'discord.js-commando'
 
-const usageString = 'Correct syntax: s!ignore [view|add|remove|reset] [@role] [...]. For more help, see https://docs.scramblr.app/docs/util/config'
+const usageString = 'Correct syntax: s!mod [view|add|remove|reset] [@role] [...]. For more help, see https://docs.scramblr.app/docs/util/config'
 
 const commands = ['view', 'add', 'remove', 'reset'] as const
 type Option = typeof commands[number]
@@ -21,7 +21,7 @@ class Mod extends Command {
           type: 'string',
           oneOf: ['view', 'add', 'remove', 'reset'],
           prompt: usageString,
-          default: 'toggle'
+          default: 'view'
         },
         {
           key: 'roles',

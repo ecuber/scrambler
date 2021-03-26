@@ -132,8 +132,7 @@ export default {
   },
 
   /**
-     * Formats time from seconds to MM:SS.ss if necessary,
-     * otherwise rounds to 3 decimal places.
+     * Formats time from seconds to MM:SS.ss if necessary
      * @param {number} time A time in seconds
      * @returns {string} Formatted time string
      */

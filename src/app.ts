@@ -44,20 +44,18 @@ client.dispatcher.addInhibitor(msg => {
   return blockedChannels?.includes(msg.channel.id) && msg.command.name !== 'ignore' ? 'channel blocked' : false
 })
 
-const adminCommands = ['ignore', 'mod', 'op', 'config', 'prefix']
+const adminCommands = ['ignore', 'mod', 'op', 'ban', 'config', 'prefix']
 client.dispatcher.addInhibitor(msg => {
   if (msg.command === null) { return false }
-  const mods: string[] = msg.guild.settings.get('modRoles')
-  const ops: string[] = msg.guild.settings.get('ops')
+  const mods: string[] = msg.guild.settings.get('modRoles', [])
+  const ops: string[] = msg.guild.settings.get('ops', [])
   const authorRoles = msg.member.roles.cache.map(role => role.id)
   let isMod = false
-  if (mods !== undefined) {
-    mods.forEach(role => {
-      if (authorRoles.includes(role)) {
-        isMod = true
-      }
-    })
-  }
+  mods.forEach(role => {
+    if (authorRoles.includes(role)) {
+      isMod = true
+    }
+  })
   isMod = isMod || msg.member.hasPermission('MANAGE_GUILD') || client.isOwner(msg.author) || ops.includes(msg.author.id)
   const result = adminCommands.includes(msg.command.memberName) && !isMod ? 'no perms' : false
   if (result === 'no perms') {
