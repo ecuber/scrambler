@@ -1,7 +1,7 @@
 import { Command, CommandoMessage, version } from 'discord.js-commando'
-const { MessageEmbed, version: discordVersion } = require('discord.js')
+import D from 'discord.js'
 
-const formatTime = (time: number) => {
+const formatTime = (time: number): string => {
   const date = new Date(time * 1000)
   const days = date.getUTCDate() - 1
   const hours = date.getUTCHours()
@@ -36,9 +36,9 @@ class Stats extends Command {
     })
   }
 
-  run (message: CommandoMessage): Promise<CommandoMessage> {
+  async run (message: CommandoMessage): Promise<CommandoMessage> {
     const [users, guilds, channels, memory] = [0, 0, 0, 0]
-    return message.say(new MessageEmbed()
+    return message.say(new D.MessageEmbed()
       .setTitle('Bot Stats')
       .addField('Memory', `${(memory || process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB`, true)
       .addField('Uptime', formatTime(process.uptime()), true)
@@ -46,7 +46,7 @@ class Stats extends Command {
       .addField('Guilds', (guilds || this.client.guilds.cache.size).toLocaleString(), true)
       .addField('Channels', (channels || this.client.channels.cache.size).toLocaleString(), true)
       .addField('Node.js', process.version, true)
-      .addField('Discord.js', discordVersion, true)
+      .addField('Discord.js', D.version, true)
       .addField('Commando', version, true)
       .setFooter('Scrambler', this.client.user.displayAvatarURL())
       .setColor('RANDOM')
