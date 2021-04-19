@@ -26,7 +26,7 @@ You will need to create a bot user account to test from. See https://discord.com
 Save the token somewhere, you'll need it in a moment.
 
 ## MongoDB
-Scrambler runs on MongoDB, and as such you will need to create a mongodb database to develop from. 
+Scrambler runs on MongoDB, and as such you will need to create a mongodb database to develop from. You may pick either the local installation or the remote alternative, either one works. 
 
 
 ### Local installation
