@@ -12,9 +12,9 @@ Once you've added Scrambler, you can run the s!help command to view a list of th
 All of Scrambler's commands have detailed documentation which can be found at https://docs.scramblr.app/docs.
 
 ## Want to contribute to the project or report a bug?
-  - Scrambler was built using [Klasa](https://klasa.js.org/#/) v0.5.0. Klasa has since been discontinued. View their documentation [here](https://klasa.js.org/#/docs/klasa/v0.5.0/Getting%20Started/GettingStarted)
+  - For direct contribution please see [CONTRIBUTING.md](https://github.com/ecuber/scrambler/tree/master/.github/CONTRIBUTING.md) (~/.github/CONTRIBUTING.md)
   - The Scrambler support server is available [here](https://discord.gg/GeQvStw). There are channels marked for for bug reports and suggestions.
-  - You may also suggest a command via the issue tracker or by contributing one directly.
+  - You may also suggest a command via the issue tracker.
 
 ## Bot Status:
 <a href="https://top.gg/bot/423530119836073986" >

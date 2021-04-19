@@ -4,8 +4,8 @@
   "description": "Scrambler is the original Discord bot created for generating scrambles for twisty puzzles.",
   "main": "src/app.ts",
   "scripts": {
-    "dev": "nodemon --config nodemon.json src/app.ts --project ./tsconfig.json",
-    "start": "pm2-runtime start ecosystem.config.js --env production",
+    "start": "nodemon --config nodemon.json src/app.ts --project ./tsconfig.json",
+    "serve": "pm2-runtime start ecosystem.config.js --env production",
     "build": "tsc --build",
     "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'test/**/*.ts'"
   },
