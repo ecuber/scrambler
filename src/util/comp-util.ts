@@ -22,7 +22,7 @@ const variants = [
   'ivycube', 'ivy-cube', '2x2x3', 'tower'
 ] as const
 
-type Event = typeof variants[number]
+export type Event = typeof variants[number]
 
 // const getInt = (input: string): (number | null) => [...input].filter(char => !isNaN(parseInt(char))).length === input.length ? parseInt(input) : null
 

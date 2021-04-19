@@ -1,32 +1,32 @@
 import { Message, User } from 'discord.js'
 import { Command, CommandoMessage } from 'discord.js-commando'
 
-const usageString = 'Correct syntax: s!op [view|add|remove|reset] [@member] [...]. For more help, see https://docs.scramblr.app/docs/util/config'
+const usageString = 'Correct syntax: s!config [enable|disable|mode] [wca|single]. For more help, see https://docs.scramblr.app/docs/util/config'
 
-const commands = ['view', 'add', 'remove', 'reset'] as const
+const commands = ['enable', 'disable', 'mode', 'view'] as const
 type Option = typeof commands[number]
 
 class Op extends Command {
   constructor (client) {
     super(client, {
-      name: 'op',
-      aliases: ['operator', 'ops', 'operators'],
+      name: 'config',
+      aliases: ['settings'],
       group: 'settings',
-      memberName: 'op',
-      description: 'Manages your Scrambler operators.',
+      memberName: 'config',
+      description: 'Enables/disables competitions or sets the submission mode.',
       guildOnly: true,
       args: [
         {
           key: 'type',
           type: 'string',
-          oneOf: ['view', 'add', 'remove', 'reset'],
+          oneOf: ['view', 'enable', 'disable', 'mode'],
           prompt: usageString,
           default: 'toggle'
         },
         {
           key: 'users',
-          type: 'user',
-          infinite: true,
+          type: 'string',
+          oneOf: ['wca', 'single', ''],
           prompt: usageString,
           default: ['']
         }
