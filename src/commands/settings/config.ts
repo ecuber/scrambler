@@ -1,4 +1,4 @@
-import { Message, User } from 'discord.js'
+import { Message, MessageEmbed } from 'discord.js'
 import { Command, CommandoMessage } from 'discord.js-commando'
 
 const usageString = 'Correct syntax: s!config [enable|disable|mode] [wca|single]. For more help, see https://docs.scramblr.app/docs/util/config'
@@ -6,7 +6,19 @@ const usageString = 'Correct syntax: s!config [enable|disable|mode] [wca|single]
 const commands = ['enable', 'disable', 'mode', 'view'] as const
 type Option = typeof commands[number]
 
-class Op extends Command {
+interface CompConfig {
+  enabled: boolean
+  wca: boolean
+}
+
+interface Args {
+  type: Option
+  mode: 'wca' | 'single' | ''
+}
+
+const getConfig = (msg: CommandoMessage): CompConfig => msg.guild.settings.get('comp', { enabled: true, wca: true })
+
+class Config extends Command {
   constructor (client) {
     super(client, {
       name: 'config',
@@ -19,12 +31,12 @@ class Op extends Command {
         {
           key: 'type',
           type: 'string',
-          oneOf: ['view', 'enable', 'disable', 'mode'],
+          oneOf: [...commands],
           prompt: usageString,
-          default: 'toggle'
+          default: 'view'
         },
         {
-          key: 'users',
+          key: 'mode',
           type: 'string',
           oneOf: ['wca', 'single', ''],
           prompt: usageString,
@@ -34,59 +46,43 @@ class Op extends Command {
     })
   }
 
-  async run (msg: CommandoMessage, args: { type: Option, users: any }): Promise<Message> {
-    return await this[args.type](msg, args)
+  async run (msg: CommandoMessage, args: Args): Promise<Message> {
+    const config = getConfig(msg)
+    return await this[args.type](msg, args, config)
   }
 
-  async view (msg: CommandoMessage): Promise<Message> {
-    const users: string[] = msg.guild.settings.get('ops', [])
-    if (users?.length > 0) {
-      return msg.say(`The following users have moderator permissions: ${users.map(c => msg.guild.members.cache.get(c)).map(u => `${u.user.username}#${u.user.discriminator}`).join(', ')}`)
+  async enable (msg: CommandoMessage, args: Args, config: CompConfig): Promise<Message> {
+    if (!config.enabled) {
+      msg.guild.settings.set('comp', { ...config, enabled: !config.enabled })
+    }
+    return await msg.say('Competitions have successfully been enabled.')
+  }
+
+  async disable (msg: CommandoMessage, args: Args, config: CompConfig): Promise<Message> {
+    if (config.enabled) {
+      msg.guild.settings.set('comp', { ...config, enabled: !config.enabled })
+    }
+    return await msg.say('Competitions have successfully been disabled.')
+  }
+
+  async mode (msg: CommandoMessage, args: Args, config: CompConfig): Promise<Message> {
+    if (args.mode !== '') {
+      msg.guild.settings.set('comp', { ...config, wca: args.mode === 'wca' })
     } else {
-      return msg.say('You haven\'t set any moderator users.')
+      return msg.say(`Your submission mode is set to \`${config.wca ? 'WCA' : 'single'}\`.`)
     }
+    return msg.say('Successfully updated your submission mode.')
   }
 
-  async add (msg: CommandoMessage, args: { users: User[] }): Promise<Message> {
-    if (args.users?.length > 0) {
-      const clone: string[] = msg.guild.settings.get('ops', [])
-      args.users.forEach(user => {
-        if (!clone.includes(user.id)) {
-          clone.push(user.id)
-        }
-      })
-      await msg.guild.settings.set('ops', clone)
-      return msg.say(`Successfully updated your settings! Added ${args.users.map(u => `${u.username}#${u.discriminator}`).join(', ')} as ${args.users.length > 1 ? 'moderators.' : 'a moderator.'}.`)
-    }
-    return msg.say('You didn\'t specify any users, so no changes will be made.')
-  }
-
-  async remove (msg: CommandoMessage, args: { users: User[] }): Promise<Message> {
-    const removed: string[] = []
-    if (args.users?.length > 0) {
-      const current: string[] = msg.guild.settings.get('ops', [])
-      if (current.length !== 0) {
-        args.users.forEach(role => {
-          if (current.includes(role.id)) {
-            removed.push(...current.splice(current.indexOf(role.id), 1))
-          }
-        })
-      }
-    } else {
-      return msg.say('You didn\'t specify any users, so no changes will be made.')
-    }
-
-    return msg.say(
-      removed.length > 0
-        ? `Successfully updated your settings! Removed ${removed.map(r => msg.guild.members.cache.get(r)).map(u => `${u.user.username}#${u.user.discriminator}`).join(', ')}.`
-        : 'You haven\'t set any moderator users yet, so no changes were made.'
-    )
-  }
-
-  async reset (msg: CommandoMessage, args: { type: string, users: User[] }): Promise<Message> {
-    await msg.guild.settings.remove('ops')
-    return msg.say('You have removed all moderator users.')
+  async view (msg: CommandoMessage, args: Args, config: CompConfig): Promise<Message> {
+    return await msg.say(new MessageEmbed()
+      .setTitle('Competition Configuration')
+      .addField('Enabled', config.enabled ? 'Yes' : 'No', true)
+      .addField('Submission Type', config.wca ? 'WCA' : 'Single solve', true)
+      .setFooter('Scrambler', this.client.user.displayAvatarURL())
+      .setColor('RANDOM')
+      .setTimestamp())
   }
 }
 
-export default Op
+export default Config

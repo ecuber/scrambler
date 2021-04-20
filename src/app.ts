@@ -44,7 +44,9 @@ client.dispatcher.addInhibitor(msg => {
   return blockedChannels?.includes(msg.channel.id) && msg.command.name !== 'ignore' ? 'channel blocked' : false
 })
 
+// Member names of the commands that are restricted to those with permissions
 const adminCommands = ['ignore', 'mod', 'op', 'ban', 'config', 'prefix']
+// Blocks non-admins from using restricted commands
 client.dispatcher.addInhibitor(msg => {
   if (msg.command === null) { return false }
   const mods: string[] = msg.guild.settings.get('modRoles', [])
