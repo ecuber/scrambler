@@ -56,98 +56,108 @@ function parseEvent (input: string): Event {
 // const compare = (a, b): number => (a > b) ? 1 : ((b > a) ? -1 : 0)
 
 const allEvents = [...variants]
-export { Event, parseEvent, allEvents }
 
-export default {
-  getEvent,
-
-  /**
+/**
    * @param event - Event to check
    * @returns Whether or not the event is ranked by best result.
    */
-  isBestOf (event: Event): boolean {
-    const { best } = events[getEvent(event)]
-    return best !== undefined ? best : false
-  },
+function isBestOf (event: Event): boolean {
+  const { best } = events[getEvent(event)]
+  return best !== undefined ? best : false
+}
 
-  /**
+/**
      * Returns an array of top-level events that are not included in the array.
      * @param disabled disabled events
      * @returns Enabled events
      */
-  getEnabled (disabled: string[] = []): string[] {
-    const list: string[] = []
-    const tles = names.filter(event => event.level === 0)
-    tles.forEach(event => {
-      if (disabled.length === 0 || !disabled.includes(event.name)) { list.push(event.name) }
-    })
-    return list
-  },
+function getEnabled (disabled: string[] = []): string[] {
+  const list: string[] = []
+  const tles = names.filter(event => event.level === 0)
+  tles.forEach(event => {
+    if (disabled.length === 0 || !disabled.includes(event.name)) { list.push(event.name) }
+  })
+  return list
+}
 
-  /**
+/**
      * Returns an array of all primary event names.
      */
-  getEvents (): Event[] {
-    return names.filter(obj => obj.level === 0).map(obj => parseEvent(obj.name))
-  },
+function getEvents (): Event[] {
+  return names.filter(obj => obj.level === 0).map(obj => parseEvent(obj.name))
+}
 
-  /**
+/**
      * Utility function. Returns the scramble type for the specified event.
      * @param {string} event An event name or alias
      * @returns {string} Scramble type
      */
-  getType (event: Event): string {
-    return events[getEvent(event)].type
-  },
+function getType (event: Event): string {
+  return events[getEvent(event)].type
+}
 
-  /**
+/**
      * Returns the formatted & capitalized name of an event
      * @param {string} event An event name or alias
      * @returns {string} Formatted name
      */
-  getName (event: Event): string {
-    return events[getEvent(event)].name
-  },
+function getName (event: Event): string {
+  return events[getEvent(event)].name
+}
 
-  /**
+/**
      * Returns the number of scrambles for the specified event.
      * @param {string} event An event name or alias
      * @returns {Integer} Number of scrambles
      */
-  countScrambles (event: Event): (number) {
-    return events[getEvent(event)].scrambles
-  },
+function countScrambles (event: Event): (number) {
+  return events[getEvent(event)].scrambles
+}
 
-  /**
+/**
      * Returns an array of scrambles for the specified event.
      * @param {string} event A valid event name or alias (from scrambler-util built-in aliases)
      * @param {int} count A positive integer for the number of scrambles
      * @param {string} args Whether scrambles should have FMC or BLD moves added on. Applicable for 2x2-5x5.
      * @returns {Array<string>} Scrambles for this event
      */
-  getScrambles (
-    event: string,
-    count: number = this.countScrambles(event),
-    args: ('fmc' | 'bld' | null) = null) {
-    return cube(event, count, args)
-  },
+function getScrambles (
+  event: string,
+  count: number = this.countScrambles(event),
+  args: ('fmc' | 'bld' | null) = null): string[] {
+  return cube(event, count, args)
+}
 
-  /**
+/**
      * Formats time from seconds to MM:SS.ss if necessary
      * @param {number} time A time in seconds
      * @returns {string} Formatted time string
      */
-  formatTime (time: any): string {
-    if (time !== 'DNF') {
-      if (time >= 60) {
-        const m = Math.floor(time / 60)
-        let s = (time % 60).toFixed(2)
-        if (Math.floor(time % 60) < 10) { s = `0${s}` }
-        return `${m}:${s}`
-      } else {
-        return parseFloat(time).toFixed(2)
-      }
+function formatTime (time: any): string {
+  if (time !== 'DNF') {
+    if (time >= 60) {
+      const m = Math.floor(time / 60)
+      let s = (time % 60).toFixed(2)
+      if (Math.floor(time % 60) < 10) { s = `0${s}` }
+      return `${m}:${s}`
+    } else {
+      return parseFloat(time).toFixed(2)
     }
-    return 'DNF'
   }
+  return 'DNF'
+}
+
+export {
+  Event,
+  parseEvent,
+  allEvents,
+  getEvent,
+  isBestOf,
+  getEnabled,
+  getEvents,
+  getType,
+  getName,
+  countScrambles,
+  getScrambles,
+  formatTime
 }

@@ -1,16 +1,23 @@
 import { Message, MessageEmbed } from 'discord.js'
 import { Command, CommandoMessage } from 'discord.js-commando'
-import { Event } from '../../util/comp-util'
+import { Event, getEvents, countScrambles } from '../../util/comp-util'
 
 const usageString = 'Correct syntax: s!config [enable|disable|mode] [wca|single]. For more help, see https://docs.scramblr.app/docs/util/config'
 
 const commands = ['enable', 'disable', 'mode', 'view'] as const
 type Option = typeof commands[number]
 
+type Events = Array<{
+  name: Event
+  enabled: boolean
+  count: number
+}>
+
 interface CompConfig {
   running: boolean
   enabled: boolean
   wca: boolean
+  events: Events
 }
 
 interface Args {
@@ -19,7 +26,15 @@ interface Args {
   args: string[]
 }
 
-const getConfig = (msg: CommandoMessage): CompConfig => msg.guild.settings.get('comp', { enabled: true, wca: true })
+const defaultEvents = getEvents().map((name: Event) => {
+  return {
+    name,
+    enabled: true,
+    count: countScrambles(name)
+  }
+})
+
+const getConfig = (msg: CommandoMessage): CompConfig => msg.guild.settings.get('comp', { enabled: true, running: false, wca: true, events: defaultEvents })
 
 class Config extends Command {
   constructor (client) {
