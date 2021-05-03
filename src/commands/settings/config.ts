@@ -1,5 +1,6 @@
 import { Message, MessageEmbed } from 'discord.js'
 import { Command, CommandoMessage } from 'discord.js-commando'
+import { Event } from '../../util/comp-util'
 
 const usageString = 'Correct syntax: s!config [enable|disable|mode] [wca|single]. For more help, see https://docs.scramblr.app/docs/util/config'
 
@@ -7,13 +8,15 @@ const commands = ['enable', 'disable', 'mode', 'view'] as const
 type Option = typeof commands[number]
 
 interface CompConfig {
+  running: boolean
   enabled: boolean
   wca: boolean
 }
 
 interface Args {
   type: Option
-  mode: 'wca' | 'single' | ''
+  mode: 'wca' | 'single' | 'event' | 'count' | ''
+  args: string[]
 }
 
 const getConfig = (msg: CommandoMessage): CompConfig => msg.guild.settings.get('comp', { enabled: true, wca: true })
@@ -38,9 +41,16 @@ class Config extends Command {
         {
           key: 'mode',
           type: 'string',
-          oneOf: ['wca', 'single', ''],
+          oneOf: ['wca', 'single', 'event', 'count', ''],
           prompt: usageString,
           default: ['']
+        },
+        {
+          key: 'args',
+          type: 'string',
+          prompt: usageString,
+          default: [''],
+          infinite: true
         }
       ]
     })
@@ -48,6 +58,9 @@ class Config extends Command {
 
   async run (msg: CommandoMessage, args: Args): Promise<Message> {
     const config = getConfig(msg)
+    if (config.running) {
+      return await msg.reply('You can\'t edit the configuration right now because there\'s a competition running!')
+    }
     return await this[args.type](msg, args, config)
   }
 
@@ -72,6 +85,21 @@ class Config extends Command {
       return msg.say(`Your submission mode is set to \`${config.wca ? 'WCA' : 'single'}\`.`)
     }
     return msg.say('Successfully updated your submission mode.')
+  }
+
+  /*
+   * INFO ABOUT ARGUMENTS
+   * args.args is a string array that will have all the command arguments that are relevant
+   * to these subcommands.
+   *
+   * Read "Argument structure" section of  issue #12 (https://github.com/ecuber/scrambler/issues/12)
+   */
+  async event (msg: CommandoMessage, args: Args, config: CompConfig): Promise<Message> {
+    return await msg.say('in progress')
+  }
+
+  async count (msg: CommandoMessage, args: Args, config: CompConfig): Promise<Message> {
+    return await msg.say('in progress')
   }
 
   async view (msg: CommandoMessage, args: Args, config: CompConfig): Promise<Message> {
