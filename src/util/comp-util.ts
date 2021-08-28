@@ -27,7 +27,7 @@ type Event = typeof variants[number]
 // const getInt = (input: string): (number | null) => [...input].filter(char => !isNaN(parseInt(char))).length === input.length ? parseInt(input) : null
 
 /**
- * Returns the event name. If string is not a valid event name, returns null
+ * Returns the event name. If string is not a valid event name, throws TypeError
  * @param {string} string event input
  * @param {string} context whether or not in config
  * @returns {string} event name

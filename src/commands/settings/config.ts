@@ -1,10 +1,10 @@
 import { Message, MessageEmbed } from 'discord.js'
 import { Command, CommandoMessage } from 'discord.js-commando'
-import { Event, getEvents, countScrambles } from '../../util/comp-util'
+import { Event, getEvents, countScrambles, getEvent } from '../../util/comp-util'
 
 const usageString = 'Correct syntax: s!config [enable|disable|mode] [wca|single]. For more help, see https://docs.scramblr.app/docs/util/config'
 
-const commands = ['enable', 'disable', 'mode', 'view'] as const
+const commands = ['enable', 'disable', 'mode', 'view', 'edit'] as const
 type Option = typeof commands[number]
 
 type Events = Array<{
@@ -45,6 +45,7 @@ class Config extends Command {
       memberName: 'config',
       description: 'Enables/disables competitions or sets the submission mode.',
       guildOnly: true,
+      defaultHandling: false,
       args: [
         {
           key: 'type',
@@ -81,21 +82,21 @@ class Config extends Command {
 
   async enable (msg: CommandoMessage, args: Args, config: CompConfig): Promise<Message> {
     if (!config.enabled) {
-      msg.guild.settings.set('comp', { ...config, enabled: !config.enabled })
+      await msg.guild.settings.set('comp', { ...config, enabled: !config.enabled })
     }
     return await msg.say('Competitions have successfully been enabled.')
   }
 
   async disable (msg: CommandoMessage, args: Args, config: CompConfig): Promise<Message> {
     if (config.enabled) {
-      msg.guild.settings.set('comp', { ...config, enabled: !config.enabled })
+      await msg.guild.settings.set('comp', { ...config, enabled: !config.enabled })
     }
     return await msg.say('Competitions have successfully been disabled.')
   }
 
   async mode (msg: CommandoMessage, args: Args, config: CompConfig): Promise<Message> {
-    if (args.mode !== '') {
-      msg.guild.settings.set('comp', { ...config, wca: args.mode === 'wca' })
+    if (['wca', 'single'].includes(args.mode)) {
+      await msg.guild.settings.set('comp', { ...config, wca: args.mode === 'wca' })
     } else {
       return msg.say(`Your submission mode is set to \`${config.wca ? 'WCA' : 'single'}\`.`)
     }
@@ -109,12 +110,58 @@ class Config extends Command {
    *
    * Read "Argument structure" section of  issue #12 (https://github.com/ecuber/scrambler/issues/12)
    */
-  async event (msg: CommandoMessage, args: Args, config: CompConfig): Promise<Message> {
-    return await msg.say('in progress')
-  }
+  async edit (msg: CommandoMessage, { mode, args }: Args, config: CompConfig): Promise<Message> {
+    const { events, running } = config
+    if (!running) {
+      if (mode === 'event') {
+        if (args.length > 0) {
+          const validEvents = args.map(toToggle => {
+            const casted: Event = toToggle as any
+            let eventName = null
+            try {
+              eventName = getEvent(casted)
+            } catch (e: any) {
+              // the event is not a valid event name or alias
+            }
+            return eventName
+          }).filter(e => e !== null)
 
-  async count (msg: CommandoMessage, args: Args, config: CompConfig): Promise<Message> {
-    return await msg.say('in progress')
+          const enabled = []
+          const disabled = []
+
+          if (validEvents.length > 0) {
+            const updated = events.map(e => {
+              if (validEvents.includes(e.name)) {
+                if (e.enabled) {
+                  disabled.push(e.name)
+                } else {
+                  enabled.push(e.name)
+                }
+                return { ...e, enabled: !e.enabled }
+              }
+              return e
+            })
+            await msg.guild.settings.set('comp', { ...config, events: updated })
+            const eExists = enabled.length > 0
+            const dExists = disabled.length > 0
+            const and = enabled.length > 0 && disabled.length > 0 ? 'and ' : ''
+            return await msg.say(`
+              Successfully ${eExists ? `enabled ${enabled.join(', ')}` : ''}${and}${dExists ? `disabled ${disabled.join(', ')}` : ''}.
+            `)
+          } else {
+            return await msg.say('None of the event names you specified were valid... make sure you spelled them correctly!')
+          }
+        }
+      } else if (mode === 'count') {
+        if (args.length === 2) {
+          const casted: Event = args[0] as any
+        } else {
+          return await msg.say('The correct syntax for this command is `s!config edit count <event name> <scramble count>`')
+        }
+      }
+    } else {
+      return await msg.say('You can\'t change event settings while a competition is running!')
+    }
   }
 
   async view (msg: CommandoMessage, args: Args, config: CompConfig): Promise<Message> {
