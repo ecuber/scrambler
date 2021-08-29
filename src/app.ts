@@ -1,77 +1,88 @@
-import Commando from 'discord.js-commando'
-import { MongoClient } from 'mongodb'
-import { MongoDBProvider } from 'commando-provider-mongo'
+/* eslint-disable @typescript-eslint/no-var-requires */
+// import { MongoClient } from 'mongodb'
+// import { MongoDBProvider } from 'commando-provider-mongo'
 import * as settings from '../settings'
-import path from 'path'
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+import { REST } from '@discordjs/rest'
+import {
+  Routes,
+  APIApplicationCommandOption
+} from 'discord-api-types/v9'
+import {
+  Interaction,
+  Client,
+  Intents,
+  Collection
+} from 'discord.js'
+import fs from 'fs'
+import path from 'node:path'
+
 require('dotenv').config()
 
-const client = new Commando.Client({
-  commandPrefix: settings.prefix,
-  owner: settings.owner,
-  invite: 'https://discord.gg/bzKHzXc'
-})
+interface CommandData {
+  name: string
+  description: string
+  options: APIApplicationCommandOption[]
+  default_permission: boolean
+}
 
-// Client command registry
-client.registry
-  .registerDefaultTypes()
-  .registerDefaultGroups()
-  .registerDefaultCommands({
-    ping: false,
-    unknownCommand: false,
-    prefix: false
-  })
-  .registerGroups([
-    ['generators', 'Scramble Generators'],
-    ['competitions', 'Competitions'],
-    ['relays', 'Multi-event Relays'],
-    ['settings', 'Bot Configuration'],
-    ['info', 'Bot Information']
-  ])
-  .registerCommandsIn({
-    filter: /^([^.].*)\.(js|ts)$/,
-    dirname: path.join(__dirname, 'commands')
-  })
+interface Command {
+  data: CommandData
+  run: (interaction: Interaction) => Promise<void>
+  help: any
+}
 
-// MongoDB provider automatically sets everything up
-client.setProvider(
-  MongoClient.connect(process.env.MONGO_URI, { useUnifiedTopology: true }).then(client => new MongoDBProvider(client, 'Scrambler'))
-).catch(console.error)
+const client = new Client({ intents: [Intents.FLAGS.GUILDS] })
+const commands = new Collection<string, Command>()
 
-// Inhibitor for ignored channels
-client.dispatcher.addInhibitor(msg => {
-  const blockedChannels: string[] = msg.guild.settings.get('ignored')
-  return blockedChannels?.includes(msg.channel.id) && msg.command.name !== 'ignore' ? 'channel blocked' : false
-})
+const commandFiles = fs.readdirSync(path.join(__dirname, 'commands')).filter(file => file.endsWith('.ts'))
+const dataArr = []
 
-// Member names of the commands that are restricted to those with permissions
-const adminCommands = ['ignore', 'mod', 'op', 'ban', 'config', 'prefix']
-// Blocks non-admins from using restricted commands
-client.dispatcher.addInhibitor(msg => {
-  if (msg.command === null) { return false }
-  const mods: string[] = msg.guild.settings.get('modRoles', [])
-  const ops: string[] = msg.guild.settings.get('ops', [])
-  const authorRoles = msg.member.roles.cache.map(role => role.id)
-  let isMod = false
-  mods.forEach(role => {
-    if (authorRoles.includes(role)) {
-      isMod = true
-    }
-  })
-  isMod = isMod || msg.member.hasPermission('MANAGE_GUILD') || client.isOwner(msg.author) || ops.includes(msg.author.id)
-  const result = adminCommands.includes(msg.command.memberName) && !isMod ? 'no perms' : false
-  if (result === 'no perms') {
-    msg.reply('You don\'t have permission to use this command!')
+const clientId = process.env.NODE_ENV === 'production' ? settings.prodId : settings.devId
+const guildId = '423525617598988288'
+
+for (const file of commandFiles) {
+  const command: Command = require(`./commands/${file}`)
+  commands.set(command.data.name, command)
+  dataArr.push(command.data)
+}
+
+const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
+
+(async () => {
+  try {
+    console.log('Started refreshing application (/) commands.')
+
+    await rest.put(
+      process.env.NODE_ENV === 'development'
+        ? Routes.applicationGuildCommands(clientId, guildId) // register commands as guild commands in development (instantly updates)
+        : Routes.applicationCommands(clientId), // otherwise, register commands globally (updates slower, up to an hour)
+      { body: dataArr }
+    )
+
+    console.log('Successfully reloaded application (/) commands.')
+  } catch (error) {
+    console.error(error)
   }
-  return result
-})
+})()
 
-// Fires on ready event
+// Client events
 client.once('ready', () => {
-  console.log(`Logged in as ${client.user.tag}! (${client.user?.id !== null ? client.user.id : 'none'})`)
-  client.user?.setActivity(`Scrambling cubes for ${client.guilds.cache.size} servers!`)
+  console.log('Ready!')
 })
 
-client.on('error', console.error)
+client.on('interactionCreate', async interaction => {
+  if (!interaction.isCommand()) return
+
+  const command = commands.get(interaction.commandName)
+
+  if (!command) return
+
+  try {
+    await command.run(interaction)
+  } catch (error) {
+    console.error(error)
+    await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true })
+  }
+})
 
 client.login(process.env.TOKEN)
