@@ -4,30 +4,33 @@ import cube from 'scrambler-util'
 
 export const data = new SlashCommandBuilder()
   .setName('2x2')
-  .setDescription('Generates 1-12 2x2 scrambles.')
+  .setDescription('Generate a 2x2 scramble.')
   .addIntegerOption(option =>
     option.setName('count')
-      .setDescription('How many scrambles to generate (default 1)')
+      .setDescription('Optional amount of scrambles to generate (1 - 12)')
   )
-  .addBooleanOption(option =>
-    option.setName('bld')
-      .setDescription('Whether to add blindfolded rotations to the end of the scramble(s)')
+  .addStringOption(option =>
+    option.setName('type')
+      .setDescription('Add blindfolded rotations to the scramble.')
+      .addChoice('bld', 'bld')
   ).toJSON()
 
 export const help = {
   name: data.name,
   description: data.description,
-  usage: '/2x2 <scramble count>'
+  usage: '/2x2 <count>'
 }
 
 export const run = async (interaction: CommandInteraction): Promise<void> => {
-  const count = interaction.options.get('count')?.value ?? 1
-  const bld = interaction.options.get('bld')?.value ?? false
-  const bounded = count < 1 ? 1 : count > 12 ? 12 : count
-  const scrambles: string[] = cube('222', bounded, bld ? 'bld' : null)
+  const type = interaction.options.get('type')?.value ?? false
+  let count = interaction.options.get('count')?.value || 1
+  count = Math.min(Math.abs(Number(count)), 12)
+
+  const scrambles: string[] = cube('222', count, type)
   let scrambleStr = ''
-  for (let i = 0; i < scrambles.length; i++) {
+  for (let i = 0; i < count; i++) {
     scrambleStr += `${count > 1 ? `${i + 1}: ` : ''}${scrambles[i]}\n\n`
   }
+
   return await interaction.reply(scrambleStr)
 }
