@@ -35,15 +35,12 @@ const client = new Client({ intents: [Intents.FLAGS.GUILDS] })
 const commands = new Collection<string, Command>()
 
 const commandFiles = fs.readdirSync(path.join(__dirname, 'commands')).filter(file => file.endsWith('.ts'))
-const dataArr = []
 
 const clientId = process.env.NODE_ENV === 'production' ? settings.prodId : settings.devId
-const guildId = '423525617598988288'
 
 for (const file of commandFiles) {
   const command: Command = require(`./commands/${file}`)
   commands.set(command.data.name, command)
-  dataArr.push(command.data)
 }
 
 const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
@@ -54,9 +51,9 @@ const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
 
     await rest.put(
       process.env.NODE_ENV === 'development'
-        ? Routes.applicationGuildCommands(clientId, guildId) // register commands as guild commands in development (instantly updates)
+        ? Routes.applicationGuildCommands(clientId, settings.guildId) // register commands as guild commands in development (instantly updates)
         : Routes.applicationCommands(clientId), // otherwise, register commands globally (updates slower, up to an hour)
-      { body: dataArr }
+      { body: commands.map(command => command.data) }
     )
 
     console.log('Successfully reloaded application (/) commands.')
@@ -66,15 +63,12 @@ const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
 })()
 
 // Client events
-client.once('ready', () => {
-  console.log('Ready!')
-})
+client.once('ready', () => { console.log('Ready!') })
 
 client.on('interactionCreate', async interaction => {
   if (!interaction.isCommand()) return
 
   const command = commands.get(interaction.commandName)
-
   if (!command) return
 
   try {
