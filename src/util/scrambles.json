@@ -1,0 +1,30 @@
+{
+    "clock" : {
+        "max": 5,
+        "fullName": "clock"
+    },
+    "mega" : {
+        "max": 5,
+        "fullName": "megaminx"
+    },
+    "pyra" : {
+        "max": 12,
+        "fullName": "pyraminx"
+    },
+    "redi" : {
+        "max": 12,
+        "fullName": "redi cube"
+    },
+    "skweb" : {
+        "max": 12,
+        "fullName": "skweb"
+    },
+    "sq1" : {
+        "max": 12,
+        "fullName": "square-1"
+    },
+    "tower" : {
+        "max": 12,
+        "fullName": "2x2x3"
+    }
+}
