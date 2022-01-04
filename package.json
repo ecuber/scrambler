@@ -19,6 +19,9 @@
     "url": "https://github.com/ecuber/scrambler/issues"
   },
   "homepage": "https://github.com/ecuber/scrambler#readme",
+  "engines": {
+    "node": "16.13.1"
+  },
   "dependencies": {
     "@discordjs/builders": "^0.6.0",
     "@discordjs/rest": "^0.1.0-canary.0",

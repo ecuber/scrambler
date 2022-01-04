@@ -1,11 +1,12 @@
 import { expect } from 'chai'
 // import assert from 'assert'
 import { it, describe } from 'mocha'
-import util, { Event, parseEvent } from '../src/util/comp-util'
+import * as util from '../src/util/comp-util'
+import { Event } from '../src/util/comp-util'
 import aliases = require('../src/util/aliases.json')
 
 const compare = (a, b): number => (a > b) ? 1 : ((b > a) ? -1 : 0)
-const primaries: Event[] = Object.keys(aliases).map(name => parseEvent(name)).sort((a, b) => compare(a, b))
+const primaries: Event[] = Object.keys(aliases).map(name => util.parseEvent(name)).sort((a, b) => compare(a, b))
 
 describe('getEvent()', () => {
   it('supports primary names', () => {
