@@ -35,12 +35,20 @@ export default (name: string, max: number, bld: string, fmc: string, fullName: s
     let parsedName = fullName.replace(/x/g, '')
     parsedName = fullName.charAt(1) === 'x' ? parsedName.length === 2 ? parsedName + parsedName.slice(-1) : parsedName : name
 
+    if (name === '4x4') {
+      await interaction.reply('Preparing scrambles... (this may take a moment)')
+    }
+
     const scrambles: string[] = cube(parsedName, count, type)
     let scrambleStr = ''
     for (let i = 0; i < count; i++) {
       scrambleStr += `${count > 1 ? `${i + 1}: ` : ''}${scrambles[i]}\n\n`
     }
 
+    if (name === '4x4') {
+      await interaction.editReply(scrambleStr)
+      return
+    }
     return await interaction.reply(scrambleStr)
   }
 

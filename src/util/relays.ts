@@ -67,7 +67,7 @@ const funky = [
 
 export const relays: Relay[] = [...NxNs, ...funky]
 
-const relayScrambles = (relay: Relay): string => {
+const relayScrambles = async (relay: Relay): Promise<string> => {
   let scrambleStr = ''
   relay.scrambles.forEach(event => {
     scrambleStr += `**${event.label}:** ${event.getScramble()}\n\n`
@@ -86,6 +86,8 @@ type Builder = (relay: Relay) => (interaction: CommandInteraction) => Promise<vo
 
 export const runBuilder: Builder = (relay: Relay) => {
   return async (interaction: CommandInteraction) => {
-    interaction.reply(relayScrambles(relay))
+    await interaction.reply('Preparing scrambles... (this may take a moment)')
+    const scrambles = await relayScrambles(relay)
+    await interaction.editReply(scrambles)
   }
 }
