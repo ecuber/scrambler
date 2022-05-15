@@ -2,7 +2,7 @@ import { SlashCommandBuilder } from '@discordjs/builders'
 import D, { CommandInteraction } from 'discord.js'
 import { client } from '../app'
 
-export const data = new SlashCommandBuilder()
+const data = new SlashCommandBuilder()
   .setName('stats')
   .setDescription('Displays Scrambler bot stats.')
   .toJSON()
@@ -30,7 +30,7 @@ const formatTime = (time: number): string => {
   }
 }
 
-export const run = async (interaction: CommandInteraction): Promise<void> => {
+const run = async (interaction: CommandInteraction): Promise<void> => {
   const [users, guilds, channels, memory] = [0, 0, 0, 0]
   const statsEmbed = new D.MessageEmbed()
     .setTitle('Bot Stats')
@@ -47,3 +47,5 @@ export const run = async (interaction: CommandInteraction): Promise<void> => {
   //  TODO: This is just for test purposes, the link needs updating.
   return interaction.reply({ embeds: [statsEmbed] })
 }
+
+export default { data, run }

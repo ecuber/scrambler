@@ -7,10 +7,9 @@ import { Routes, APIApplicationCommandOption } from 'discord-api-types/v9'
 import { Interaction, Client, Intents, Collection, MessageEmbed, TextChannel } from 'discord.js'
 import { dataBuilder, relays, runBuilder } from './util/relays'
 import scrambleFunc from './commands/scrambles/scramble'
-import fs from 'fs'
-import path from 'path'
 
 import scrambleList from './util/scrambles.json'
+import { otherCommands } from './commands'
 
 require('dotenv').config()
 
@@ -31,14 +30,6 @@ export const client = new Client({ intents: [Intents.FLAGS.GUILDS] })
 const clientId = process.env.NODE_ENV === 'production' ? settings.prodId : settings.devId
 
 export const commands = new Collection<string, Command>()
-const commandFiles = fs.readdirSync(path.join(__dirname, 'commands')).filter(file => file.endsWith('.ts'))
-
-for (const file of commandFiles) {
-  const command: Command = require(`./commands/${file}`)
-  commands.set(command.data.name, command)
-}
-
-// const scrambleFunc = require('./commands/scrambles/scramble.ts')
 
 //  Create NNN scrambles
 for (let i = 1, max: number, bld: string, fmc: string; i < 8; i++, bld = '', fmc = '') {
@@ -63,6 +54,11 @@ relays.forEach(relay => {
     run: runBuilder(relay)
   }
   commands.set(relay.name, relayCmd)
+})
+
+// Create non-scramble commands
+otherCommands.forEach(command => {
+  commands.set(command.data.name, command as Command)
 })
 
 const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);

@@ -2,14 +2,14 @@ import { SlashCommandBuilder } from '@discordjs/builders'
 import D, { CommandInteraction } from 'discord.js'
 import { commands } from '../app'
 
-export const data = new SlashCommandBuilder()
+const data = new SlashCommandBuilder()
   .setName('scrambles')
   .setDescription('Sends a list of available commands.')
   .toJSON()
 
 const filtered = ['invite', 'scrambles', 'stats']
 
-export const run = async (interaction: CommandInteraction): Promise<void> => {
+const run = async (interaction: CommandInteraction): Promise<void> => {
   const cmdsEmbed = new D.MessageEmbed()
     .setDescription('Scrambler supports scrambles for the following events:')
   commands.forEach(cmd => {
@@ -20,3 +20,5 @@ export const run = async (interaction: CommandInteraction): Promise<void> => {
   })
   return interaction.reply({ embeds: [cmdsEmbed] })
 }
+
+export default { data, run }
