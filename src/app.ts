@@ -5,12 +5,13 @@ import * as settings from '../settings'
 import { REST } from '@discordjs/rest'
 import { Routes, APIApplicationCommandOption } from 'discord-api-types/v9'
 import { Interaction, Client, Intents, Collection } from 'discord.js'
+import { dataBuilder, relays, runBuilder } from './util/relays'
 import fs from 'fs'
 import path from 'path'
 
 require('dotenv').config()
 
-interface CommandData {
+export interface CommandData {
   name: string
   description: string
   options: APIApplicationCommandOption[]
@@ -22,10 +23,10 @@ interface Command {
   run: (interaction: Interaction) => Promise<void>
 }
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] })
+export const client = new Client({ intents: [Intents.FLAGS.GUILDS] })
 const clientId = process.env.NODE_ENV === 'production' ? settings.prodId : settings.devId
 
-const commands = new Collection<string, Command>()
+export const commands = new Collection<string, Command>()
 const commandFiles = fs.readdirSync(path.join(__dirname, 'commands')).filter(file => file.endsWith('.ts'))
 
 for (const file of commandFiles) {
@@ -51,6 +52,15 @@ for (const name in scrambleList) {
   const scramble: Command = scrambleFunc.default(name, scrambleList[name].max, '', '', scrambleList[name].fullName)
   commands.set(scramble.data.name, scramble)
 }
+
+// Relays
+relays.forEach(relay => {
+  const relayCmd: Command = {
+    data: dataBuilder(relay.name, relay.description),
+    run: runBuilder(relay)
+  }
+  commands.set(relay.name, relayCmd)
+})
 
 const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
 

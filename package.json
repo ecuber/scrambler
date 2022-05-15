@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/ecuber/scrambler#readme",
   "engines": {
-    "node": "16.13.1"
+    "node": ">=16.x"
   },
   "dependencies": {
     "@discordjs/builders": "^0.6.0",
