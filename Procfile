@@ -1,1 +1,1 @@
-worker: yarn start
+worker: yarn build && yarn serve
