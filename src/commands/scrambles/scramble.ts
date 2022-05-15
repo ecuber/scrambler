@@ -1,8 +1,9 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
 import { CommandInteraction } from 'discord.js'
 import cube from 'scrambler-util'
+import { CommandData } from '../../app'
 
-export default (name: string, max: number, bld: string, fmc: string, fullName: string = name): object => {
+export default (name: string, max: number, bld: string, fmc: string, fullName: string = name): { data: CommandData, run: (interaction: CommandInteraction) => Promise<void> } => {
   const data = new SlashCommandBuilder()
     .setName(name)
     .setDescription(`Generate a ${fullName} scramble.`)
@@ -17,13 +18,13 @@ export default (name: string, max: number, bld: string, fmc: string, fullName: s
         .setDescription('Add blindfolded rotations to the scramble, or make a fewest moves challenge.')
         .addChoice(bld, bld)
         .addChoice(fmc, fmc)
-    ).toJSON()
+    )
   } else if (bld) {
     data.addStringOption(option =>
       option.setName('type')
         .setDescription('Add blindfolded rotations to the scramble.')
         .addChoice(bld, bld)
-    ).toJSON()
+    )
   }
 
   const run = async (interaction: CommandInteraction): Promise<void> => {
@@ -43,5 +44,5 @@ export default (name: string, max: number, bld: string, fmc: string, fullName: s
     return await interaction.reply(scrambleStr)
   }
 
-  return { data, run }
+  return { data: data.toJSON(), run }
 }

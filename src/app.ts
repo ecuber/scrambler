@@ -6,8 +6,11 @@ import { REST } from '@discordjs/rest'
 import { Routes, APIApplicationCommandOption } from 'discord-api-types/v9'
 import { Interaction, Client, Intents, Collection, MessageEmbed, TextChannel } from 'discord.js'
 import { dataBuilder, relays, runBuilder } from './util/relays'
+import scrambleFunc from './commands/scrambles/scramble'
 import fs from 'fs'
 import path from 'path'
+
+import scrambleList from './util/scrambles.json'
 
 require('dotenv').config()
 
@@ -35,7 +38,7 @@ for (const file of commandFiles) {
   commands.set(command.data.name, command)
 }
 
-const scrambleFunc = require('./commands/scrambles/scramble.ts')
+// const scrambleFunc = require('./commands/scrambles/scramble.ts')
 
 //  Create NNN scrambles
 for (let i = 1, max: number, bld: string, fmc: string; i < 8; i++, bld = '', fmc = '') {
@@ -43,14 +46,13 @@ for (let i = 1, max: number, bld: string, fmc: string; i < 8; i++, bld = '', fmc
   bld = i <= 5 ? 'bld' : null
   fmc = i === 3 ? 'fmc' : null
 
-  const scramble: Command = scrambleFunc.default(`${i}x${i}`, max, bld, fmc)
+  const scramble: Command = scrambleFunc(`${i}x${i}`, max, bld, fmc)
   commands.set(scramble.data.name, scramble)
 }
 
 //  Everything else listed in scrambles.json
-const scrambleList = require('./util/scrambles.json')
 for (const name in scrambleList) {
-  const scramble: Command = scrambleFunc.default(name, scrambleList[name].max, '', '', scrambleList[name].fullName)
+  const scramble: Command = scrambleFunc(name, scrambleList[name].max, '', '', scrambleList[name].fullName)
   commands.set(scramble.data.name, scramble)
 }
 
