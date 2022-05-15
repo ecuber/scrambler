@@ -4,7 +4,7 @@
 import * as settings from '../settings'
 import { REST } from '@discordjs/rest'
 import { Routes, APIApplicationCommandOption } from 'discord-api-types/v9'
-import { Interaction, Client, Intents, Collection } from 'discord.js'
+import { Interaction, Client, Intents, Collection, MessageEmbed, TextChannel } from 'discord.js'
 import { dataBuilder, relays, runBuilder } from './util/relays'
 import fs from 'fs'
 import path from 'path'
@@ -24,6 +24,7 @@ interface Command {
 }
 
 export const client = new Client({ intents: [Intents.FLAGS.GUILDS] })
+
 const clientId = process.env.NODE_ENV === 'production' ? settings.prodId : settings.devId
 
 export const commands = new Collection<string, Command>()
@@ -80,7 +81,10 @@ const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
 })()
 
 // Client events
-client.once('ready', () => { console.log('Ready!') })
+client.once('ready', () => {
+  console.log('Scrambler is online!')
+  client.user.setPresence({ activities: [{ name: `Scrambling cubes for ${client.guilds.cache.size ?? 0} servers! | Try me with /scrambles` }], status: 'online' })
+})
 
 client.on('interactionCreate', async interaction => {
   if (!interaction.isCommand()) return
@@ -94,6 +98,44 @@ client.on('interactionCreate', async interaction => {
     console.error(error)
     await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true })
   }
+})
+
+client.on('guildCreate', async guild => {
+  console.log(`Joined guild: ${guild.name} (${guild.id})`)
+  const guildLog = await client.channels.fetch(settings.guildLog) as TextChannel
+  if (guildLog.isText) {
+    guildLog.send({
+      embeds: [
+        new MessageEmbed()
+          .setColor('#64d175')
+          .setThumbnail(guild.iconURL())
+          .setTitle('Joined Guild:')
+          .addField('Name', `**${guild.name}** [ID: ${guild.id}]`)
+          .addField('Member Count', `${guild.memberCount}`)
+          .setTimestamp()
+      ]
+    })
+  }
+  client.user.setPresence({ activities: [{ name: `Scrambling cubes for ${client.guilds.cache.size ?? 0} servers! | Try me with /scrambles` }], status: 'online' })
+})
+
+client.on('guildDelete', async guild => {
+  console.log(`Left guild: ${guild.name} (${guild.id})`)
+  const guildLog = await client.channels.fetch(settings.guildLog) as TextChannel
+  if (guildLog.isText) {
+    guildLog.send({
+      embeds: [
+        new MessageEmbed()
+          .setColor('#d1646d')
+          .setThumbnail(guild.iconURL())
+          .setTitle('Left Guild:')
+          .addField('Name', `**${guild.name}** [ID: ${guild.id}]`)
+          .addField('Member Count', `${guild.memberCount}`)
+          .setTimestamp()
+      ]
+    })
+  }
+  client.user.setPresence({ activities: [{ name: `Scrambling cubes for ${client.guilds.cache.size ?? 0} servers! | Try me with /scrambles` }], status: 'online' })
 })
 
 client.login(process.env.TOKEN)
