@@ -8,7 +8,7 @@ const data = new SlashCommandBuilder()
 
 const run = async (interaction: CommandInteraction): Promise<void> => {
   //  TODO: This is just for test purposes, the link needs updating.
-  return interaction.reply('Scrambler can be invited here! :arrow_right: https://discordapp.com/oauth2/authorize?client_id=423530119836073986&permissions=130048&scope=bot')
+  return interaction.reply('Scrambler can be invited here! :arrow_right: https://discord.com/api/oauth2/authorize?client_id=423530119836073986&permissions=277025409024&scope=bot%20applications.commands')
 }
 
 export default { data, run }
