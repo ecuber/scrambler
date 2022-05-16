@@ -25,7 +25,8 @@ interface Command {
   run: (interaction: Interaction) => Promise<void>
 }
 
-export const client = new Client({ intents: [Intents.FLAGS.GUILDS] })
+// disable the s!help deprecation warning after July 31, 2022
+export const client = new Client({ intents: [Intents.FLAGS.GUILDS, new Date() < new Date('2022-07-31T23:59:59') ? Intents.FLAGS.GUILD_MESSAGES : undefined] })
 
 const clientId = process.env.NODE_ENV === 'production' ? settings.prodId : settings.devId
 
@@ -134,6 +135,13 @@ client.on('guildDelete', async guild => {
     })
   }
   client.user.setPresence({ activities: [{ name: `Scrambling cubes for ${client.guilds.cache.size ?? 0} servers! | Try me with /scrambles` }], status: 'online' })
+})
+
+// only works if GUILD_MESSAGES intent is included.
+client.on('messageCreate', async message => {
+  if (message.content === 's!help' || message.content === '@scrambler#6144 help') {
+    await message.channel.send('Scrambler now uses slash commands. Please try `/scrambles` to see available commands.')
+  }
 })
 
 client.login(process.env.TOKEN)
