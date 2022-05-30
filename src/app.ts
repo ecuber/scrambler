@@ -1,17 +1,20 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-// import { MongoClient } from 'mongodb'
-// import { MongoDBProvider } from 'commando-provider-mongo'
 import * as settings from '../settings'
 import { REST } from '@discordjs/rest'
 import { Routes, APIApplicationCommandOption } from 'discord-api-types/v9'
 import { Interaction, Client, Intents, Collection, MessageEmbed, TextChannel } from 'discord.js'
+import { AutoPoster } from 'topgg-autoposter'
+
 import { dataBuilder, relays, runBuilder } from './util/relays'
 import scrambleFunc from './commands/scrambles/scramble'
-
 import scrambleList from './util/scrambles.json'
 import { otherCommands } from './commands'
 
 require('dotenv').config()
+
+/* *******************************
+             TYPES
+ ********************************/
 
 export interface CommandData {
   name: string
@@ -24,6 +27,16 @@ interface Command {
   data: CommandData
   run: (interaction: Interaction) => Promise<void>
 }
+
+/* *******************************
+      SETUP & COMMAND LOADER
+ ********************************/
+
+export const db = mongoose.connect(process.env.MONGO_URI, (err) => {
+  if (err) {
+    console.error(err)
+  }
+})
 
 // disable the s!help deprecation warning after July 31, 2022
 export const client = new Client({ intents: [Intents.FLAGS.GUILDS, new Date() < new Date('2022-07-31T23:59:59') ? Intents.FLAGS.GUILD_MESSAGES : undefined] })
@@ -57,10 +70,14 @@ relays.forEach(relay => {
   commands.set(relay.name, relayCmd)
 })
 
-// Create non-scramble commands
+// Non-scramble commands
 otherCommands.forEach(command => {
   commands.set(command.data.name, command as Command)
 })
+
+/* *******************************
+     REGISTER SLASH COMMANDS
+ ********************************/
 
 const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
 
@@ -79,7 +96,10 @@ const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
   }
 })()
 
-// Client events
+/* *******************************
+         EVENT HANDLERS
+ ********************************/
+
 client.once('ready', () => {
   console.log('Scrambler is online!')
   client.user.setPresence({ activities: [{ name: `Scrambling cubes for ${client.guilds.cache.size ?? 0} servers! | Try me with /scrambles` }], status: 'online' })
@@ -157,3 +177,13 @@ To further customize bot permissions, you may find some useful information in th
 })
 
 client.login(process.env.TOKEN)
+
+/* *******************************
+      POST STATS TO TOP.GG
+ ********************************/
+
+const ap = AutoPoster(process.env.DBL_KEY, client)
+
+ap.on('posted', () => {
+  console.log('Successfully posted stats to Top.gg!')
+})
