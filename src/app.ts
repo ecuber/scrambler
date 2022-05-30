@@ -32,12 +32,6 @@ interface Command {
       SETUP & COMMAND LOADER
  ********************************/
 
-export const db = mongoose.connect(process.env.MONGO_URI, (err) => {
-  if (err) {
-    console.error(err)
-  }
-})
-
 // disable the s!help deprecation warning after July 31, 2022
 export const client = new Client({ intents: [Intents.FLAGS.GUILDS, new Date() < new Date('2022-07-31T23:59:59') ? Intents.FLAGS.GUILD_MESSAGES : undefined] })
 
