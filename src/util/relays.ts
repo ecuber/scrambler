@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
 import { CommandInteraction } from 'discord.js'
 import cube from 'scrambler-util'
-import { CommandData } from '../app'
+import { CommandData, trackCmd } from '../app'
 import { getType, Event } from './comp-util'
 
 interface SubEvent { label: string, getScramble: () => string }
@@ -89,5 +89,6 @@ export const runBuilder: Builder = (relay: Relay) => {
     await interaction.reply('Preparing scrambles... (this may take a moment)')
     const scrambles = await relayScrambles(relay)
     await interaction.editReply(scrambles)
+    await trackCmd(relay.name, interaction.guild)
   }
 }

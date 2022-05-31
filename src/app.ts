@@ -2,10 +2,11 @@
 import * as settings from '../settings'
 import { REST } from '@discordjs/rest'
 import { Routes, APIApplicationCommandOption } from 'discord-api-types/v9'
-import { Interaction, Client, Intents, Collection, MessageEmbed, TextChannel } from 'discord.js'
+import { Interaction, Client, Intents, Collection, MessageEmbed, TextChannel, Guild } from 'discord.js'
 import { AutoPoster } from 'topgg-autoposter'
 
 import { dataBuilder, relays, runBuilder } from './util/relays'
+import * as db from './util/db'
 import scrambleFunc from './commands/scrambles/scramble'
 import scrambleList from './util/scrambles.json'
 import { otherCommands } from './commands'
@@ -34,6 +35,29 @@ interface Command {
 
 // disable the s!help deprecation warning after July 31, 2022
 export const client = new Client({ intents: [Intents.FLAGS.GUILDS, new Date() < new Date('2022-07-31T23:59:59') ? Intents.FLAGS.GUILD_MESSAGES : undefined] })
+
+db.connect()
+  .then(() => {
+    console.log('Successfully connected to database.')
+  })
+  .catch((err) => {
+    console.error('Error while connecting to db:', err)
+  })
+
+export const trackCmd = async (cmdName: string, cmdGuild: Guild): Promise<void> => {
+  console.log(db.db)
+  if (db.db !== undefined) {
+    await db.db.collection('stats').findOneAndUpdate(
+      {},
+      {
+        $inc: { [cmdName]: 1 }
+      },
+      {
+        upsert: true
+      }
+    )
+  }
+}
 
 const clientId = process.env.NODE_ENV === 'production' ? settings.prodId : settings.devId
 
@@ -176,8 +200,10 @@ client.login(process.env.TOKEN)
       POST STATS TO TOP.GG
  ********************************/
 
-const ap = AutoPoster(process.env.DBL_KEY, client)
+if (process.env.NODE_ENV === 'production') {
+  const ap = AutoPoster(process.env.DBL_KEY, client)
 
-ap.on('posted', () => {
-  console.log('Successfully posted stats to Top.gg!')
-})
+  ap.on('posted', () => {
+    console.log('Successfully posted stats to Top.gg!')
+  })
+}

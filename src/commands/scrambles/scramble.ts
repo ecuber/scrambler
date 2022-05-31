@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
 import { CommandInteraction } from 'discord.js'
 import cube from 'scrambler-util'
-import { CommandData } from '../../app'
+import { CommandData, trackCmd } from '../../app'
 
 export default (name: string, max: number, bld: string, fmc: string, fullName: string = name): { data: CommandData, run: (interaction: CommandInteraction) => Promise<void> } => {
   const data = new SlashCommandBuilder()
@@ -49,7 +49,8 @@ export default (name: string, max: number, bld: string, fmc: string, fullName: s
       await interaction.editReply(scrambleStr)
       return
     }
-    return await interaction.reply(scrambleStr)
+    await interaction.reply(scrambleStr)
+    await trackCmd(name, interaction.guild)
   }
 
   return { data: data.toJSON(), run }
