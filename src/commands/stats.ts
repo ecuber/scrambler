@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
-import D, { CommandInteraction } from 'discord.js'
+import D, { CommandInteraction, Guild } from 'discord.js'
 import { client } from '../app'
 
 const data = new SlashCommandBuilder()
@@ -31,7 +31,8 @@ const formatTime = (time: number): string => {
 }
 
 const run = async (interaction: CommandInteraction): Promise<void> => {
-  const [users, guilds, channels, memory] = [0, 0, 0, 0]
+  const [guilds, channels, memory] = [0, 0, 0]
+  const users = client.guilds.cache.toJSON().map((guild: Guild) => guild.memberCount).reduce((a, b) => a + b)
   const statsEmbed = new D.MessageEmbed()
     .setTitle('Bot Stats')
     .addField('Memory', `${(memory || process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB`, true)

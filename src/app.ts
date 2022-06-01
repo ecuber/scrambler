@@ -45,7 +45,7 @@ db.connect()
   })
 
 export const trackCmd = async (cmdName: string, cmdGuild: Guild): Promise<void> => {
-  console.log(db.db)
+  // console.log(db.db)
   if (db.db !== undefined) {
     await db.db.collection('stats').findOneAndUpdate(
       {},
