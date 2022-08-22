@@ -42,7 +42,7 @@ function mkEvent (tuple: [string, Event]): SubEvent {
 }
 
 const fg = [
-  ['OH', '333'], ['Feet', '333'], ['Clock', 'clock'], ['Square-1', 'sq1'],
+  ['OH', '333'], ['Clock', 'clock'], ['Square-1', 'sq1'],
   ['Pyraminx', 'pyra'], ['Skewb', 'skewb'], ['Megaminx', 'mega']
 ].map(tuple => mkEvent(tuple as [string, Event]))
 
