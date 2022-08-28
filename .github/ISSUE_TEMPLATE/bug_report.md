@@ -1,12 +1,3 @@
----
-name: Bug report
-about: Create a report to help us improve
-title: ''
-labels: ''
-assignees: ecuber
-
----
-
 ### Describe the bug
 A clear and concise description of what the bug is. (1-3 sentences)
 
@@ -14,7 +5,7 @@ A clear and concise description of what the bug is. (1-3 sentences)
 Steps to reproduce the behavior:
 1. Have '...' permissions
 2. Bot has '...' permissions
-3. Run '...' command
+3. Run `/...` command
 4. See error
 
 ### Expected behavior
