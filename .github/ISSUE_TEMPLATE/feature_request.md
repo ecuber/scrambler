@@ -1,3 +1,12 @@
+---
+name: Feature request
+about: Suggest an idea for this project
+title: ''
+labels: enhancement
+assignees: ecuber
+
+---
+
 <!--Feel free to add to/omit any part of this template as you see fit.-->
 
 ### Describe the feature you'd like
