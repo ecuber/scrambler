@@ -33,7 +33,7 @@ interface Command {
       SETUP & COMMAND LOADER
  ********************************/
 
-export const client = new Client({ intents: [Intents.FLAGS.GUILDS] })
+export const client = new Client({ intents: [Intents.FLAGS.GUILDS], shards: 'auto' })
 
 db.connect()
   .then(() => {
