@@ -174,6 +174,14 @@ client.on('guildDelete', async guild => {
   client.user.setPresence({ activities: [{ name: `Scrambling cubes for ${client.guilds.cache.size ?? 0} servers! | Try me with /scrambles` }], status: 'online' })
 })
 
+client.on('shardError', error => {
+  console.error('A websocket connection encountered an error:', error)
+})
+
+process.on('unhandledRejection', error => {
+  console.error('Unhandled promise rejection:', error)
+})
+
 client.login(process.env.TOKEN)
 
 /* *******************************

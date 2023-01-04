@@ -29,7 +29,7 @@ export default (name: string, max: number, bld: string, fmc: string, fullName: s
 
   const run = async (interaction: CommandInteraction): Promise<void> => {
     const type = interaction.options.get('type')?.value ?? false
-    let count = interaction.options.get('count')?.value || 1
+    let count = interaction.options.get('count')?.value ?? 1
     count = Math.min(Math.abs(Number(count)), max)
 
     let parsedName = fullName.replace(/x/g, '')
