@@ -6,4 +6,4 @@ const manager = new ShardingManager('./src/app.ts', { token: process.env.TOKEN, 
 
 manager.on('shardCreate', shard => { console.log(`Launched shard ${shard.id}`) })
 
-manager.spawn()
+manager.spawn({ amount: 'auto', delay: 15500, timeout: 60000 })
