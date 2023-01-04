@@ -30,7 +30,9 @@
     /* Advanced Options */
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+
+    "strictNullChecks": false
   },
   "include": ["src", "test"],
   "exclude": ["node_modules", "dist"]

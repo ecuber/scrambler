@@ -33,8 +33,6 @@ interface Command {
       SETUP & COMMAND LOADER
  ********************************/
 
-// disable the s!help deprecation warning after July 31, 2022
-// export const client = new Client({ intents: [Intents.FLAGS.GUILDS, new Date() < new Date('2022-07-31T23:59:59') ? Intents.FLAGS.GUILD_MESSAGES : undefined] })
 export const client = new Client({ intents: [Intents.FLAGS.GUILDS] })
 
 db.connect()
@@ -175,25 +173,6 @@ client.on('guildDelete', async guild => {
   }
   client.user.setPresence({ activities: [{ name: `Scrambling cubes for ${client.guilds.cache.size ?? 0} servers! | Try me with /scrambles` }], status: 'online' })
 })
-
-// only works if GUILD_MESSAGES intent is included.
-// client.on('messageCreate', async message => {
-//   const content = message.content.toLowerCase()
-//   if (content === 's!help' || content === '<@423530119836073986> help') {
-//     await message.channel.send(`
-// Scrambler now uses slash commands. Please try \`/scrambles\` to see available commands.
-
-// If these commands don't appear for you:
-// 1. Try reinviting the bot using this link:
-// 🔗 https://discord.com/api/oauth2/authorize?client_id=423530119836073986&permissions=277025409024&scope=bot%20applications.commands
-
-// 2. Check if users have permission to use the commands in your channel/server settings.
-
-// To further customize bot permissions, you may find some useful information in the following article:
-// 🔗 <https://discord.com/blog/slash-commands-permissions-discord-apps-bots>
-// `)
-//   }
-// })
 
 client.login(process.env.TOKEN)
 
