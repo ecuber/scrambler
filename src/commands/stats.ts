@@ -39,7 +39,7 @@ const run = async (interaction: CommandInteraction): Promise<void> => {
     client.shard.broadcastEval(c => c.guilds.cache.reduce((acc, guild) => acc + guild.channels.cache.size, 0))
   ]
 
-  return Promise.all(promises)
+  Promise.all(promises)
     .then(async (values) => {
       const guilds = (values[0] as number[]).reduce((acc, guildCount) => acc + guildCount, 0)
       const users = (values[1] as number[]).reduce((acc, memberCount) => acc + memberCount, 0)
