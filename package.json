@@ -5,7 +5,7 @@
   "main": "src/app.ts",
   "scripts": {
     "start": "nodemon --config nodemon.json src/cluster.ts --project ./tsconfig.json",
-    "serve": "pm2-runtime start ecosystem.config.js --env production",
+    "serve": "pm2 start ecosystem.config.js --env production",
     "build": "tsc --build",
     "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'test/**/*.ts'"
   },
