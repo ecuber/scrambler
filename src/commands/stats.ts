@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
-import D, { CommandInteraction } from 'discord.js'
-import { client } from '../app'
+import D, { CommandInteraction, Guild } from 'discord.js'
+import { ExtClient } from '../app'
+// import { client } from '../app'
 
 const data = new SlashCommandBuilder()
   .setName('stats')
@@ -33,32 +34,33 @@ const formatTime = (time: number): string => {
 const run = async (interaction: CommandInteraction): Promise<void> => {
   const memory = 0
 
+  const client: ExtClient = interaction.client
+
   const promises = [
-    client.shard.fetchClientValues('guilds.cache.size'),
-    client.shard.broadcastEval(c => c.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)),
-    client.shard.broadcastEval(c => c.guilds.cache.reduce((acc, guild) => acc + guild.channels.cache.size, 0))
+    await client.cluster.fetchClientValues('guilds.cache.size'),
+    await client.cluster.broadcastEval(c => c.guilds.cache.reduce((acc: number, guild: Guild) => acc + guild.memberCount, 0)),
+    await client.cluster.broadcastEval(c => c.guilds.cache.reduce((acc: number, guild: Guild) => acc + guild.channels.cache.size, 0))
   ]
 
-  Promise.all(promises)
-    .then(async (values) => {
-      const guilds = (values[0] as number[]).reduce((acc, guildCount) => acc + guildCount, 0)
-      const users = (values[1] as number[]).reduce((acc, memberCount) => acc + memberCount, 0)
-      const channels = (values[2] as number[]).reduce((acc, channelCount) => acc + channelCount, 0)
-      const statsEmbed = new D.MessageEmbed()
-        .setTitle('Bot Stats')
-        .addField('Memory', `${(memory || process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB`, true)
-        .addField('Uptime', formatTime(process.uptime()), true)
-        .addField('Users', users.toLocaleString(), true)
-        .addField('Guilds', guilds.toLocaleString(), true)
-        .addField('Shards', client.shard.count.toLocaleString(), true)
-        .addField('Channels', (channels).toLocaleString(), true)
-        .addField('Node.js', process.version, true)
-        .addField('Discord.js', D.version, true)
-        .setFooter('Scrambler', client.user.displayAvatarURL())
-        .setColor('RANDOM')
-        .setTimestamp()
-      return interaction.reply({ embeds: [statsEmbed] })
-    })
+  const guilds = promises[0].reduce((acc: number, guildCount: number) => acc + guildCount, 0)
+  const users = promises[1].reduce((acc: number, memberCount: number) => acc + memberCount, 0)
+  const channels = promises[2].reduce((acc: number, channelCount: number) => acc + channelCount, 0)
+  const statsEmbed = new D.MessageEmbed()
+    .setTitle('Bot Stats')
+    .addFields([
+      { name: 'Memory', value: `${(memory || process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB`, inline: true },
+      { name: 'Uptime', value: formatTime(process.uptime()), inline: true },
+      { name: 'Users', value: users.toLocaleString(), inline: true },
+      { name: 'Guilds', value: guilds.toString(), inline: true },
+      { name: 'Shards', value: client.cluster.count.toString(), inline: true },
+      { name: 'Channels', value: channels.toString(), inline: true },
+      { name: 'Node.js', value: process.version, inline: true },
+      { name: 'Discord.js', value: D.version, inline: true }
+    ])
+    .setFooter({ text: 'Scrambler', iconURL: client.user.displayAvatarURL() })
+    .setColor('RANDOM')
+    .setTimestamp()
+  return interaction.reply({ embeds: [statsEmbed] })
 }
 
 export default { data, run }

@@ -10,6 +10,7 @@ import * as db from './util/db'
 import scrambleFunc from './commands/scrambles/scramble'
 import scrambleList from './util/scrambles.json'
 import { otherCommands } from './commands'
+import { ClusterClient, getInfo } from 'discord-hybrid-sharding'
 
 require('dotenv').config()
 
@@ -33,7 +34,17 @@ interface Command {
       SETUP & COMMAND LOADER
  ********************************/
 
-export const client = new Client({ intents: [Intents.FLAGS.GUILDS], shards: 'auto' })
+export interface ExtClient extends Client {
+  cluster?: ClusterClient<Client>
+}
+
+const client: ExtClient = new Client({
+  intents: [Intents.FLAGS.GUILDS],
+  shards: getInfo().SHARD_LIST, // An array of shards that will get spawned
+  shardCount: getInfo().TOTAL_SHARDS // Total number of shards
+})
+
+client.cluster = new ClusterClient(client) // initialize the Client, so we access the .broadcastEval()
 
 db.connect()
   .then(() => {
