@@ -128,9 +128,11 @@ const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
          EVENT HANDLERS
  ********************************/
 
-client.once('ready', () => {
+client.once('ready', async () => {
   console.log('Scrambler is online!')
-  client.user.setPresence({ activities: [{ name: `Scrambling cubes for ${client.guilds.cache.size ?? 0} servers! | Try me with /scrambles` }], status: 'online' })
+  const clusterGuilds = await client.cluster.fetchClientValues('guilds.cache.size')
+  const guilds = clusterGuilds.reduce((acc: number, guildCount: number) => acc + guildCount, 0)
+  client.user.setPresence({ activities: [{ name: `Scrambling cubes for ${guilds as number} servers! | Try me with /scrambles` }], status: 'online' })
 })
 
 client.on('interactionCreate', async interaction => {
