@@ -149,7 +149,7 @@ client.on('interactionCreate', async interaction => {
   }
 })
 
-function handleGuildUpdate (guild: Guild): { log: TextChannel } {
+async function handleGuildUpdate (guild: Guild): { log: TextChannel } {
   const log = await client.cluster.broadcastEval(`this.channels.cache.fetch(${settings.guildLog})`) as TextChannel
   const clusterGuilds = await client.cluster.fetchClientValues('guilds.cache.size')
   const guilds = clusterGuilds.reduce((acc: number, guildCount: number) => acc + guildCount, 0)
