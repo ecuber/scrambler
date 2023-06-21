@@ -149,42 +149,55 @@ client.on('interactionCreate', async interaction => {
   }
 })
 
+function handleGuildUpdate (guild: Guild): { log: TextChannel } {
+  const log = await client.cluster.broadcastEval(`this.channels.cache.fetch(${settings.guildLog})`) as TextChannel
+  const clusterGuilds = await client.cluster.fetchClientValues('guilds.cache.size')
+  const guilds = clusterGuilds.reduce((acc: number, guildCount: number) => acc + guildCount, 0)
+  client.user.setPresence({ activities: [{ name: `Scrambling cubes for ${guilds as number} servers! | Try me with /scrambles` }], status: 'online' })
+
+  return { log }
+}
+
 client.on('guildCreate', async guild => {
   console.log(`Joined guild: ${guild.name} (${guild.id})`)
-  const guildLog = await client.channels.fetch(settings.guildLog) as TextChannel
-  if (guildLog.isText) {
-    guildLog.send({
+  const { log } = handleGuildUpdate(guild)
+
+  if (log.isText) {
+    log.send({
       embeds: [
         new MessageEmbed()
           .setColor('#64d175')
           .setThumbnail(guild.iconURL())
           .setTitle('Joined Guild:')
-          .addField('Name', `**${guild.name}** [ID: ${guild.id}]`)
-          .addField('Member Count', `${guild.memberCount}`)
+          .addFields([
+            { name: 'Name', value: `**${guild.name}** [ID: ${guild.id}]` },
+            { name: 'Member Count', value: `${guild.memberCount}` }
+          ])
           .setTimestamp()
       ]
     })
   }
-  client.user.setPresence({ activities: [{ name: `Scrambling cubes for ${client.guilds.cache.size ?? 0} servers! | Try me with /scrambles` }], status: 'online' })
 })
 
 client.on('guildDelete', async guild => {
   console.log(`Left guild: ${guild.name} (${guild.id})`)
-  const guildLog = await client.channels.fetch(settings.guildLog) as TextChannel
-  if (guildLog.isText) {
-    guildLog.send({
+  const { log } = handleGuildUpdate(guild)
+
+  if (log.isText) {
+    log.send({
       embeds: [
         new MessageEmbed()
           .setColor('#d1646d')
           .setThumbnail(guild.iconURL())
           .setTitle('Left Guild:')
-          .addField('Name', `**${guild.name}** [ID: ${guild.id}]`)
-          .addField('Member Count', `${guild.memberCount}`)
+          .addFields([
+            { name: 'Name', value: `**${guild.name}** [ID: ${guild.id}]` },
+            { name: 'Member Count', value: `${guild.memberCount}` }
+          ])
           .setTimestamp()
       ]
     })
   }
-  client.user.setPresence({ activities: [{ name: `Scrambling cubes for ${client.guilds.cache.size ?? 0} servers! | Try me with /scrambles` }], status: 'online' })
 })
 
 client.on('shardError', error => {
