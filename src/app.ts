@@ -149,7 +149,7 @@ client.on('interactionCreate', async interaction => {
   }
 })
 
-async function handleGuildUpdate (guild: Guild): void {
+async function handleGuildUpdate (guild: Guild): Promise<void> {
   const clusterGuilds = await client.cluster.fetchClientValues('guilds.cache.size')
   const guilds = clusterGuilds.reduce((acc: number, guildCount: number) => acc + guildCount, 0)
   client.user.setPresence({ activities: [{ name: `Scrambling cubes for ${guilds as number} servers! | Try me with /scrambles` }], status: 'online' })
