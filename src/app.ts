@@ -159,44 +159,40 @@ client.on('guildCreate', async guild => {
   console.log(`Joined guild: ${guild.name} (${guild.id})`)
   handleGuildUpdate(guild)
 
-  if (log.isText) {
-    const embed = {
-      embeds: [
-        new MessageEmbed()
-          .setColor('#64d175')
-          .setThumbnail(guild.iconURL())
-          .setTitle('Joined Guild:')
-          .addFields([
-            { name: 'Name', value: `**${guild.name}** [ID: ${guild.id}]` },
-            { name: 'Member Count', value: `${guild.memberCount}` }
-          ])
-          .setTimestamp()
-      ]
-    }
-    await client.cluster.broadcastEval(`this.channels.cache.fetch(${settings.guildLog}).send(${JSON.stringify(embed)})`)
+  const embed = {
+    embeds: [
+      new MessageEmbed()
+        .setColor('#64d175')
+        .setThumbnail(guild.iconURL())
+        .setTitle('Joined Guild:')
+        .addFields([
+          { name: 'Name', value: `**${guild.name}** [ID: ${guild.id}]` },
+          { name: 'Member Count', value: `${guild.memberCount}` }
+        ])
+        .setTimestamp()
+    ]
   }
+  await client.cluster.broadcastEval(`this.channels.cache.fetch(${settings.guildLog}).send(${JSON.stringify(embed)})`)
 })
 
 client.on('guildDelete', async guild => {
   console.log(`Left guild: ${guild.name} (${guild.id})`)
   handleGuildUpdate(guild)
 
-  if (log.isText) {
-    const embed = {
-      embeds: [
-        new MessageEmbed()
-          .setColor('#64d175')
-          .setThumbnail(guild.iconURL())
-          .setTitle('Joined Guild:')
-          .addFields([
-            { name: 'Name', value: `**${guild.name}** [ID: ${guild.id}]` },
-            { name: 'Member Count', value: `${guild.memberCount}` }
-          ])
-          .setTimestamp()
-      ]
-    }
-    await client.cluster.broadcastEval(`this.channels.cache.fetch(${settings.guildLog}).send(${JSON.stringify(embed)})`)
+  const embed = {
+    embeds: [
+      new MessageEmbed()
+        .setColor('#64d175')
+        .setThumbnail(guild.iconURL())
+        .setTitle('Joined Guild:')
+        .addFields([
+          { name: 'Name', value: `**${guild.name}** [ID: ${guild.id}]` },
+          { name: 'Member Count', value: `${guild.memberCount}` }
+        ])
+        .setTimestamp()
+    ]
   }
+  await client.cluster.broadcastEval(`this.channels.cache.fetch(${settings.guildLog}).send(${JSON.stringify(embed)})`)
 })
 
 client.on('shardError', error => {
