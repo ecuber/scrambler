@@ -149,21 +149,18 @@ client.on('interactionCreate', async interaction => {
   }
 })
 
-async function handleGuildUpdate (guild: Guild): { log: TextChannel } {
-  const log = await client.cluster.broadcastEval(`this.channels.cache.fetch(${settings.guildLog})`) as TextChannel
+async function handleGuildUpdate (guild: Guild): void {
   const clusterGuilds = await client.cluster.fetchClientValues('guilds.cache.size')
   const guilds = clusterGuilds.reduce((acc: number, guildCount: number) => acc + guildCount, 0)
   client.user.setPresence({ activities: [{ name: `Scrambling cubes for ${guilds as number} servers! | Try me with /scrambles` }], status: 'online' })
-
-  return { log }
 }
 
 client.on('guildCreate', async guild => {
   console.log(`Joined guild: ${guild.name} (${guild.id})`)
-  const { log } = handleGuildUpdate(guild)
+  handleGuildUpdate(guild)
 
   if (log.isText) {
-    log.send({
+    const embed = {
       embeds: [
         new MessageEmbed()
           .setColor('#64d175')
@@ -175,28 +172,30 @@ client.on('guildCreate', async guild => {
           ])
           .setTimestamp()
       ]
-    })
+    }
+    await client.cluster.broadcastEval(`this.channels.cache.fetch(${settings.guildLog}).send(${JSON.stringify(embed)})`)
   }
 })
 
 client.on('guildDelete', async guild => {
   console.log(`Left guild: ${guild.name} (${guild.id})`)
-  const { log } = handleGuildUpdate(guild)
+  handleGuildUpdate(guild)
 
   if (log.isText) {
-    log.send({
+    const embed = {
       embeds: [
         new MessageEmbed()
-          .setColor('#d1646d')
+          .setColor('#64d175')
           .setThumbnail(guild.iconURL())
-          .setTitle('Left Guild:')
+          .setTitle('Joined Guild:')
           .addFields([
             { name: 'Name', value: `**${guild.name}** [ID: ${guild.id}]` },
             { name: 'Member Count', value: `${guild.memberCount}` }
           ])
           .setTimestamp()
       ]
-    })
+    }
+    await client.cluster.broadcastEval(`this.channels.cache.fetch(${settings.guildLog}).send(${JSON.stringify(embed)})`)
   }
 })
 
