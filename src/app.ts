@@ -172,7 +172,9 @@ client.on('guildCreate', async guild => {
         .setTimestamp()
     ]
   }
-  await client.cluster.broadcastEval(`this.channels.cache.fetch(${settings.guildLog}).send(${JSON.stringify(embed)})`)
+  await client.cluster.broadcastEval(`this.channels.cache.fetch(${settings.guildLog})`).then(results => {
+    results.forEach(ch => ch.send(JSON.stringify(embed)))
+  })
 })
 
 client.on('guildDelete', async guild => {
@@ -192,7 +194,9 @@ client.on('guildDelete', async guild => {
         .setTimestamp()
     ]
   }
-  await client.cluster.broadcastEval(`this.channels.cache.fetch(${settings.guildLog}).send(${JSON.stringify(embed)})`)
+  await client.cluster.broadcastEval(`this.channels.cache.fetch(${settings.guildLog})`).then(results => {
+    results.forEach(ch => ch.send(embed))
+  })
 })
 
 client.on('shardError', error => {
