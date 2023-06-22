@@ -133,6 +133,9 @@ client.once('ready', async () => {
   const clusterGuilds = await client.cluster.fetchClientValues('guilds.cache.size')
   const guilds = clusterGuilds.reduce((acc: number, guildCount: number) => acc + guildCount, 0)
   client.user.setPresence({ activities: [{ name: `Scrambling cubes for ${guilds as number} servers! | Try me with /scrambles` }], status: 'online' })
+  await client.cluster.broadcastEval(`this.channels.cache.fetch(${settings.guildLog})`).then(results => {
+    results.forEach(ch => ch.send('Scrambler has rebooted!'))
+  })
 })
 
 client.on('interactionCreate', async interaction => {
@@ -173,7 +176,7 @@ client.on('guildCreate', async guild => {
     ]
   }
   await client.cluster.broadcastEval(`this.channels.cache.fetch(${settings.guildLog})`).then(results => {
-    results.forEach(ch => ch.send(JSON.stringify(embed)))
+    results.forEach(ch => ch.send(embed))
   })
 })
 
