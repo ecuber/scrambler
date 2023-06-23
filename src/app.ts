@@ -133,6 +133,40 @@ client.once('ready', async () => {
   const guildPromise = await client.cluster.fetchClientValues('guilds.cache.size')
   const guilds = guildPromise.reduce((acc: number, guildCount: number) => acc + guildCount, 0)
   client.user.setPresence({ activities: [{ name: `Scrambling cubes for ${guilds as number} servers! | Try me with /scrambles` }], status: 'online' })
+
+  /* *******************************
+      POST STATS TO TOP.GG
+ ********************************/
+
+  if (process.env.NODE_ENV === 'production') {
+  // const ap = AutoPoster(process.env.DBL_KEY, client)
+    try {
+      const api = new Topgg.Api(process.env.DBL_KEY)
+      const poster = cron.schedule('0 */3 * * *', () => {
+        (async () => {
+          const guildPromise = await client.cluster.fetchClientValues('guilds.cache.size')
+          const guilds = guildPromise.reduce((acc: number, guildCount: number) => acc + guildCount, 0)
+          try {
+            await api.postStats({
+              serverCount: guilds,
+              shardCount: client.shard.count
+            })
+            console.log(`Posted stats to top.gg (guilds: ${guilds as number}, shards: ${client.shard.count}).`)
+          } catch (err) {
+            console.error(`Error while posting stats to top.gg: ${(err as Error).message}`)
+          }
+        })()
+      })
+
+      poster.start()
+
+      process.on('exit', (code) => {
+        poster.stop()
+      })
+    } catch (err) {
+      console.error(`Error while connecting to top.gg (API): ${(err as Error).message}`)
+    }
+  }
 })
 
 client.on('interactionCreate', async interaction => {
@@ -208,37 +242,3 @@ process.on('unhandledRejection', error => {
 })
 
 client.login(process.env.TOKEN)
-
-/* *******************************
-      POST STATS TO TOP.GG
- ********************************/
-
-if (process.env.NODE_ENV === 'production') {
-  // const ap = AutoPoster(process.env.DBL_KEY, client)
-  try {
-    const api = new Topgg.Api(process.env.DBL_KEY)
-    const poster = cron.schedule('0 */3 * * *', () => {
-      (async () => {
-        const guildPromise = await client.cluster.fetchClientValues('guilds.cache.size')
-        const guilds = guildPromise.reduce((acc: number, guildCount: number) => acc + guildCount, 0)
-        try {
-          await api.postStats({
-            serverCount: guilds,
-            shardCount: client.shard.count
-          })
-          console.log(`Posted stats to top.gg (guilds: ${guilds as number}, shards: ${client.shard.count}).`)
-        } catch (err) {
-          console.error(`Error while posting stats to top.gg: ${(err as Error).message}`)
-        }
-      })()
-    })
-
-    poster.start()
-
-    process.on('exit', (code) => {
-      poster.stop()
-    })
-  } catch (err) {
-    console.error(`Error while connecting to top.gg (API): ${(err as Error).message}`)
-  }
-}
