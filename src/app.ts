@@ -2,9 +2,9 @@
 import * as settings from '../settings'
 import { REST } from '@discordjs/rest'
 import { Routes, APIApplicationCommandOption } from 'discord-api-types/v9'
-import { Interaction, Client, Intents, Collection, MessageEmbed, TextChannel, Guild } from 'discord.js'
-import { AutoPoster } from 'topgg-autoposter'
-
+import { Interaction, Client, Intents, Collection, MessageEmbed, Guild } from 'discord.js'
+import Topgg from '@top-gg/sdk'
+import cron from 'node-cron'
 import { dataBuilder, relays, runBuilder } from './util/relays'
 import * as db from './util/db'
 import scrambleFunc from './commands/scrambles/scramble'
@@ -130,14 +130,9 @@ const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
 
 client.once('ready', async () => {
   console.log('Scrambler is online!')
-  const clusterGuilds = await client.cluster.fetchClientValues('guilds.cache.size')
-  const guilds = clusterGuilds.reduce((acc: number, guildCount: number) => acc + guildCount, 0)
+  const guildPromise = await client.cluster.fetchClientValues('guilds.cache.size')
+  const guilds = guildPromise.reduce((acc: number, guildCount: number) => acc + guildCount, 0)
   client.user.setPresence({ activities: [{ name: `Scrambling cubes for ${guilds as number} servers! | Try me with /scrambles` }], status: 'online' })
-  await client.cluster.broadcastEval(`
-    (async () => {
-      const channel = await this.channels.cache.fetch(${settings.guildLog})
-      channel.send('Scrambler has rebooted!')
-    })()`)
 })
 
 client.on('interactionCreate', async interaction => {
@@ -155,8 +150,8 @@ client.on('interactionCreate', async interaction => {
 })
 
 async function handleGuildUpdate (guild: Guild): Promise<void> {
-  const clusterGuilds = await client.cluster.fetchClientValues('guilds.cache.size')
-  const guilds = clusterGuilds.reduce((acc: number, guildCount: number) => acc + guildCount, 0)
+  const guildPromise = await client.cluster.fetchClientValues('guilds.cache.size')
+  const guilds = guildPromise.reduce((acc: number, guildCount: number) => acc + guildCount, 0)
   client.user.setPresence({ activities: [{ name: `Scrambling cubes for ${guilds as number} servers! | Try me with /scrambles` }], status: 'online' })
 }
 
@@ -219,9 +214,28 @@ client.login(process.env.TOKEN)
  ********************************/
 
 if (process.env.NODE_ENV === 'production') {
-  const ap = AutoPoster(process.env.DBL_KEY, client)
+  // const ap = AutoPoster(process.env.DBL_KEY, client)
+  const api = new Topgg.Api(process.env.DBL_KEY)
+  const poster = cron.schedule('0 */3 * * *', () => {
+    (async () => {
+      const guildPromise = await client.cluster.fetchClientValues('guilds.cache.size')
+      const guilds = guildPromise.reduce((acc: number, guildCount: number) => acc + guildCount, 0)
+      api.postStats({
+        serverCount: guilds,
+        shardCount: client.shard.count
+      })
+        .then(success => {
+          console.log(`Posted stats to top.gg (guilds: ${guilds as number}, shards: ${client.shard.count}).`)
+        })
+        .catch(reason => {
+          console.error(`Error while posting stats to top.gg: ${reason as string}`)
+        })
+    })()
+  })
 
-  ap.on('posted', () => {
-    console.log('Successfully posted stats to Top.gg!')
+  poster.start()
+
+  process.on('exit', (code) => {
+    poster.stop()
   })
 }
