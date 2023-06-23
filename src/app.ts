@@ -220,16 +220,15 @@ if (process.env.NODE_ENV === 'production') {
     (async () => {
       const guildPromise = await client.cluster.fetchClientValues('guilds.cache.size')
       const guilds = guildPromise.reduce((acc: number, guildCount: number) => acc + guildCount, 0)
-      api.postStats({
-        serverCount: guilds,
-        shardCount: client.shard.count
-      })
-        .then(success => {
-          console.log(`Posted stats to top.gg (guilds: ${guilds as number}, shards: ${client.shard.count}).`)
+      try {
+        await api.postStats({
+          serverCount: guilds,
+          shardCount: client.shard.count
         })
-        .catch(reason => {
-          console.error(`Error while posting stats to top.gg: ${reason as string}`)
-        })
+        console.log(`Posted stats to top.gg (guilds: ${guilds as number}, shards: ${client.shard.count}).`)
+      } catch (err) {
+        console.error(`Error while posting stats to top.gg: ${err as string}`)
+      }
     })()
   })
 
