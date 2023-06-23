@@ -3,7 +3,7 @@ import * as settings from '../settings'
 import { REST } from '@discordjs/rest'
 import { Routes, APIApplicationCommandOption } from 'discord-api-types/v9'
 import { Interaction, Client, Intents, Collection, MessageEmbed, Guild } from 'discord.js'
-import Topgg from '@top-gg/sdk'
+import { Api } from '@top-gg/sdk'
 import cron from 'node-cron'
 import { dataBuilder, relays, runBuilder } from './util/relays'
 import * as db from './util/db'
@@ -141,7 +141,7 @@ client.once('ready', async () => {
   if (process.env.NODE_ENV === 'production') {
   // const ap = AutoPoster(process.env.DBL_KEY, client)
     try {
-      const api = new Topgg.Api(process.env.DBL_KEY)
+      const api = new Api(process.env.DBL_KEY)
       const poster = cron.schedule('0 */3 * * *', () => {
         (async () => {
           const guildPromise = await client.cluster.fetchClientValues('guilds.cache.size')
