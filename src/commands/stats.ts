@@ -52,7 +52,7 @@ const run = async (interaction: CommandInteraction): Promise<void> => {
       { name: 'Uptime', value: formatTime(process.uptime()), inline: true },
       { name: 'Users', value: users.toLocaleString(), inline: true },
       { name: 'Guilds', value: guilds.toString(), inline: true },
-      { name: 'Shards', value: client.shard.count.toString(), inline: true },
+      { name: 'Shards', value: client.cluster.info.TOTAL_SHARDS.toString(), inline: true },
       { name: 'Channels', value: channels.toString(), inline: true },
       { name: 'Node.js', value: process.version, inline: true },
       { name: 'Discord.js', value: D.version, inline: true }

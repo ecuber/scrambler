@@ -149,9 +149,9 @@ client.once('ready', async () => {
           try {
             await api.postStats({
               serverCount: guilds,
-              shardCount: client.shard.count
+              shardCount: client.cluster.info.TOTAL_SHARDS
             })
-            console.log(`Posted stats to top.gg (guilds: ${guilds as number}, shards: ${client.shard.count}).`)
+            console.log(`Posted stats to top.gg (guilds: ${guilds as number}, shards: ${client.cluster.info.TOTAL_SHARDS}).`)
           } catch (err) {
             console.error(`Error while posting stats to top.gg: ${(err as Error).message}`)
           }
