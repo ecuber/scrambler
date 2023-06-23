@@ -7,8 +7,8 @@ const manager = new ClusterManager(path.join(__dirname, 'app.js'), {
   totalShards: 'auto',
   shardsPerClusters: 2,
   mode: 'process', // you can also choose "worker"
-  token: process.env.TOKEN,
-  execArgv: ['-r', 'ts-node/register']
+  token: process.env.TOKEN
+  // execArgv: ['-r', 'ts-node/register']
 })
 
 manager.on('clusterCreate', cluster => {
