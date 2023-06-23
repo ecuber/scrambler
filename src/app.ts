@@ -215,26 +215,30 @@ client.login(process.env.TOKEN)
 
 if (process.env.NODE_ENV === 'production') {
   // const ap = AutoPoster(process.env.DBL_KEY, client)
-  const api = new Topgg.Api(process.env.DBL_KEY)
-  const poster = cron.schedule('0 */3 * * *', () => {
-    (async () => {
-      const guildPromise = await client.cluster.fetchClientValues('guilds.cache.size')
-      const guilds = guildPromise.reduce((acc: number, guildCount: number) => acc + guildCount, 0)
-      try {
-        await api.postStats({
-          serverCount: guilds,
-          shardCount: client.shard.count
-        })
-        console.log(`Posted stats to top.gg (guilds: ${guilds as number}, shards: ${client.shard.count}).`)
-      } catch (err) {
-        console.error(`Error while posting stats to top.gg: ${err as string}`)
-      }
-    })()
-  })
+  try {
+    const api = new Topgg.Api(process.env.DBL_KEY)
+    const poster = cron.schedule('0 */3 * * *', () => {
+      (async () => {
+        const guildPromise = await client.cluster.fetchClientValues('guilds.cache.size')
+        const guilds = guildPromise.reduce((acc: number, guildCount: number) => acc + guildCount, 0)
+        try {
+          await api.postStats({
+            serverCount: guilds,
+            shardCount: client.shard.count
+          })
+          console.log(`Posted stats to top.gg (guilds: ${guilds as number}, shards: ${client.shard.count}).`)
+        } catch (err) {
+          console.error(`Error while posting stats to top.gg: ${(err as Error).message}`)
+        }
+      })()
+    })
 
-  poster.start()
+    poster.start()
 
-  process.on('exit', (code) => {
-    poster.stop()
-  })
+    process.on('exit', (code) => {
+      poster.stop()
+    })
+  } catch (err) {
+    console.error(`Error while connecting to top.gg (API): ${(err as Error).message}`)
+  }
 }
