@@ -1,6 +1,6 @@
 {
   "name": "scrambler",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Scrambler is the original Discord bot created for generating scrambles for twisty puzzles.",
   "main": "src/app.ts",
   "scripts": {
