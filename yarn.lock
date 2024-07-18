@@ -3565,9 +3565,9 @@ scrambler-util@^0.2.9:
     scrambow "^1.4.0"
 
 scrambow@^1.4.0:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/scrambow/-/scrambow-1.7.0.tgz#f2c1d65c046a0cb3620186886aadf4c05c6c87e1"
-  integrity sha512-R16glrP5X21rMvkdNgH11pBliol/XI8sPk1kymp6KeQ+ephArpy82EsF7g6PrP0EoqZ05nurlN8SN1L+vZ4s1A==
+  version "1.8.1"
+  resolved "https://registry.yarnpkg.com/scrambow/-/scrambow-1.8.1.tgz#170b17958b94af7f8a0bbddc341c0172eb744873"
+  integrity sha512-K4AXNdRQmndx6qGGfZN1i/SKvz5IZtm3sAfvXznMDHfcN7A6t3KMj187bFtb1J8D12Tub8u4Qddu9a2kkYW2OA==
   dependencies:
     commander "^8.2.0"
 
