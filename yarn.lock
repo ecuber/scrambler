@@ -3557,10 +3557,10 @@ sax@^1.2.4:
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
   integrity sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==
 
-scrambler-util@^0.2.9:
-  version "0.2.9"
-  resolved "https://registry.yarnpkg.com/scrambler-util/-/scrambler-util-0.2.9.tgz#59c4be75f7d23890be2b9ce2126964501449d052"
-  integrity sha512-RS87Tv6/6aQgNjJ/vRRwTFZKU8fvUje0j5n/Fm19gSwsVi69sjJxng1w9Jx6XrGpNzkKANtOgJkIWv06W0pz8A==
+scrambler-util@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/scrambler-util/-/scrambler-util-0.3.0.tgz#02a0a6ed8373835a433d7d6e1d42be9f2fce2cb1"
+  integrity sha512-sWHjD5ZnSUw8rkhROQcCpa9LDKPDu5EQvjGrLMd5flYfphuCRw+N9XXCHfi5eyvYHgzcVzKsU6eaesgwekVmfg==
   dependencies:
     scrambow "^1.4.0"
 
